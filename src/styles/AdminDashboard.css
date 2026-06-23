@@ -1,0 +1,183 @@
+@import './Requests.css';
+
+.admin-header {
+  margin-bottom: 24px;
+}
+
+.admin-header-text h2 {
+  font-size: 22px;
+  font-weight: 500;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.admin-header-text p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.admin-stat-card {
+  background: rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.admin-stat-icon {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.admin-stat-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.admin-stat-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.admin-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.admin-action-btn {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.admin-action-btn:hover {
+  background: rgba(120, 80, 255, 0.2);
+  border-color: rgba(120, 80, 255, 0.5);
+}
+
+.admin-action-btn span {
+  display: block;
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.admin-section {
+  background: rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.admin-section h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  margin: 0 0 16px;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-empty {
+  text-align: center;
+  padding: 32px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+}
+
+.admin-user-name {
+  font-weight: 500;
+  color: #fff;
+}
+
+.admin-user-email {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.admin-role-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.admin-role-badge.admin {
+  background: rgba(120, 80, 255, 0.25);
+  color: #c4b5fd;
+}
+
+.admin-role-badge.member {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.admin-you-badge {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 4px 8px;
+}
+
+.admin-role-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(120, 80, 255, 0.35);
+  background: rgba(120, 80, 255, 0.15);
+  color: rgba(200, 180, 255, 0.95);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.admin-role-btn:hover {
+  background: rgba(120, 80, 255, 0.3);
+}
+
+@media (max-width: 1200px) {
+  .admin-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .admin-quick-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-stats {
+    grid-template-columns: 1fr;
+  }
+  .admin-quick-actions {
+    grid-template-columns: 1fr;
+  }
+}

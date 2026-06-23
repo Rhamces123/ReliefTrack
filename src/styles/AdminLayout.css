@@ -1,0 +1,254 @@
+/* ========================================
+   ADMIN LAYOUT — fully distinct from user dashboard
+   ======================================== */
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #07080a;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ---- Sidebar / Aside ---- */
+.admin-aside {
+  width: 220px;
+  background: #0c0d10;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: width 0.2s ease;
+}
+
+.admin-aside.collapsed {
+  width: 56px;
+}
+
+.admin-aside-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.admin-aside-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.admin-aside-shield {
+  font-size: 20px;
+  color: #ef4444;
+  flex-shrink: 0;
+}
+
+.admin-aside-brand {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  letter-spacing: -0.2px;
+}
+
+.admin-aside-toggle {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.admin-aside-toggle:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ---- Nav ---- */
+.admin-aside-nav {
+  flex: 1;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.45);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 450;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.admin-nav-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.admin-nav-item.active {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.admin-nav-icon {
+  font-size: 14px;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.admin-nav-label {
+  overflow: hidden;
+}
+
+/* ---- Footer ---- */
+.admin-aside-footer {
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.admin-aside-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-aside-user-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.admin-aside-user-name {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-aside-user-role {
+  font-size: 10px;
+  color: #ef4444;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-top: 1px;
+}
+
+.admin-aside-logout {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.admin-aside-logout:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+/* ---- Topbar ---- */
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.admin-topbar-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.admin-topbar-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-topbar-user {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.admin-topbar-pill {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.15);
+}
+
+/* ---- Content area ---- */
+.admin-content {
+  flex: 1;
+  padding: 24px 28px;
+  overflow-y: auto;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .admin-aside {
+    width: 56px;
+  }
+
+  .admin-aside-header {
+    padding: 16px 12px;
+    justify-content: center;
+  }
+
+  .admin-aside-toggle {
+    display: none;
+  }
+
+  .admin-aside-logo {
+    justify-content: center;
+  }
+
+  .admin-topbar {
+    padding: 12px 16px;
+  }
+
+  .admin-topbar-user {
+    display: none;
+  }
+
+  .admin-content {
+    padding: 16px;
+  }
+}

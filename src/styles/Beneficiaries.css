@@ -1,0 +1,183 @@
+@import './Requests.css';
+@import './Inventory.css';
+
+.benef-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.benef-header-text h2 {
+  font-size: 22px;
+  font-weight: 500;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.benef-header-text p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+.benef-header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.benef-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.benef-chip {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.benef-chip strong {
+  color: #fff;
+  font-weight: 500;
+}
+
+.benef-toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.benef-search {
+  flex: 1;
+  max-width: 320px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+
+.benef-search::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.benef-filter {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+
+.benef-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+.benef-card {
+  background: rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 18px 20px;
+  transition: border-color 0.2s;
+}
+
+.benef-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.benef-card-title {
+  flex: 1;
+}
+
+.benef-card-title h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.benef-class-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.benef-class-badge.pregnant { background: rgba(255, 100, 150, 0.2); color: #ff9abb; }
+.benef-class-badge.elderly { background: rgba(180, 160, 255, 0.2); color: #c4b4ff; }
+.benef-class-badge.pwd { background: rgba(255, 180, 80, 0.2); color: #ffc966; }
+.benef-class-badge.child { background: rgba(80, 200, 255, 0.2); color: #7ec8ff; }
+.benef-class-badge.solo-parent { background: rgba(120, 200, 120, 0.2); color: #8ee08e; }
+.benef-class-badge.none { background: rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.5); }
+
+.benef-card-members {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
+  margin-left: 12px;
+}
+
+.benef-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.benef-card-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.benef-label {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+}
+
+.benef-notes {
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.benef-card-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 768px) {
+  .benef-toolbar {
+    flex-direction: column;
+  }
+  .benef-search {
+    max-width: 100%;
+  }
+  .benef-grid {
+    grid-template-columns: 1fr;
+  }
+}
