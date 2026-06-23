@@ -7,8 +7,6 @@ import { createUserProfile, ensureUserProfile, updateUserProfile } from '../fire
 import { getAuthErrorMessage } from '../utils/authErrors'
 import { getBrowserLocation } from '../utils/getBrowserLocation'
 
-const ADMIN_CODE = 'ADMIN2024'
-
 export default function SignUp() {
   const navigate = useNavigate()
   const [displayName, setDisplayName] = useState('')
@@ -16,8 +14,6 @@ export default function SignUp() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [role, setRole] = useState('Member')
-  const [adminCode, setAdminCode] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -32,11 +28,6 @@ export default function SignUp() {
 
     if (password !== confirmPassword) {
       setError('Passwords do not match.')
-      return
-    }
-
-    if (role === 'Admin' && adminCode !== ADMIN_CODE) {
-      setError('Invalid admin code.')
       return
     }
 
@@ -152,37 +143,6 @@ export default function SignUp() {
             />
           </div>
         </div>
-
-        <div className="field">
-          <label>Role</label>
-          <div className="input-wrap">
-            <select
-              className="glass-input"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              disabled={loading}
-            >
-              <option value="Member">Member</option>
-              <option value="Admin">Admin</option>
-            </select>
-          </div>
-        </div>
-
-        {role === 'Admin' && (
-          <div className="field">
-            <label>Admin Code</label>
-            <div className="input-wrap">
-              <input
-                className="glass-input"
-                type="password"
-                placeholder="Enter admin code"
-                value={adminCode}
-                onChange={(e) => setAdminCode(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-          </div>
-        )}
 
         <button className="btn-login" type="submit" disabled={loading}>
           {loading ? 'Creating account...' : 'Create account'}
