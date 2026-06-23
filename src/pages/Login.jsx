@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout'
 import GoogleButton from '../components/GoogleButton'
 import { signInWithEmail, signInWithGoogle, signUpWithEmail, handleRedirectResult } from '../firebase/auth'
 import { ensureUserProfile, updateUserProfile } from '../firebase/users'
 import { getAuthErrorMessage } from '../utils/authErrors'
-import { getBrowserLocation } from '../utils/getBrowserLocation'
+import { requestBrowserLocation, getBrowserLocation } from '../utils/getBrowserLocation'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -15,15 +15,19 @@ export default function Login() {
   const [remember, setRemember] = useState(true)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
+  const locRef = useRef(null)
+
+  useEffect(() => {
+    requestBrowserLocation().then((c) => { locRef.current = c })
+  }, [])
 
   useEffect(() => {
     handleRedirectResult()
       .then((user) => {
         if (!user) { setLoading(false); return }
-        return ensureUserProfile(user).then(() => {
-          getBrowserLocation()
-            .then((loc) => { if (loc) updateUserProfile(user.uid, { location: loc }) })
-            .catch(() => {})
+        return ensureUserProfile(user).then(async () => {
+          const loc = await getBrowserLocation()
+          if (loc) updateUserProfile(user.uid, { location: loc })
           const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
           navigate(adminEmail && user.email === adminEmail ? '/admin' : '/home', { replace: true })
         })
@@ -47,6 +51,8 @@ export default function Login() {
         }
       }
       await ensureUserProfile(user)
+      const loc = await getBrowserLocation()
+      if (loc) updateUserProfile(user.uid, { location: loc })
       const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
       navigate(adminEmail && user.email === adminEmail ? '/admin' : '/home')
     } catch (err) {

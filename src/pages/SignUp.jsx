@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout'
 import GoogleButton from '../components/GoogleButton'
 import { signUpWithEmail, signInWithGoogle } from '../firebase/auth'
 import { createUserProfile, ensureUserProfile, updateUserProfile } from '../firebase/users'
 import { getAuthErrorMessage } from '../utils/authErrors'
-import { getBrowserLocation } from '../utils/getBrowserLocation'
+import { requestBrowserLocation, getBrowserLocation } from '../utils/getBrowserLocation'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -16,6 +16,11 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const locRef = useRef(null)
+
+  useEffect(() => {
+    requestBrowserLocation().then((c) => { locRef.current = c })
+  }, [])
 
   const handleSignUp = async (e) => {
     e.preventDefault()
@@ -41,6 +46,8 @@ export default function SignUp() {
         displayName: displayName.trim() || user.displayName || '',
         role,
       })
+      const loc = await getBrowserLocation()
+      if (loc) updateUserProfile(user.uid, { location: loc })
       navigate(role === 'Admin' ? '/admin' : '/home')
     } catch (err) {
       const message = getAuthErrorMessage(err, 'Sign up failed. Please try again.')
@@ -56,11 +63,8 @@ export default function SignUp() {
     try {
       const user = await signInWithGoogle()
       await ensureUserProfile(user)
-      getBrowserLocation()
-        .then((loc) => {
-          if (loc) updateUserProfile(user.uid, { location: loc })
-        })
-        .catch(() => {})
+      const loc = await getBrowserLocation()
+      if (loc) updateUserProfile(user.uid, { location: loc })
       const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
       navigate(adminEmail && user.email === adminEmail ? '/admin' : '/home')
     } catch (err) {
