@@ -1,0 +1,150 @@
+/* ───────── Header ───────── */
+.pri-header {
+  position: relative; z-index: 1;
+  display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between;
+  gap: 16px; margin-bottom: 24px;
+}
+.pri-header-text h2 { font-size: 22px; font-weight: 500; color: #fff; margin: 0 0 6px; }
+.pri-header-text p { font-size: 14px; color: rgba(255,255,255,0.5); margin: 0; }
+
+/* ───────── Stats ───────── */
+.pri-stats {
+  position: relative; z-index: 1;
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;
+}
+.pri-stat-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: border-color 0.2s, transform 0.2s;
+}
+.pri-stat-card:hover {
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+.pri-stat-icon { font-size: 20px; line-height: 1; }
+.pri-stat-card div { display: flex; flex-direction: column; gap: 1px; }
+.pri-stat-card strong { font-size: 18px; font-weight: 600; color: #fff; line-height: 1.2; }
+.pri-stat-card span { font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; color: rgba(255,255,255,0.45); }
+
+/* ───────── Toolbar ───────── */
+.pri-toolbar {
+  position: relative; z-index: 1;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 20px;
+}
+.pri-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+.pri-filter {
+  padding: 8px 14px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.8); font-size: 12px;
+  cursor: pointer; outline: none;
+  transition: border-color 0.2s;
+}
+.pri-filter:hover { border-color: rgba(255,255,255,0.25); }
+.pri-filter option { background: #1a1a2e; color: #fff; }
+.pri-count { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+/* ───────── Group ───────── */
+.pri-list {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.pri-group {
+  border-radius: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.pri-group:hover { border-color: rgba(255,255,255,0.12); }
+.pri-group-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.pri-group-header h3 { font-size: 15px; font-weight: 600; color: #fff; margin: 0; }
+.pri-group-count { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.3px; }
+.pri-group-list { display: flex; flex-direction: column; }
+
+/* ───────── Individual Row ───────── */
+.pri-individual {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.2s, transform 0.2s;
+  animation: priFadeIn 0.3s ease both;
+  animation-delay: calc(var(--idx, 0) * 0.04s);
+}
+.pri-individual:last-child { border-bottom: none; }
+.pri-individual:hover {
+  background: rgba(255,255,255,0.04);
+  transform: translateX(4px);
+}
+.pri-ind-left {
+  display: flex; align-items: center; gap: 12px;
+}
+.pri-rank {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.5);
+  flex-shrink: 0;
+}
+.pri-ind-info {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.pri-ind-name {
+  font-size: 14px; font-weight: 500; color: #fff;
+}
+.pri-ind-head {
+  font-size: 12px; color: rgba(255,255,255,0.4);
+}
+.pri-ind-right {
+  display: flex; align-items: center; gap: 10px;
+}
+.pri-class-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 6px;
+  font-size: 11px; font-weight: 700; color: #fff;
+}
+.pri-contact {
+  font-size: 11px; color: rgba(255,255,255,0.35);
+  font-family: monospace;
+}
+
+/* Priority accent bar */
+.pri-individual::before {
+  content: '';
+  position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px;
+  border-radius: 2px;
+  background: var(--accent, #6b7280);
+  opacity: 0; transition: opacity 0.2s;
+}
+.pri-individual:hover::before { opacity: 1; }
+.pri-individual { position: relative; }
+
+/* ───────── Empty ───────── */
+.pri-empty {
+  text-align: center; padding: 60px 20px;
+}
+.pri-empty-icon { font-size: 56px; line-height: 1; display: block; margin-bottom: 16px; }
+.pri-empty h3 { font-size: 18px; font-weight: 500; color: #fff; margin: 0 0 8px; }
+.pri-empty p { font-size: 14px; color: rgba(255,255,255,0.5); margin: 0; }
+
+/* ───────── Keyframes ───────── */
+@keyframes priFadeIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ───────── Responsive ───────── */
+@media (max-width: 768px) {
+  .pri-individual { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .pri-ind-right { width: 100%; justify-content: flex-end; }
+  .pri-toolbar { flex-direction: column; align-items: stretch; }
+}

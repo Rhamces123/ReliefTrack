@@ -12,6 +12,7 @@ import Settings from './pages/Settings'
 import Reports from './pages/Reports'
 import MapView from './pages/MapView'
 import Beneficiaries from './pages/Beneficiaries'
+import PriorityIndividuals from './pages/PriorityIndividuals'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminSetup from './pages/AdminSetup'
 import AdminAutoSuggest from './pages/AdminAutoSuggest'
@@ -107,6 +108,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Beneficiaries />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/priority"
+        element={
+          <ProtectedRoute>
+            <PriorityIndividuals />
           </ProtectedRoute>
         }
       />
