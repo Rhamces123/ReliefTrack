@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout'
-import GoogleButton from '../components/GoogleButton'
-import { signInWithEmail, signInWithGoogle, signUpWithEmail, handleRedirectResult } from '../firebase/auth'
+import { signInWithEmail, signUpWithEmail } from '../firebase/auth'
 import { ensureUserProfile, updateUserProfile } from '../firebase/users'
 import { getAuthErrorMessage } from '../utils/authErrors'
-import { requestBrowserLocation, getBrowserLocation } from '../utils/getBrowserLocation'
+import { getBrowserLocation } from '../utils/getBrowserLocation'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -14,26 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(true)
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(true)
-  const locRef = useRef(null)
-
-  useEffect(() => {
-    requestBrowserLocation().then((c) => { locRef.current = c })
-  }, [])
-
-  useEffect(() => {
-    handleRedirectResult()
-      .then((user) => {
-        if (!user) { setLoading(false); return }
-        return ensureUserProfile(user).then(async () => {
-          const loc = await getBrowserLocation()
-          if (loc) updateUserProfile(user.uid, { location: loc })
-          const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
-          navigate(adminEmail && user.email === adminEmail ? '/admin' : '/home', { replace: true })
-        })
-      })
-      .catch(() => setLoading(false))
-  }, [navigate])
+  const [loading, setLoading] = useState(false)
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -61,11 +41,6 @@ export default function Login() {
     } finally {
       setLoading(false)
     }
-  }
-
-  const handleGoogle = () => {
-    setError('')
-    signInWithGoogle()
   }
 
   return (
@@ -122,21 +97,15 @@ export default function Login() {
             />
             <span>Remember me</span>
           </label>
-          <a href="#" className="forgot" onClick={(e) => e.preventDefault()}>
+          <Link to="/forgot-password" className="forgot">
             Forgot password?
-          </a>
+          </Link>
         </div>
 
         <button className="btn-login" type="submit" disabled={loading}>
           {loading ? 'Signing in...' : 'Sign in'}
         </button>
       </form>
-
-      <div className="divider">
-        <span>or continue with</span>
-      </div>
-
-      <GoogleButton onClick={handleGoogle} disabled={loading} />
 
       <p className="signup-row">
         Don&apos;t have an account? <Link to="/signup">Sign up</Link>

@@ -15,6 +15,8 @@ import Beneficiaries from './pages/Beneficiaries'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminSetup from './pages/AdminSetup'
 import AdminAutoSuggest from './pages/AdminAutoSuggest'
+import ForgotPassword from './pages/ForgotPassword'
+import Donations from './pages/Donations'
 
 function App() {
   return (
@@ -33,6 +35,14 @@ function App() {
         element={
           <PublicRoute>
             <SignUp />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/forgot-password"
+        element={
+          <PublicRoute>
+            <ForgotPassword />
           </PublicRoute>
         }
       />
@@ -81,6 +91,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Reports />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/donations"
+        element={
+          <ProtectedRoute>
+            <Donations />
           </ProtectedRoute>
         }
       />

@@ -107,6 +107,10 @@ export async function updateReliefRequestStatus(docId, status) {
   })
 }
 
+export async function updateReliefRequestCoordinates(docId, lat, lng) {
+  await updateDoc(doc(db, COLLECTION, docId), { lat, lng, updatedAt: serverTimestamp() })
+}
+
 export async function deleteReliefRequest(docId) {
   await deleteDoc(doc(db, COLLECTION, docId))
 }

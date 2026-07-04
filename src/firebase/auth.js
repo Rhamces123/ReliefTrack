@@ -1,11 +1,12 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signInWithRedirect,
+  signInWithPopup,
   getRedirectResult,
   GoogleAuthProvider,
   updateProfile,
   signOut,
+  sendPasswordResetEmail,
 } from 'firebase/auth'
 import { auth } from '../firebase.js'
 
@@ -25,8 +26,13 @@ export async function signInWithEmail(email, password) {
   return user
 }
 
-export function signInWithGoogle() {
-  return signInWithRedirect(auth, googleProvider)
+export async function signInWithGoogle() {
+  const result = await signInWithPopup(auth, googleProvider)
+  return result.user
+}
+
+export async function sendPasswordReset(email) {
+  await sendPasswordResetEmail(auth, email)
 }
 
 export async function handleRedirectResult() {

@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout'
-import GoogleButton from '../components/GoogleButton'
-import { signUpWithEmail, signInWithGoogle } from '../firebase/auth'
-import { createUserProfile, ensureUserProfile, updateUserProfile } from '../firebase/users'
+import { signUpWithEmail } from '../firebase/auth'
+import { createUserProfile, updateUserProfile } from '../firebase/users'
 import { getAuthErrorMessage } from '../utils/authErrors'
-import { requestBrowserLocation, getBrowserLocation } from '../utils/getBrowserLocation'
+import { getBrowserLocation } from '../utils/getBrowserLocation'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -16,11 +15,6 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const locRef = useRef(null)
-
-  useEffect(() => {
-    requestBrowserLocation().then((c) => { locRef.current = c })
-  }, [])
 
   const handleSignUp = async (e) => {
     e.preventDefault()
@@ -51,24 +45,6 @@ export default function SignUp() {
       navigate(role === 'Admin' ? '/admin' : '/home')
     } catch (err) {
       const message = getAuthErrorMessage(err, 'Sign up failed. Please try again.')
-      if (message) setError(message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleGoogle = async () => {
-    setError('')
-    setLoading(true)
-    try {
-      const user = await signInWithGoogle()
-      await ensureUserProfile(user)
-      const loc = await getBrowserLocation()
-      if (loc) updateUserProfile(user.uid, { location: loc })
-      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
-      navigate(adminEmail && user.email === adminEmail ? '/admin' : '/home')
-    } catch (err) {
-      const message = getAuthErrorMessage(err, 'Google sign-in failed. Please try again.')
       if (message) setError(message)
     } finally {
       setLoading(false)
@@ -152,12 +128,6 @@ export default function SignUp() {
           {loading ? 'Creating account...' : 'Create account'}
         </button>
       </form>
-
-      <div className="divider">
-        <span>or continue with</span>
-      </div>
-
-      <GoogleButton onClick={handleGoogle} disabled={loading} />
 
       <p className="signup-row">
         Already have an account? <Link to="/login">Sign in</Link>

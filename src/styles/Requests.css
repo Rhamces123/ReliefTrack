@@ -232,6 +232,44 @@
   margin-bottom: 16px;
 }
 
+.requests-location-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.requests-location-row > *:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.requests-locate-btn {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border: 1px solid #3a3a4e;
+  border-radius: 10px;
+  background: #1e1e2e;
+  color: #ccc;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  margin-top: 0;
+}
+
+.requests-locate-btn:hover:not(:disabled) {
+  background: #2a2a3e;
+  border-color: #1a73e8;
+}
+
+.requests-locate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .requests-form-field label {
   display: block;
   font-size: 11px;

@@ -13,5 +13,8 @@ service cloud.firestore {
     match /families/{familyId} {
       allow read, create, update, delete: if request.auth != null;
     }
+    match /donations/{donationId} {
+      allow read, create, update, delete: if request.auth != null;
+    }
   }
 }

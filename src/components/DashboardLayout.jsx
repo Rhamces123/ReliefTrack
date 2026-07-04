@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { id: 'requests', label: 'Requests', icon: '📋', path: '/requests' },
   { id: 'inventory', label: 'Inventory', icon: '📦', path: '/inventory' },
   { id: 'beneficiaries', label: 'Beneficiaries', icon: '👨‍👩‍👧‍👦', path: '/beneficiaries' },
+  { id: 'donations', label: 'Donations', icon: '🎁', path: '/donations' },
   { id: 'map', label: 'View Map', icon: '🗺️', path: '/map' },
   { id: 'reports', label: 'Reports', icon: '📊', path: '/reports' },
   { id: 'settings', label: 'Settings', icon: '⚙️', path: '/settings' },

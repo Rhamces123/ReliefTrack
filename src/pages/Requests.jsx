@@ -69,6 +69,29 @@ export default function Requests() {
   const [saving, setSaving] = useState(false)
   const [updatingId, setUpdatingId] = useState(null)
   const [detailRequest, setDetailRequest] = useState(null)
+  const [locating, setLocating] = useState(false)
+
+  const detectLocation = () => {
+    if (!navigator.geolocation) return
+    setLocating(true)
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords
+        setForm((f) => ({ ...f, lat: latitude, lng: longitude }))
+        try {
+          const params = new URLSearchParams({ lat: latitude.toFixed(5), lon: longitude.toFixed(5), format: 'json' })
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?${params}`, {
+            headers: { 'User-Agent': 'ReliefTrack/1.0' },
+          })
+          const data = await res.json()
+          if (data?.display_name) setForm((f) => ({ ...f, location: data.display_name }))
+        } catch {}
+        setLocating(false)
+      },
+      () => setLocating(false),
+      { timeout: 10000, enableHighAccuracy: true }
+    )
+  }
 
   const displayName =
     profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
@@ -494,14 +517,19 @@ export default function Requests() {
                 </div>
                 <div className="requests-form-field">
                   <label htmlFor="rr-location">📍 Location</label>
-                  <LocationAutocomplete
-                    id="rr-location"
-                    value={form.location}
-                    onChange={(v) => setForm((f) => ({ ...f, location: v }))}
-                    onCoordChange={(c) => setForm((f) => ({ ...f, lat: c.lat, lng: c.lng }))}
-                    disabled={saving}
-                    placeholder="e.g. Barangay Mabolo, Naga City"
-                  />
+                  <div className="requests-location-row">
+                    <LocationAutocomplete
+                      id="rr-location"
+                      value={form.location}
+                      onChange={(v) => setForm((f) => ({ ...f, location: v }))}
+                      onCoordChange={(c) => setForm((f) => ({ ...f, lat: c.lat, lng: c.lng }))}
+                      disabled={saving}
+                      placeholder="e.g. Barangay Mabolo, Naga City"
+                    />
+                    <button type="button" className="requests-locate-btn" onClick={detectLocation} disabled={saving || locating} title="Use my current location">
+                      {locating ? '⌛' : '📍'}
+                    </button>
+                  </div>
                 </div>
               </div>
 

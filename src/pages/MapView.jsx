@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, Rectangle, useMap } from 'react-leaflet'
+import { useEffect, useState, useRef, useCallback } from 'react'
+import { MapContainer, TileLayer, Marker, Popup, Rectangle, GeoJSON, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useAuth } from '../context/AuthContext'
@@ -11,8 +11,9 @@ function reverseGeocode(lat, lng) {
   }).then((r) => r.json()).then((d) => d.display_name || 'Unknown location')
 }
 import { getUserProfile } from '../firebase/users'
-import { subscribeReliefRequests } from '../firebase/requests'
-import { searchPhilippinesPlaces } from '../utils/philippinesPlaces'
+import { subscribeReliefRequests, updateReliefRequestCoordinates } from '../firebase/requests'
+import { searchPhilippinesPlaces, searchPlaces } from '../utils/philippinesPlaces'
+import nagaGeoJSON from '../utils/nagaBoundary'
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/MapView.css'
 
@@ -40,7 +41,42 @@ function markerIcon(status) {
   })
 }
 
-const PH_CENTER = [12.8797, 121.7740]
+const NAGA_BOUNDS = L.latLngBounds([10.0485, 123.5991], [10.3685, 123.9191])
+const NAGA_CENTER = [10.2085, 123.7591]
+
+const geoIcon = L.divIcon({
+  className: '',
+  html: '<div style="width:24px;height:24px;background:#1a73e8;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.4);"><div style="width:10px;height:10px;background:#fff;border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)"></div></div>',
+  iconSize: [24, 24],
+  iconAnchor: [12, 12],
+})
+
+function BindBounds() {
+  const map = useMap()
+  useEffect(() => {
+    map.setMaxBounds(NAGA_BOUNDS)
+    map.fitBounds(NAGA_BOUNDS, { padding: [20, 20] })
+  }, [map])
+  return null
+}
+
+function LocateMe({ trigger, onLocated }) {
+  const map = useMap()
+  useEffect(() => {
+    if (!trigger) return
+    if (!navigator.geolocation) return
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords
+        map.flyTo([latitude, longitude], 15, { duration: 1.5 })
+        onLocated?.(latitude, longitude)
+      },
+      () => {},
+      { timeout: 10000, enableHighAccuracy: true }
+    )
+  }, [trigger, map, onLocated])
+  return null
+}
 
 function totalAffected(categories) {
   if (!categories) return 0
@@ -60,21 +96,22 @@ function MapBounds({ markers }) {
   return null
 }
 
-function FlyToSearch({ target }) {
+function FlyToSearch({ target, onDone }) {
   const map = useMap()
   useEffect(() => {
     if (!target) return
+    const flyOptions = { duration: 2, easeLinearity: 0.25 }
     if (target.bbox) {
       const bounds = L.latLngBounds(
         [target.bbox.south, target.bbox.west],
         [target.bbox.north, target.bbox.east]
       )
-      map.flyToBounds(bounds, { padding: [40, 40], duration: 1.5 })
+      map.flyToBounds(bounds, { padding: [60, 60], ...flyOptions })
     } else {
-      const zoom = target.zoom || 15
-      map.flyTo([target.lat, target.lng], zoom, { duration: 1.5 })
+      map.flyTo([target.lat, target.lng], 16, flyOptions)
     }
-  }, [target, map])
+    map.once('moveend', () => onDone?.())
+  }, [target, map, onDone])
   return null
 }
 
@@ -114,8 +151,14 @@ export default function MapView() {
   const [searchQuery, setSearchQuery] = useState('')
   const [flyTarget, setFlyTarget] = useState(null)
   const [searchBounds, setSearchBounds] = useState(null)
+  const [locateTrigger, setLocateTrigger] = useState(0)
+  const [geoPosition, setGeoPosition] = useState(null)
+  const [searchResult, setSearchResult] = useState(null)
+  const [searchError, setSearchError] = useState('')
+  const [searching, setSearching] = useState(false)
   const searchWrapRef = useRef(null)
   const geocodingRef = useRef(new Set())
+  const savedCoordsRef = useRef(new Set())
 
   useEffect(() => {
     if (!user?.uid) return
@@ -150,14 +193,23 @@ export default function MapView() {
     ).then((results) => {
       const next = []
       for (const res of results) {
-        if (res.status === 'fulfilled' && res.value) next.push(res.value)
+        if (res.status === 'fulfilled' && res.value) {
+          const v = res.value
+          next.push(v)
+          if (!savedCoordsRef.current.has(v.docId)) {
+            savedCoordsRef.current.add(v.docId)
+            updateReliefRequestCoordinates(v.docId, v.lat, v.lng).catch(() => {})
+          }
+        }
       }
       if (next.length > 0) setGeocoded((prev) => [...prev, ...next])
       setGeocoding(false)
     })
   }, [requests])
 
-
+  const handleLocated = useCallback((lat, lng) => {
+    setGeoPosition({ lat, lng })
+  }, [])
 
   const markers = []
   const markerPositions = []
@@ -196,22 +248,47 @@ export default function MapView() {
               className="mapview-search-input"
               type="text"
               placeholder="Search location (press Enter)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+               value={searchQuery}
+               onChange={(e) => {
+                 setSearchQuery(e.target.value)
+                 if (!e.target.value.trim()) {
+                   setFlyTarget(null)
+                   setSearchBounds(null)
+                   setSearchResult(null)
+                   setSearchError('')
+                 }
+               }}
               onKeyDown={async (e) => {
                 if (e.key === 'Enter') {
                   const q = searchQuery.trim()
                   if (q.length < 2) return
-                  const places = await searchPhilippinesPlaces(q)
-                  if (places.length > 0) {
-                    const p = places[0]
-                    setFlyTarget({ lat: Number(p.lat), lng: Number(p.lon), bbox: p.bbox })
-                    setSearchBounds(p.bbox ? [[Number(p.bbox.south), Number(p.bbox.west)], [Number(p.bbox.north), Number(p.bbox.east)]] : null)
+                  setSearchError('')
+                  setSearchResult(null)
+                  setSearching(true)
+                  try {
+                    const places = await searchPlaces(q)
+                    if (places.length > 0) {
+                      const p = places[0]
+                      setFlyTarget({ lat: Number(p.lat), lng: Number(p.lon), bbox: p.bbox })
+                      setSearchBounds(p.bbox ? [[Number(p.bbox.south), Number(p.bbox.west)], [Number(p.bbox.north), Number(p.bbox.east)]] : null)
+                      setSearchResult({ lat: Number(p.lat), lng: Number(p.lon), name: p.displayName })
+                    } else {
+                      setSearchError('No results found. Try a different name.')
+                    }
+                  } catch {
+                    setSearchError('Search failed. Please try again.')
+                  } finally {
+                    setSearching(false)
                   }
                 }
               }}
             />
+            {searchError && <div className="mapview-search-error">{searchError}</div>}
+            {searching && <div className="mapview-searching">Searching...</div>}
           </div>
+          <button className="mapview-toggle" onClick={() => setLocateTrigger((t) => t + 1)}>
+            📍 My Location
+          </button>
           <button className="mapview-toggle" onClick={() => setSatellite((s) => !s)}>
             {satellite ? '🗺️ Street' : '🛰️ Satellite'}
           </button>
@@ -230,7 +307,7 @@ export default function MapView() {
           <div className="mapview-loading">Loading map...</div>
         ) : (
           <div className={`mapview-map-wrap${streetViewActive ? ' mapview-sv-active' : ''}`}>
-            <MapContainer center={PH_CENTER} zoom={6} className="mapview-map" scrollWheelZoom={true}>
+            <MapContainer center={NAGA_CENTER} zoom={13} className="mapview-map" scrollWheelZoom={true}>
               {satellite ? (
                 <>
                   <TileLayer
@@ -249,7 +326,9 @@ export default function MapView() {
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
               )}
-              <FlyToSearch target={flyTarget} />
+              <BindBounds />
+              <FlyToSearch target={flyTarget} onDone={() => {}} />
+              <LocateMe trigger={locateTrigger} onLocated={handleLocated} />
               <MapClick streetViewRef={streetViewRef} />
               <MapBounds markers={markerPositions} />
               {markers.map((m) => (
@@ -278,6 +357,21 @@ export default function MapView() {
                   </Popup>
                 </Marker>
               ))}
+              <GeoJSON
+                key="naga-boundary"
+                data={nagaGeoJSON}
+                style={() => ({ color: '#10b981', weight: 2, fillColor: '#10b981', fillOpacity: 0.04 })}
+              />
+              {geoPosition && (
+                <Marker position={[geoPosition.lat, geoPosition.lng]} icon={geoIcon}>
+                  <Popup><div className="mapview-popup"><h4>Your Location</h4><p>{geoPosition.lat.toFixed(5)}, {geoPosition.lng.toFixed(5)}</p></div></Popup>
+                </Marker>
+              )}
+              {searchResult && (
+                <Marker position={[searchResult.lat, searchResult.lng]} icon={L.divIcon({ className: '', html: '<div style="width:32px;height:32px;background:#1a73e8;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 10px rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;font-size:14px">🔍</div>', iconSize: [32, 32], iconAnchor: [16, 16] })}>
+                  <Popup><div className="mapview-popup"><h4>Search result</h4><p>{searchResult.name}</p></div></Popup>
+                </Marker>
+              )}
               {searchBounds && (
                 <Rectangle bounds={searchBounds} pathOptions={{ color: '#1a73e8', weight: 3, fill: false }} />
               )}
