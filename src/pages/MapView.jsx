@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, Rectangle, GeoJSON, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, Rectangle, GeoJSON, Polyline, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useAuth } from '../context/AuthContext'
@@ -14,6 +14,7 @@ import { getUserProfile } from '../firebase/users'
 import { subscribeReliefRequests, updateReliefRequestCoordinates } from '../firebase/requests'
 import { searchPhilippinesPlaces, searchPlaces } from '../utils/philippinesPlaces'
 import nagaGeoJSON from '../utils/nagaBoundary'
+import EVACUATION_CENTERS, { getNearestEvacuation, getRoute } from '../data/evacuationCenters'
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/MapView.css'
 
@@ -40,6 +41,25 @@ function markerIcon(status) {
     popupAnchor: [0, -16],
   })
 }
+
+const evacIcon = L.divIcon({
+  className: '',
+  html: `<div style="
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: 3px solid #fff;
+    border-radius: 8px 8px 8px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transform: rotate(0deg);
+  ">🏠</div>`,
+  iconSize: [34, 34],
+  iconAnchor: [17, 30],
+  popupAnchor: [0, -34],
+})
 
 const NAGA_BOUNDS = L.latLngBounds([10.0485, 123.5991], [10.3685, 123.9191])
 const NAGA_CENTER = [10.2085, 123.7591]
@@ -138,6 +158,16 @@ function MapClick({ streetViewRef }) {
   return null
 }
 
+function FitRoute({ routeCoords }) {
+  const map = useMap()
+  useEffect(() => {
+    if (!routeCoords || routeCoords.length < 2) return
+    const bounds = L.latLngBounds(routeCoords)
+    map.fitBounds(bounds, { padding: [60, 60] })
+  }, [routeCoords, map])
+  return null
+}
+
 export default function MapView() {
   const { user } = useAuth()
   const [profile, setProfile] = useState(null)
@@ -159,6 +189,9 @@ export default function MapView() {
   const searchWrapRef = useRef(null)
   const geocodingRef = useRef(new Set())
   const savedCoordsRef = useRef(new Set())
+  const [routeCoords, setRouteCoords] = useState(null)
+  const [routeInfo, setRouteInfo] = useState(null)
+  const [routingId, setRoutingId] = useState(null)
 
   useEffect(() => {
     if (!user?.uid) return
@@ -211,6 +244,26 @@ export default function MapView() {
     setGeoPosition({ lat, lng })
   }, [])
 
+  const handleFindEvac = useCallback(async (lat, lng, docId) => {
+    const nearest = getNearestEvacuation(lat, lng)
+    if (!nearest) return
+    setRoutingId(docId)
+    setRouteInfo({ ...nearest, status: 'routing' })
+    try {
+      const route = await getRoute(lat, lng, nearest.lat, nearest.lng)
+      setRouteCoords(route.coordinates)
+      setRouteInfo({ ...nearest, status: 'ready', distanceKm: route.distanceKm, durationMin: route.durationMin })
+    } catch {
+      setRouteInfo({ ...nearest, status: 'error' })
+    }
+  }, [])
+
+  const clearRoute = useCallback(() => {
+    setRouteCoords(null)
+    setRouteInfo(null)
+    setRoutingId(null)
+  }, [])
+
   const markers = []
   const markerPositions = []
   for (const r of requests) {
@@ -242,6 +295,8 @@ export default function MapView() {
             <span><span className="legend-dot pending" /> Not Yet Assessed</span>
             <span><span className="legend-dot inprogress" /> Not Yet Received Relief</span>
             <span><span className="legend-dot completed" /> Already Received Relief</span>
+            <span><span className="legend-dot evac" /> Evacuation Center</span>
+            <span><span className="legend-dot route" /> Route</span>
           </div>
           <div className="mapview-search" ref={searchWrapRef}>
             <input
@@ -303,6 +358,28 @@ export default function MapView() {
             🏙️ Street View
           </button>
         </div>
+
+        {/* Route info bar */}
+        {routeInfo && routeInfo.status === 'routing' && (
+          <div className="mapview-route-bar">
+            <span>📍 Finding route to {routeInfo.name}...</span>
+          </div>
+        )}
+        {routeInfo && routeInfo.status === 'ready' && (
+          <div className="mapview-route-bar mapview-route-bar-ready">
+            <span>
+              🏠 <strong>{routeInfo.name}</strong> — {routeInfo.distanceKm.toFixed(1)} km · {Math.round(routeInfo.durationMin)} min drive
+            </span>
+            <button type="button" className="mapview-route-close" onClick={clearRoute}>✕</button>
+          </div>
+        )}
+        {routeInfo && routeInfo.status === 'error' && (
+          <div className="mapview-route-bar mapview-route-bar-error">
+            <span>Failed to get route. Try again.</span>
+            <button type="button" className="mapview-route-close" onClick={clearRoute}>✕</button>
+          </div>
+        )}
+
         {loading ? (
           <div className="mapview-loading">Loading map...</div>
         ) : (
@@ -331,11 +408,17 @@ export default function MapView() {
               <LocateMe trigger={locateTrigger} onLocated={handleLocated} />
               <MapClick streetViewRef={streetViewRef} />
               <MapBounds markers={markerPositions} />
+              <FitRoute routeCoords={routeCoords} />
+
+              {/* Relief request markers */}
               {markers.map((m) => (
                 <Marker
                   key={m.docId}
                   position={[m.lat, m.lng]}
                   icon={markerIcon(m.status)}
+                  eventHandlers={{
+                    popupopen: () => handleFindEvac(m.lat, m.lng, m.docId),
+                  }}
                 >
                   <Popup>
                     <div className="mapview-popup">
@@ -345,18 +428,79 @@ export default function MapView() {
                       {m.familyMembers > 0 && <p>Family Members: {m.familyMembers}</p>}
                       {totalAffected(m.categories) > 0 && <p>Affected: {totalAffected(m.categories)}</p>}
                       {m.description && <p className="mapview-popup-desc">{m.description}</p>}
-                      <a
-                        href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${m.lat},${m.lng}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mapview-streetview"
-                      >
-                        🏙️ Street View
-                      </a>
+                      <div className="mapview-popup-actions">
+                        <a
+                          href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${m.lat},${m.lng}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mapview-streetview"
+                        >
+                          🏙️ Street View
+                        </a>
+                      </div>
                     </div>
                   </Popup>
                 </Marker>
               ))}
+
+              {/* Evacuation center markers */}
+              {EVACUATION_CENTERS.map((ec) => (
+                <Marker
+                  key={ec.id}
+                  position={[ec.lat, ec.lng]}
+                  icon={evacIcon}
+                  eventHandlers={{
+                    click: () => {
+                      const nearest = markers.reduce((best, m) => {
+                        const d = Math.hypot(m.lat - ec.lat, m.lng - ec.lng)
+                        return d < best.dist ? { docId: m.docId, lat: m.lat, lng: m.lng, dist: d } : best
+                      }, { docId: null, lat: null, lng: null, dist: Infinity })
+                      if (nearest.docId) {
+                        handleFindEvac(nearest.lat, nearest.lng, nearest.docId)
+                      } else if (geoPosition) {
+                        handleFindEvac(geoPosition.lat, geoPosition.lng, 'geo')
+                      }
+                    },
+                  }}
+                >
+                  <Popup>
+                    <div className="mapview-popup mapview-evac-popup">
+                      <h4>🏠 {ec.name}</h4>
+                      <p>Barangay: {ec.barangay}</p>
+                      <p>Capacity: ~{ec.capacity} persons</p>
+                      <p>Type: {ec.type.replace('-', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}</p>
+                      <div className="mapview-popup-actions">
+                        <button
+                          type="button"
+                          className="mapview-evac-btn"
+                          onClick={() => {
+                            const nearest = markers.reduce((best, m) => {
+                              const d = Math.hypot(m.lat - ec.lat, m.lng - ec.lng)
+                              return d < best.dist ? { docId: m.docId, lat: m.lat, lng: m.lng, dist: d } : best
+                            }, { docId: null, lat: null, lng: null, dist: Infinity })
+                            if (nearest.docId) {
+                              handleFindEvac(nearest.lat, nearest.lng, nearest.docId)
+                            } else if (geoPosition) {
+                              handleFindEvac(geoPosition.lat, geoPosition.lng, 'geo')
+                            }
+                          }}
+                        >
+                          🚗 Show route from nearest request
+                        </button>
+                      </div>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+
+              {/* Route polyline */}
+              {routeCoords && routeCoords.length > 1 && (
+                <Polyline
+                  positions={routeCoords}
+                  pathOptions={{ color: '#1a73e8', weight: 5, opacity: 0.85 }}
+                />
+              )}
+
               <GeoJSON
                 key="naga-boundary"
                 data={nagaGeoJSON}

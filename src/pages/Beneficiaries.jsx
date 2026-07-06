@@ -152,11 +152,9 @@ export default function Beneficiaries() {
           <p>Monitor families per barangay and identify their classification.</p>
         </div>
         <div className="benef-header-actions">
-          {isAdmin && (
-            <button type="button" className="requests-btn-primary" onClick={openAddForm}>
-              + Add Family
-            </button>
-          )}
+          <button type="button" className="requests-btn-primary" onClick={openAddForm}>
+            + Add Family
+          </button>
         </div>
       </div>
 
@@ -232,26 +230,24 @@ export default function Beneficiaries() {
                     </div>
                   )}
                 </div>
-                {isAdmin && (
-                  <div className="benef-card-actions">
-                    <button
-                      type="button"
-                      className="inventory-edit-btn"
-                      disabled={actionId === f.docId}
-                      onClick={() => openEditForm(f)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      className="requests-delete-btn"
-                      disabled={actionId === f.docId}
-                      onClick={() => handleDelete(f.docId)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                )}
+                <div className="benef-card-actions">
+                  <button
+                    type="button"
+                    className="inventory-edit-btn"
+                    disabled={actionId === f.docId}
+                    onClick={() => openEditForm(f)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    className="requests-delete-btn"
+                    disabled={actionId === f.docId}
+                    onClick={() => handleDelete(f.docId)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
