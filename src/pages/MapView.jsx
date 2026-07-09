@@ -280,6 +280,10 @@ export default function MapView() {
     setRoutingId(null)
   }, [])
 
+  const handleToggleEvac = useCallback(() => {
+    setShowEvac((s) => !s)
+  }, [])
+
   const markers = []
   const markerPositions = []
   for (const r of requests) {
@@ -372,7 +376,8 @@ export default function MapView() {
           </button>
           <button
             className={`mapview-toggle ${showEvac ? 'active' : ''}`}
-            onClick={() => setShowEvac((s) => !s)}
+            onClick={handleToggleEvac}
+            title={!geoPosition && markers.length === 0 ? 'Click My Location first' : ''}
           >
             🏠 Evac Centers{showEvac ? ` (${nearbyEvacCenters.length})` : ''}
           </button>
