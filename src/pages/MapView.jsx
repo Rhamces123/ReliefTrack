@@ -14,7 +14,7 @@ import { getUserProfile } from '../firebase/users'
 import { subscribeReliefRequests, updateReliefRequestCoordinates } from '../firebase/requests'
 import { searchPhilippinesPlaces, searchPlaces } from '../utils/philippinesPlaces'
 import nagaGeoJSON from '../utils/nagaBoundary'
-import EVACUATION_CENTERS, { getNearestEvacuation, getRoute } from '../data/evacuationCenters'
+import EVACUATION_CENTERS, { getNearestEvacuation, getRoute, haversine } from '../data/evacuationCenters'
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/MapView.css'
 
@@ -135,7 +135,7 @@ function FlyToSearch({ target, onDone }) {
   return null
 }
 
-function MapClick({ streetViewRef }) {
+function MapClick({ streetViewRef, onStreetViewDone }) {
   const map = useMap()
   useEffect(() => {
     const handler = async (e) => {
@@ -144,6 +144,7 @@ function MapClick({ streetViewRef }) {
         window.open(url, '_blank', 'noopener')
         streetViewRef.current = false
         map.getContainer().style.cursor = ''
+        onStreetViewDone?.()
         return
       }
       const name = await reverseGeocode(e.latlng.lat, e.latlng.lng)
@@ -154,7 +155,7 @@ function MapClick({ streetViewRef }) {
     }
     map.on('click', handler)
     return () => map.off('click', handler)
-  }, [map, streetViewRef])
+  }, [map, streetViewRef, onStreetViewDone])
   return null
 }
 
@@ -167,6 +168,19 @@ function FitRoute({ routeCoords }) {
   }, [routeCoords, map])
   return null
 }
+
+function MapCenterTracker({ onCenter }) {
+  const map = useMap()
+  useEffect(() => {
+    const handler = () => onCenter(map.getCenter())
+    handler()
+    map.on('moveend', handler)
+    return () => map.off('moveend', handler)
+  }, [map, onCenter])
+  return null
+}
+
+const MAX_EVAC_KM = 5
 
 export default function MapView() {
   const { user } = useAuth()
@@ -192,6 +206,8 @@ export default function MapView() {
   const [routeCoords, setRouteCoords] = useState(null)
   const [routeInfo, setRouteInfo] = useState(null)
   const [routingId, setRoutingId] = useState(null)
+  const [showEvac, setShowEvac] = useState(false)
+  const [mapCenter, setMapCenter] = useState(null)
 
   useEffect(() => {
     if (!user?.uid) return
@@ -279,6 +295,13 @@ export default function MapView() {
     }
   }
 
+  const refLat = geoPosition?.lat ?? mapCenter?.lat ?? NAGA_CENTER[0]
+  const refLng = geoPosition?.lng ?? mapCenter?.lng ?? NAGA_CENTER[1]
+  const nearbyEvacCenters = useMemo(
+    () => EVACUATION_CENTERS.filter((ec) => haversine(refLat, refLng, ec.lat, ec.lng) <= MAX_EVAC_KM),
+    [refLat, refLng]
+  )
+
   const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
   const email = profile?.email || user?.email || ''
 
@@ -348,6 +371,12 @@ export default function MapView() {
             {satellite ? '🗺️ Street' : '🛰️ Satellite'}
           </button>
           <button
+            className={`mapview-toggle ${showEvac ? 'active' : ''}`}
+            onClick={() => setShowEvac((s) => !s)}
+          >
+            🏠 Evac Centers{showEvac ? ` (${nearbyEvacCenters.length})` : ''}
+          </button>
+          <button
             className={`mapview-toggle ${streetViewActive ? 'active' : ''}`}
             onClick={() => {
               const next = !streetViewActive
@@ -406,9 +435,10 @@ export default function MapView() {
               <BindBounds />
               <FlyToSearch target={flyTarget} onDone={() => {}} />
               <LocateMe trigger={locateTrigger} onLocated={handleLocated} />
-              <MapClick streetViewRef={streetViewRef} />
+              <MapClick streetViewRef={streetViewRef} onStreetViewDone={() => setStreetViewActive(false)} />
               <MapBounds markers={markerPositions} />
               <FitRoute routeCoords={routeCoords} />
+              <MapCenterTracker onCenter={setMapCenter} />
 
               {/* Relief request markers */}
               {markers.map((m) => (
@@ -443,8 +473,8 @@ export default function MapView() {
                 </Marker>
               ))}
 
-              {/* Evacuation center markers */}
-              {EVACUATION_CENTERS.map((ec) => (
+              {/* Evacuation center markers (nearby only) */}
+              {showEvac && nearbyEvacCenters.map((ec) => (
                 <Marker
                   key={ec.id}
                   position={[ec.lat, ec.lng]}
@@ -469,6 +499,7 @@ export default function MapView() {
                       <p>Barangay: {ec.barangay}</p>
                       <p>Capacity: ~{ec.capacity} persons</p>
                       <p>Type: {ec.type.replace('-', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}</p>
+                      <p>📍 {haversine(refLat, refLng, ec.lat, ec.lng).toFixed(1)} km from your location</p>
                       <div className="mapview-popup-actions">
                         <button
                           type="button"
