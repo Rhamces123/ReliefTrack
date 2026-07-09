@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, Rectangle, GeoJSON, Polyline, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, Rectangle, GeoJSON, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useAuth } from '../context/AuthContext'
@@ -14,7 +14,7 @@ import { getUserProfile } from '../firebase/users'
 import { subscribeReliefRequests, updateReliefRequestCoordinates } from '../firebase/requests'
 import { searchPhilippinesPlaces, searchPlaces } from '../utils/philippinesPlaces'
 import nagaGeoJSON from '../utils/nagaBoundary'
-import EVACUATION_CENTERS, { getNearestEvacuation, getRoute, haversine } from '../data/evacuationCenters'
+
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/MapView.css'
 
@@ -41,25 +41,6 @@ function markerIcon(status) {
     popupAnchor: [0, -16],
   })
 }
-
-const evacIcon = L.divIcon({
-  className: '',
-  html: `<div style="
-    width: 34px; height: 34px;
-    background: linear-gradient(135deg, #10b981, #059669);
-    border: 3px solid #fff;
-    border-radius: 8px 8px 8px 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    transform: rotate(0deg);
-  ">🏠</div>`,
-  iconSize: [34, 34],
-  iconAnchor: [17, 30],
-  popupAnchor: [0, -34],
-})
 
 const NAGA_BOUNDS = L.latLngBounds([10.0485, 123.5991], [10.3685, 123.9191])
 const NAGA_CENTER = [10.2085, 123.7591]
@@ -169,19 +150,6 @@ function FitRoute({ routeCoords }) {
   return null
 }
 
-function MapCenterTracker({ onCenter }) {
-  const map = useMap()
-  useEffect(() => {
-    const handler = () => onCenter(map.getCenter())
-    handler()
-    map.on('moveend', handler)
-    return () => map.off('moveend', handler)
-  }, [map, onCenter])
-  return null
-}
-
-const MAX_EVAC_KM = 5
-
 export default function MapView() {
   const { user } = useAuth()
   const [profile, setProfile] = useState(null)
@@ -203,11 +171,7 @@ export default function MapView() {
   const searchWrapRef = useRef(null)
   const geocodingRef = useRef(new Set())
   const savedCoordsRef = useRef(new Set())
-  const [routeCoords, setRouteCoords] = useState(null)
-  const [routeInfo, setRouteInfo] = useState(null)
-  const [routingId, setRoutingId] = useState(null)
-  const [showEvac, setShowEvac] = useState(false)
-  const [mapCenter, setMapCenter] = useState(null)
+
 
   useEffect(() => {
     if (!user?.uid) return
@@ -260,30 +224,6 @@ export default function MapView() {
     setGeoPosition({ lat, lng })
   }, [])
 
-  const handleFindEvac = useCallback(async (lat, lng, docId) => {
-    const nearest = getNearestEvacuation(lat, lng)
-    if (!nearest) return
-    setRoutingId(docId)
-    setRouteInfo({ ...nearest, status: 'routing' })
-    try {
-      const route = await getRoute(lat, lng, nearest.lat, nearest.lng)
-      setRouteCoords(route.coordinates)
-      setRouteInfo({ ...nearest, status: 'ready', distanceKm: route.distanceKm, durationMin: route.durationMin })
-    } catch {
-      setRouteInfo({ ...nearest, status: 'error' })
-    }
-  }, [])
-
-  const clearRoute = useCallback(() => {
-    setRouteCoords(null)
-    setRouteInfo(null)
-    setRoutingId(null)
-  }, [])
-
-  const handleToggleEvac = useCallback(() => {
-    setShowEvac((s) => !s)
-  }, [])
-
   const markers = []
   const markerPositions = []
   for (const r of requests) {
@@ -298,13 +238,6 @@ export default function MapView() {
       markerPositions.push([Number(lat), Number(lng)])
     }
   }
-
-  const refLat = geoPosition?.lat ?? mapCenter?.lat ?? NAGA_CENTER[0]
-  const refLng = geoPosition?.lng ?? mapCenter?.lng ?? NAGA_CENTER[1]
-  const nearbyEvacCenters = useMemo(
-    () => EVACUATION_CENTERS.filter((ec) => haversine(refLat, refLng, ec.lat, ec.lng) <= MAX_EVAC_KM),
-    [refLat, refLng]
-  )
 
   const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
   const email = profile?.email || user?.email || ''
@@ -322,8 +255,6 @@ export default function MapView() {
             <span><span className="legend-dot pending" /> Not Yet Assessed</span>
             <span><span className="legend-dot inprogress" /> Not Yet Received Relief</span>
             <span><span className="legend-dot completed" /> Already Received Relief</span>
-            <span><span className="legend-dot evac" /> Evacuation Center</span>
-            <span><span className="legend-dot route" /> Route</span>
           </div>
           <div className="mapview-search" ref={searchWrapRef}>
             <input
@@ -375,13 +306,6 @@ export default function MapView() {
             {satellite ? '🗺️ Street' : '🛰️ Satellite'}
           </button>
           <button
-            className={`mapview-toggle ${showEvac ? 'active' : ''}`}
-            onClick={handleToggleEvac}
-            title={!geoPosition && markers.length === 0 ? 'Click My Location first' : ''}
-          >
-            🏠 Evac Centers{showEvac ? ` (${nearbyEvacCenters.length})` : ''}
-          </button>
-          <button
             className={`mapview-toggle ${streetViewActive ? 'active' : ''}`}
             onClick={() => {
               const next = !streetViewActive
@@ -392,27 +316,6 @@ export default function MapView() {
             🏙️ Street View
           </button>
         </div>
-
-        {/* Route info bar */}
-        {routeInfo && routeInfo.status === 'routing' && (
-          <div className="mapview-route-bar">
-            <span>📍 Finding route to {routeInfo.name}...</span>
-          </div>
-        )}
-        {routeInfo && routeInfo.status === 'ready' && (
-          <div className="mapview-route-bar mapview-route-bar-ready">
-            <span>
-              🏠 <strong>{routeInfo.name}</strong> — {routeInfo.distanceKm.toFixed(1)} km · {Math.round(routeInfo.durationMin)} min drive
-            </span>
-            <button type="button" className="mapview-route-close" onClick={clearRoute}>✕</button>
-          </div>
-        )}
-        {routeInfo && routeInfo.status === 'error' && (
-          <div className="mapview-route-bar mapview-route-bar-error">
-            <span>Failed to get route. Try again.</span>
-            <button type="button" className="mapview-route-close" onClick={clearRoute}>✕</button>
-          </div>
-        )}
 
         {loading ? (
           <div className="mapview-loading">Loading map...</div>
@@ -442,8 +345,6 @@ export default function MapView() {
               <LocateMe trigger={locateTrigger} onLocated={handleLocated} />
               <MapClick streetViewRef={streetViewRef} onStreetViewDone={() => setStreetViewActive(false)} />
               <MapBounds markers={markerPositions} />
-              <FitRoute routeCoords={routeCoords} />
-              <MapCenterTracker onCenter={setMapCenter} />
 
               {/* Relief request markers */}
               {markers.map((m) => (
@@ -451,9 +352,6 @@ export default function MapView() {
                   key={m.docId}
                   position={[m.lat, m.lng]}
                   icon={markerIcon(m.status)}
-                  eventHandlers={{
-                    popupopen: () => handleFindEvac(m.lat, m.lng, m.docId),
-                  }}
                 >
                   <Popup>
                     <div className="mapview-popup">
@@ -477,65 +375,6 @@ export default function MapView() {
                   </Popup>
                 </Marker>
               ))}
-
-              {/* Evacuation center markers (nearby only) */}
-              {showEvac && nearbyEvacCenters.map((ec) => (
-                <Marker
-                  key={ec.id}
-                  position={[ec.lat, ec.lng]}
-                  icon={evacIcon}
-                  eventHandlers={{
-                    click: () => {
-                      const nearest = markers.reduce((best, m) => {
-                        const d = Math.hypot(m.lat - ec.lat, m.lng - ec.lng)
-                        return d < best.dist ? { docId: m.docId, lat: m.lat, lng: m.lng, dist: d } : best
-                      }, { docId: null, lat: null, lng: null, dist: Infinity })
-                      if (nearest.docId) {
-                        handleFindEvac(nearest.lat, nearest.lng, nearest.docId)
-                      } else if (geoPosition) {
-                        handleFindEvac(geoPosition.lat, geoPosition.lng, 'geo')
-                      }
-                    },
-                  }}
-                >
-                  <Popup>
-                    <div className="mapview-popup mapview-evac-popup">
-                      <h4>🏠 {ec.name}</h4>
-                      <p>Barangay: {ec.barangay}</p>
-                      <p>Capacity: ~{ec.capacity} persons</p>
-                      <p>Type: {ec.type.replace('-', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}</p>
-                      <p>📍 {haversine(refLat, refLng, ec.lat, ec.lng).toFixed(1)} km from your location</p>
-                      <div className="mapview-popup-actions">
-                        <button
-                          type="button"
-                          className="mapview-evac-btn"
-                          onClick={() => {
-                            const nearest = markers.reduce((best, m) => {
-                              const d = Math.hypot(m.lat - ec.lat, m.lng - ec.lng)
-                              return d < best.dist ? { docId: m.docId, lat: m.lat, lng: m.lng, dist: d } : best
-                            }, { docId: null, lat: null, lng: null, dist: Infinity })
-                            if (nearest.docId) {
-                              handleFindEvac(nearest.lat, nearest.lng, nearest.docId)
-                            } else if (geoPosition) {
-                              handleFindEvac(geoPosition.lat, geoPosition.lng, 'geo')
-                            }
-                          }}
-                        >
-                          🚗 Show route from nearest request
-                        </button>
-                      </div>
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
-
-              {/* Route polyline */}
-              {routeCoords && routeCoords.length > 1 && (
-                <Polyline
-                  positions={routeCoords}
-                  pathOptions={{ color: '#1a73e8', weight: 5, opacity: 0.85 }}
-                />
-              )}
 
               <GeoJSON
                 key="naga-boundary"

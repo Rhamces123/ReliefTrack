@@ -113,6 +113,13 @@
   background: #1557b0;
 }
 
+.mapview-popup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
 .mapview-search {
   position: relative;
   width: 240px;
@@ -218,90 +225,8 @@
 }
 
 /* Evacuation center legend */
-.legend-dot.evac {
-  background: #10b981;
-  border-radius: 2px;
-  width: 10px;
-  height: 10px;
-}
-.legend-dot.route {
-  background: #1a73e8;
-  width: 20px;
-  height: 4px;
-  border-radius: 2px;
-  vertical-align: middle;
-}
-
-/* Evacuation popup */
-.mapview-evac-popup h4 { color: #1a73e8; }
-.mapview-evac-popup p { font-size: 12px; }
 
 /* Popup actions */
-.mapview-popup-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.mapview-evac-btn {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #1a73e8, #1557b0);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  width: 100%;
-}
-.mapview-evac-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(26, 115, 232, 0.4);
-}
-.mapview-evac-btn:disabled {
-  opacity: 0.5;
-  cursor: wait;
-}
-
-/* Route info bar */
-.mapview-route-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  border-radius: 10px;
-  background: rgba(26, 115, 232, 0.1);
-  border: 1px solid rgba(26, 115, 232, 0.25);
-  font-size: 13px;
-  color: #fff;
-  animation: mapviewRouteIn 0.3s ease both;
-}
-.mapview-route-bar-ready {
-  background: rgba(26, 115, 232, 0.12);
-  border-color: rgba(26, 115, 232, 0.3);
-}
-.mapview-route-bar-error {
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.3);
-}
-.mapview-route-close {
-  background: none;
-  border: none;
-  color: rgba(255,255,255,0.4);
-  font-size: 18px;
-  cursor: pointer;
-  padding: 0 4px;
-  line-height: 1;
-}
-.mapview-route-close:hover { color: #fff; }
-
-@keyframes mapviewRouteIn {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 @media (max-width: 768px) {
   .mapview-header {
     flex-direction: column;
