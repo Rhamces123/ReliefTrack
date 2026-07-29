@@ -323,7 +323,7 @@ export default function Beneficiaries() {
                   >
                     <option value="not-set">Select Status</option>
                     {ECONOMIC_STATUSES.map((e) => (
-                      <option key={e.id} value={e.id}>{e.label}</option>
+                      <option key={e.id} value={e.id} title={e.description}>{e.label}</option>
                     ))}
                   </select>
                 </div>
