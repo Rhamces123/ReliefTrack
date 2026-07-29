@@ -23,6 +23,14 @@ export const CLASSIFICATIONS = [
   { id: 'none', label: 'None' },
 ]
 
+export const ECONOMIC_STATUSES = [
+  { id: 'financially-incapable', label: 'Financially Incapable', description: 'Struggles to meet even basic needs; requires urgent assistance.' },
+  { id: 'lower-middle', label: 'Lower-Middle Class', description: 'Earning enough for basic needs plus a small extra buffer, often skilled workers or entry professionals.' },
+  { id: 'middle', label: 'Middle Class', description: 'Earning stable mid-level incomes, able to afford regular comforts, housing, and education.' },
+  { id: 'upper-middle', label: 'Upper-Middle Class', description: 'Earning high salaries as senior professionals or managers with strong financial security.' },
+  { id: 'wealthy', label: 'Wealthy', description: 'High net worth; financially independent with significant assets.' },
+]
+
 function mapDoc(d) {
   const data = d.data()
   return {
@@ -41,6 +49,7 @@ export async function createFamily(fields, user) {
     contactNumber: (fields.contactNumber || '').trim(),
     members: Math.max(1, Number(fields.members) || 1),
     classification: fields.classification || 'none',
+    economicStatus: fields.economicStatus || 'not-set',
     notes: (fields.notes || '').trim(),
     createdBy: user.uid,
     createdByName: user.displayName || user.email?.split('@')[0] || 'User',
@@ -76,6 +85,7 @@ export async function updateFamily(docId, fields) {
   if (fields.contactNumber !== undefined) payload.contactNumber = (fields.contactNumber || '').trim()
   if (fields.members !== undefined) payload.members = Math.max(1, Number(fields.members) || 1)
   if (fields.classification !== undefined) payload.classification = fields.classification
+  if (fields.economicStatus !== undefined) payload.economicStatus = fields.economicStatus
   if (fields.notes !== undefined) payload.notes = (fields.notes || '').trim()
   await updateDoc(doc(db, COLLECTION, docId), payload)
 }

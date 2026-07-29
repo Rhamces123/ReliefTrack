@@ -1,11 +1,12 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { getUserProfile } from '../firebase/users'
-import { subscribeFamilies, CLASSIFICATIONS } from '../firebase/families'
+import { subscribeFamilies, CLASSIFICATIONS, ECONOMIC_STATUSES } from '../firebase/families'
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/PriorityIndividuals.css'
 
 const PRIORITY_ORDER = { pwd: 5, elderly: 4, pregnant: 3, child: 2, 'solo-parent': 1 }
+const ECON_PRIORITY = { 'financially-incapable': 5, 'lower-middle': 3, middle: 1, 'upper-middle': 0, wealthy: -1 }
 
 const CLASS_META = {
   pwd:         { label: 'PWD',           emoji: '♿', color: '#ef4444' },
@@ -18,6 +19,9 @@ const CLASS_META = {
 function getClassMeta(id) {
   return CLASS_META[id] || { label: id, emoji: '🏷️', color: '#6b7280' }
 }
+function getEconLabel(id) {
+  return ECONOMIC_STATUSES.find((e) => e.id === id)?.label || ''
+}
 
 export default function PriorityIndividuals() {
   const { user } = useAuth()
@@ -27,6 +31,7 @@ export default function PriorityIndividuals() {
   const [error, setError] = useState('')
   const [barangayFilter, setBarangayFilter] = useState('all')
   const [classFilter, setClassFilter] = useState('all')
+  const [econFilter, setEconFilter] = useState('all')
 
   const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
   const email = profile?.email || user?.email || ''
@@ -76,7 +81,8 @@ export default function PriorityIndividuals() {
       map[bg].push(f)
     }
     const result = Object.entries(map).map(([barangay, items]) => {
-      items.sort((a, b) => (PRIORITY_ORDER[b.classification] || 0) - (PRIORITY_ORDER[a.classification] || 0))
+      const score = (f) => (PRIORITY_ORDER[f.classification] || 0) + (ECON_PRIORITY[f.economicStatus] || 0)
+      items.sort((a, b) => score(b) - score(a))
       return { barangay, items, count: items.length }
     })
     result.sort((a, b) => b.count - a.count || a.barangay.localeCompare(b.barangay))
@@ -93,8 +99,13 @@ export default function PriorityIndividuals() {
         .map((g) => ({ ...g, items: g.items.filter((f) => f.classification === classFilter) }))
         .filter((g) => g.items.length > 0)
     }
+    if (econFilter !== 'all') {
+      list = list
+        .map((g) => ({ ...g, items: g.items.filter((f) => f.economicStatus === econFilter) }))
+        .filter((g) => g.items.length > 0)
+    }
     return list
-  }, [groups, barangayFilter, classFilter])
+  }, [groups, barangayFilter, classFilter, econFilter])
 
   const totalVulnerable = useMemo(() => families.length, [families])
 
@@ -144,6 +155,12 @@ export default function PriorityIndividuals() {
               <option key={c.id} value={c.id}>{getClassMeta(c.id).emoji} {c.label}</option>
             ))}
           </select>
+          <select className="pri-filter" value={econFilter} onChange={(e) => setEconFilter(e.target.value)}>
+            <option value="all">All Economic Status</option>
+            {ECONOMIC_STATUSES.map((e) => (
+              <option key={e.id} value={e.id}>{e.label}</option>
+            ))}
+          </select>
         </div>
         <span className="pri-count">{totalVulnerable} vulnerable familie{totalVulnerable !== 1 ? 's' : ''}</span>
       </div>
@@ -181,6 +198,11 @@ export default function PriorityIndividuals() {
                           <span className="pri-class-badge" style={{ background: meta.color }}>
                             {meta.emoji} {meta.label}
                           </span>
+                          {getEconLabel(f.economicStatus) && (
+                            <span className={`pri-econ-badge ${f.economicStatus}`}>
+                              {getEconLabel(f.economicStatus)}
+                            </span>
+                          )}
                           {f.contactNumber && <span className="pri-contact">{f.contactNumber}</span>}
                         </div>
                       </div>

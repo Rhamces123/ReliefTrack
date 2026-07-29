@@ -7,6 +7,7 @@ import {
   updateFamily,
   deleteFamily,
   CLASSIFICATIONS,
+  ECONOMIC_STATUSES,
 } from '../firebase/families'
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/Beneficiaries.css'
@@ -18,11 +19,15 @@ const EMPTY_FORM = {
   contactNumber: '',
   members: '1',
   classification: 'none',
+  economicStatus: 'not-set',
   notes: '',
 }
 
 function getClassLabel(id) {
   return CLASSIFICATIONS.find((c) => c.id === id)?.label || id
+}
+function getEconLabel(id) {
+  return ECONOMIC_STATUSES.find((e) => e.id === id)?.label || ''
 }
 
 export default function Beneficiaries() {
@@ -38,6 +43,7 @@ export default function Beneficiaries() {
   const [actionId, setActionId] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [classFilter, setClassFilter] = useState('all')
+  const [econFilter, setEconFilter] = useState('all')
 
   const isAdmin = profile?.role === 'Admin'
   const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
@@ -64,6 +70,9 @@ export default function Beneficiaries() {
     if (classFilter !== 'all') {
       list = list.filter((f) => f.classification === classFilter)
     }
+    if (econFilter !== 'all') {
+      list = list.filter((f) => f.economicStatus === econFilter)
+    }
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase()
       list = list.filter(
@@ -74,7 +83,7 @@ export default function Beneficiaries() {
       )
     }
     return list
-  }, [families, classFilter, searchQuery])
+  }, [families, classFilter, econFilter, searchQuery])
 
   const stats = useMemo(() => {
     const total = families.length
@@ -98,6 +107,7 @@ export default function Beneficiaries() {
       contactNumber: f.contactNumber || '',
       members: String(f.members || '1'),
       classification: f.classification || 'none',
+      economicStatus: f.economicStatus || 'not-set',
       notes: f.notes || '',
     })
     setShowForm(true)
@@ -186,6 +196,16 @@ export default function Beneficiaries() {
             <option key={c.id} value={c.id}>{c.label}</option>
           ))}
         </select>
+        <select
+          className="benef-filter"
+          value={econFilter}
+          onChange={(e) => setEconFilter(e.target.value)}
+        >
+          <option value="all">All Economic Status</option>
+          {ECONOMIC_STATUSES.map((e) => (
+            <option key={e.id} value={e.id}>{e.label}</option>
+          ))}
+        </select>
       </div>
 
       <div className="dashboard-activity">
@@ -207,6 +227,11 @@ export default function Beneficiaries() {
                     <span className={`benef-class-badge ${f.classification}`}>
                       {getClassLabel(f.classification)}
                     </span>
+                    {getEconLabel(f.economicStatus) && (
+                      <span className={`benef-econ-badge ${f.economicStatus}`}>
+                        {getEconLabel(f.economicStatus)}
+                      </span>
+                    )}
                   </div>
                   <div className="benef-card-members">{f.members} member{f.members > 1 ? 's' : ''}</div>
                 </div>
@@ -339,6 +364,25 @@ export default function Beneficiaries() {
                     ))}
                   </select>
                 </div>
+              </div>
+              <div className="inventory-form-row">
+                <div className="requests-form-field">
+                  <label htmlFor="benef-econ">Economic Status</label>
+                  <select
+                    id="benef-econ"
+                    className="requests-status-select"
+                    style={{ width: '100%' }}
+                    value={form.economicStatus}
+                    onChange={(e) => setForm((f) => ({ ...f, economicStatus: e.target.value }))}
+                    disabled={saving}
+                  >
+                    <option value="not-set">Select Status</option>
+                    {ECONOMIC_STATUSES.map((e) => (
+                      <option key={e.id} value={e.id}>{e.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="requests-form-field" />
               </div>
               <div className="requests-form-field">
                 <label htmlFor="benef-notes">Notes (optional)</label>

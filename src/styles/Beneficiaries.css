@@ -128,6 +128,20 @@
 .benef-class-badge.solo-parent { background: rgba(120, 200, 120, 0.2); color: #8ee08e; }
 .benef-class-badge.none { background: rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.5); }
 
+.benef-econ-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 500;
+  margin-left: 4px;
+}
+.benef-econ-badge.financially-incapable { background: rgba(255, 70, 70, 0.2); color: #ff7070; border: 1px solid rgba(255, 70, 70, 0.25); }
+.benef-econ-badge.lower-middle { background: rgba(255, 180, 50, 0.2); color: #ffb833; border: 1px solid rgba(255, 180, 50, 0.25); }
+.benef-econ-badge.middle { background: rgba(80, 180, 255, 0.2); color: #6bbaff; border: 1px solid rgba(80, 180, 255, 0.25); }
+.benef-econ-badge.upper-middle { background: rgba(120, 220, 120, 0.2); color: #7ddb7d; border: 1px solid rgba(120, 220, 120, 0.25); }
+.benef-econ-badge.wealthy { background: rgba(220, 200, 80, 0.2); color: #d4c44a; border: 1px solid rgba(220, 200, 80, 0.25); }
+
 .benef-card-members {
   font-size: 24px;
   font-weight: 700;
