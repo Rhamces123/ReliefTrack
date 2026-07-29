@@ -18,7 +18,6 @@ const EMPTY_FORM = {
   headOfFamily: '',
   contactNumber: '',
   members: '1',
-  classification: 'none',
   economicStatus: 'not-set',
   notes: '',
 }
@@ -102,7 +101,6 @@ export default function Beneficiaries() {
       headOfFamily: f.headOfFamily || '',
       contactNumber: f.contactNumber || '',
       members: String(f.members || '1'),
-      classification: f.classification || 'none',
       economicStatus: f.economicStatus || 'not-set',
       notes: f.notes || '',
     })
@@ -292,30 +290,6 @@ export default function Beneficiaries() {
                     value={form.barangay}
                     onChange={(e) => setForm((f) => ({ ...f, barangay: e.target.value }))}
                     required
-                    disabled={saving}
-                  />
-                </div>
-              </div>
-              <div className="inventory-form-row">
-                <div className="requests-form-field">
-                  <label htmlFor="benef-head">Head of Family</label>
-                  <input
-                    id="benef-head"
-                    type="text"
-                    placeholder="Full name"
-                    value={form.headOfFamily}
-                    onChange={(e) => setForm((f) => ({ ...f, headOfFamily: e.target.value }))}
-                    disabled={saving}
-                  />
-                </div>
-                <div className="requests-form-field">
-                  <label htmlFor="benef-contact">Contact Number</label>
-                  <input
-                    id="benef-contact"
-                    type="text"
-                    placeholder="09XXXXXXXXX"
-                    value={form.contactNumber}
-                    onChange={(e) => setForm((f) => ({ ...f, contactNumber: e.target.value }))}
                     disabled={saving}
                   />
                 </div>
