@@ -309,21 +309,6 @@ export default function Beneficiaries() {
                     disabled={saving}
                   />
                 </div>
-                <div className="requests-form-field">
-                  <label htmlFor="benef-class">Classification</label>
-                  <select
-                    id="benef-class"
-                    className="requests-status-select"
-                    style={{ width: '100%' }}
-                    value={form.classification}
-                    onChange={(e) => setForm((f) => ({ ...f, classification: e.target.value }))}
-                    disabled={saving}
-                  >
-                    {CLASSIFICATIONS.map((c) => (
-                      <option key={c.id} value={c.id}>{c.label}</option>
-                    ))}
-                  </select>
-                </div>
               </div>
               <div className="inventory-form-row">
                 <div className="requests-form-field">
