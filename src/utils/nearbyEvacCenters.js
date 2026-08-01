@@ -2,7 +2,6 @@ const OVERPASS_ENDPOINTS = [
   'https://overpass-api.de/api/interpreter',
   'https://overpass.kumi.systems/api/interpreter',
   'https://overpass.private.coffee/api/interpreter',
-  'https://overpass.nchc.org.tw/api/interpreter',
 ]
 
 function haversineKm(lat1, lng1, lat2, lng2) {
@@ -31,8 +30,6 @@ export async function findNearbySchools(lat, lng, radiusM = 5000) {
 (
   node["amenity"="school"](around:${radiusM},${lat},${lng});
   way["amenity"="school"](around:${radiusM},${lat},${lng});
-  node["building"="school"](around:${radiusM},${lat},${lng});
-  way["building"="school"](around:${radiusM},${lat},${lng});
 );
 out center 100;`
 
