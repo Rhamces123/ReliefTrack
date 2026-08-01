@@ -47,6 +47,7 @@
 .legend-dot.pending { background: #ef4444; }
 .legend-dot.inprogress { background: #22c55e; }
 .legend-dot.completed { background: #3b82f6; }
+.legend-dot.evac { background: #8b5cf6; }
 
 .mapview-loading {
   flex: 1;

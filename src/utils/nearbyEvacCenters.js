@@ -1,0 +1,44 @@
+function haversineKm(lat1, lng1, lat2, lng2) {
+  const R = 6371
+  const toRad = (deg) => (deg * Math.PI) / 180
+  const dLat = toRad(lat2 - lat1)
+  const dLng = toRad(lng2 - lng1)
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2)
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+export async function findNearbySchools(lat, lng, radiusM = 5000) {
+  const query = `[out:json][timeout:25];
+(
+  node["amenity"="school"](around:${radiusM},${lat},${lng});
+  way["amenity"="school"](around:${radiusM},${lat},${lng});
+  node["building"="school"](around:${radiusM},${lat},${lng});
+  way["building"="school"](around:${radiusM},${lat},${lng});
+);
+out center 100;`
+
+  const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(`Overpass request failed: ${res.status}`)
+  const data = await res.json()
+
+  return (data.elements || [])
+    .map((el) => {
+      const name = el.tags?.name
+      const lat2 = el.lat != null ? el.lat : el.center?.lat
+      const lng2 = el.lon != null ? el.lon : el.center?.lon
+      if (!name || lat2 == null || lng2 == null) return null
+      return {
+        name,
+        lat: Number(lat2),
+        lng: Number(lng2),
+        address: el.tags?.['addr:street'] || el.tags?.['addr:full'] || '',
+        distKm: haversineKm(Number(lat), Number(lng), Number(lat2), Number(lng2)),
+      }
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.distKm - b.distKm)
+    .slice(0, 10)
+}

@@ -13,6 +13,7 @@ function reverseGeocode(lat, lng) {
 import { getUserProfile } from '../firebase/users'
 import { subscribeReliefRequests, updateReliefRequestCoordinates } from '../firebase/requests'
 import { searchPhilippinesPlaces, searchPlaces } from '../utils/philippinesPlaces'
+import { findNearbySchools } from '../utils/nearbyEvacCenters'
 import nagaGeoJSON from '../utils/nagaBoundary'
 
 import DashboardLayout from '../components/DashboardLayout'
@@ -42,7 +43,6 @@ function markerIcon(status) {
   })
 }
 
-const NAGA_BOUNDS = L.latLngBounds([10.0485, 123.5991], [10.3685, 123.9191])
 const NAGA_CENTER = [10.2085, 123.7591]
 
 const geoIcon = L.divIcon({
@@ -52,11 +52,18 @@ const geoIcon = L.divIcon({
   iconAnchor: [12, 12],
 })
 
+const evacIcon = L.divIcon({
+  className: '',
+  html: '<div style="width:30px;height:30px;background:#8b5cf6;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700">🏫</div>',
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+  popupAnchor: [0, -16],
+})
+
 function BindBounds() {
   const map = useMap()
   useEffect(() => {
-    map.setMaxBounds(NAGA_BOUNDS)
-    map.fitBounds(NAGA_BOUNDS, { padding: [20, 20] })
+    map.setView(NAGA_CENTER, 13)
   }, [map])
   return null
 }
@@ -150,6 +157,16 @@ function FitRoute({ routeCoords }) {
   return null
 }
 
+function FitEvac({ evacCenters, trigger }) {
+  const map = useMap()
+  useEffect(() => {
+    if (!trigger || evacCenters.length === 0) return
+    const bounds = L.latLngBounds(evacCenters.map((c) => [c.lat, c.lng]))
+    map.fitBounds(bounds, { padding: [60, 60] })
+  }, [trigger, evacCenters, map])
+  return null
+}
+
 export default function MapView() {
   const { user } = useAuth()
   const [profile, setProfile] = useState(null)
@@ -168,6 +185,10 @@ export default function MapView() {
   const [searchResult, setSearchResult] = useState(null)
   const [searchError, setSearchError] = useState('')
   const [searching, setSearching] = useState(false)
+  const [showEvac, setShowEvac] = useState(false)
+  const [evacCenters, setEvacCenters] = useState([])
+  const [evacLoading, setEvacLoading] = useState(false)
+  const [evacError, setEvacError] = useState('')
   const searchWrapRef = useRef(null)
   const geocodingRef = useRef(new Set())
   const savedCoordsRef = useRef(new Set())
@@ -224,6 +245,33 @@ export default function MapView() {
     setGeoPosition({ lat, lng })
   }, [])
 
+  useEffect(() => {
+    if (!showEvac) {
+      setEvacCenters([])
+      setEvacError('')
+      return
+    }
+    const ref = geoPosition || searchResult || { lat: NAGA_CENTER[0], lng: NAGA_CENTER[1] }
+    let cancelled = false
+    setEvacLoading(true)
+    setEvacError('')
+    findNearbySchools(ref.lat, ref.lng, 8000)
+      .then((schools) => {
+        if (cancelled) return
+        setEvacCenters(schools)
+        setEvacLoading(false)
+        if (schools.length === 0) setEvacError('No nearby schools found within range.')
+      })
+      .catch((err) => {
+        if (cancelled) return
+        setEvacError(err.message || 'Failed to load evacuation centers.')
+        setEvacLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [showEvac, geoPosition, searchResult])
+
   const markers = []
   const markerPositions = []
   for (const r of requests) {
@@ -250,11 +298,14 @@ export default function MapView() {
             <span>Total Requests: <strong>{requests.length}</strong></span>
             <span>On Map: <strong>{markers.length}</strong></span>
             {geocoding && <span className="mapview-geocoding">Geocoding locations...</span>}
+            {evacLoading && <span className="mapview-geocoding">Finding evacuation centers...</span>}
+            {evacError && <span className="mapview-search-error">{evacError}</span>}
           </div>
           <div className="mapview-legend">
             <span><span className="legend-dot pending" /> Not Yet Assessed</span>
             <span><span className="legend-dot inprogress" /> Not Yet Received Relief</span>
             <span><span className="legend-dot completed" /> Already Received Relief</span>
+            {showEvac && <span><span className="legend-dot evac" /> Evacuation Center</span>}
           </div>
           <div className="mapview-search" ref={searchWrapRef}>
             <input
@@ -299,6 +350,9 @@ export default function MapView() {
             {searchError && <div className="mapview-search-error">{searchError}</div>}
             {searching && <div className="mapview-searching">Searching...</div>}
           </div>
+          <button className={`mapview-toggle ${showEvac ? 'active' : ''}`} onClick={() => setShowEvac((s) => !s)}>
+            {showEvac ? '🏫 Hide Evac' : '🏫 Evac Centers'}
+          </button>
           <button className="mapview-toggle" onClick={() => setLocateTrigger((t) => t + 1)}>
             📍 My Location
           </button>
@@ -345,6 +399,7 @@ export default function MapView() {
               <LocateMe trigger={locateTrigger} onLocated={handleLocated} />
               <MapClick streetViewRef={streetViewRef} onStreetViewDone={() => setStreetViewActive(false)} />
               <MapBounds markers={markerPositions} />
+              <FitEvac evacCenters={evacCenters} trigger={showEvac} />
 
               {/* Relief request markers */}
               {markers.map((m) => (
@@ -381,6 +436,22 @@ export default function MapView() {
                 data={nagaGeoJSON}
                 style={() => ({ color: '#10b981', weight: 2, fillColor: '#10b981', fillOpacity: 0.04 })}
               />
+              {showEvac && evacCenters.map((c) => (
+                <Marker
+                  key={`${c.name}-${c.lat}-${c.lng}`}
+                  position={[c.lat, c.lng]}
+                  icon={evacIcon}
+                >
+                  <Popup>
+                    <div className="mapview-popup">
+                      <h4>🏫 {c.name}</h4>
+                      {c.address && <p className="mapview-popup-location">{c.address}</p>}
+                      <p>Distance: <strong>{c.distKm.toFixed(2)} km</strong></p>
+                      <p><em>Designated Evacuation Center</em></p>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
               {geoPosition && (
                 <Marker position={[geoPosition.lat, geoPosition.lng]} icon={geoIcon}>
                   <Popup><div className="mapview-popup"><h4>Your Location</h4><p>{geoPosition.lat.toFixed(5)}, {geoPosition.lng.toFixed(5)}</p></div></Popup>
