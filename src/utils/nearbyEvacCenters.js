@@ -4,6 +4,10 @@ const OVERPASS_ENDPOINTS = [
   'https://overpass.private.coffee/api/interpreter',
 ]
 
+const CACHE_KEY = 'relieftrack_evac_cache_v1'
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000
+const ENDPOINT_TIMEOUT_MS = 8000
+
 function haversineKm(lat1, lng1, lat2, lng2) {
   const R = 6371
   const toRad = (deg) => (deg * Math.PI) / 180
@@ -15,7 +19,40 @@ function haversineKm(lat1, lng1, lat2, lng2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
-async function fetchWithTimeout(url, ms = 15000) {
+function cacheKey(lat, lng) {
+  return `${lat.toFixed(2)},${lng.toFixed(2)}`
+}
+
+function readCache(lat, lng) {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY)
+    if (!raw) return null
+    const cache = JSON.parse(raw)
+    const entry = cache[cacheKey(lat, lng)]
+    if (!entry) return null
+    if (Date.now() - entry.timestamp > CACHE_TTL_MS) return null
+    return entry.schools
+  } catch {
+    return null
+  }
+}
+
+function writeCache(lat, lng, schools) {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY)
+    const cache = raw ? JSON.parse(raw) : {}
+    cache[cacheKey(lat, lng)] = { timestamp: Date.now(), schools }
+    if (Object.keys(cache).length > 50) {
+      const keys = Object.keys(cache)
+      for (const k of keys.slice(0, keys.length - 50)) delete cache[k]
+    }
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cache))
+  } catch {
+    /* ignore storage errors */
+  }
+}
+
+async function fetchWithTimeout(url, ms = ENDPOINT_TIMEOUT_MS) {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), ms)
   try {
@@ -26,7 +63,10 @@ async function fetchWithTimeout(url, ms = 15000) {
 }
 
 export async function findNearbySchools(lat, lng, radiusM = 5000) {
-  const query = `[out:json][timeout:25];
+  const cached = readCache(lat, lng)
+  if (cached) return cached
+
+  const query = `[out:json][timeout:10];
 (
   node["amenity"="school"](around:${radiusM},${lat},${lng});
   way["amenity"="school"](around:${radiusM},${lat},${lng});
@@ -40,7 +80,7 @@ out center 100;`
       const res = await fetchWithTimeout(url)
       if (!res.ok) throw new Error(`Overpass request failed: ${res.status}`)
       const data = await res.json()
-      return (data.elements || [])
+      const schools = (data.elements || [])
         .map((el) => {
           const name = el.tags?.name
           const lat2 = el.lat != null ? el.lat : el.center?.lat
@@ -57,6 +97,8 @@ out center 100;`
         .filter(Boolean)
         .sort((a, b) => a.distKm - b.distKm)
         .slice(0, 10)
+      writeCache(lat, lng, schools)
+      return schools
     } catch (err) {
       lastError = err
     }

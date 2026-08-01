@@ -255,7 +255,7 @@ export default function MapView() {
     let cancelled = false
     setEvacLoading(true)
     setEvacError('')
-    findNearbySchools(ref.lat, ref.lng, 8000)
+    findNearbySchools(ref.lat, ref.lng, 5000)
       .then((schools) => {
         if (cancelled) return
         setEvacCenters(schools)
