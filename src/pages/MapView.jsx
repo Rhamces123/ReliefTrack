@@ -43,6 +43,7 @@ function markerIcon(status) {
   })
 }
 
+const NAGA_BOUNDS = L.latLngBounds([10.13, 123.65], [10.32, 123.79])
 const NAGA_CENTER = [10.2085, 123.7591]
 
 const geoIcon = L.divIcon({
@@ -63,7 +64,8 @@ const evacIcon = L.divIcon({
 function BindBounds() {
   const map = useMap()
   useEffect(() => {
-    map.setView(NAGA_CENTER, 13)
+    map.setMaxBounds(NAGA_BOUNDS)
+    map.fitBounds(NAGA_BOUNDS, { padding: [20, 20] })
   }, [map])
   return null
 }
