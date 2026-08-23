@@ -1,10 +1,29 @@
+import nagaGeoJSON from './nagaBoundary.js'
+
+const NAGA_POLYGON = nagaGeoJSON.features[0].geometry.coordinates[0]
+
+function isInsideNaga(lat, lng) {
+  const x = lng
+  const y = lat
+  let inside = false
+  for (let i = 0, j = NAGA_POLYGON.length - 1; i < NAGA_POLYGON.length; j = i++) {
+    const xi = NAGA_POLYGON[i][0]
+    const yi = NAGA_POLYGON[i][1]
+    const xj = NAGA_POLYGON[j][0]
+    const yj = NAGA_POLYGON[j][1]
+    const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi
+    if (intersect) inside = !inside
+  }
+  return inside
+}
+
 const OVERPASS_ENDPOINTS = [
   'https://overpass-api.de/api/interpreter',
   'https://overpass.kumi.systems/api/interpreter',
   'https://overpass.private.coffee/api/interpreter',
 ]
 
-const CACHE_KEY = 'relieftrack_evac_cache_v1'
+const CACHE_KEY = 'relieftrack_evac_cache_v2'
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000
 const ENDPOINT_TIMEOUT_MS = 8000
 
@@ -86,6 +105,7 @@ out center 100;`
           const lat2 = el.lat != null ? el.lat : el.center?.lat
           const lng2 = el.lon != null ? el.lon : el.center?.lon
           if (!name || lat2 == null || lng2 == null) return null
+          if (!isInsideNaga(Number(lat2), Number(lng2))) return null
           return {
             name,
             lat: Number(lat2),
@@ -106,7 +126,7 @@ out center 100;`
   throw lastError || new Error('All evacuation center services failed.')
 }
 
-const ALL_SCHOOLS_CACHE_KEY = 'relieftrack_all_schools_naga'
+const ALL_SCHOOLS_CACHE_KEY = 'relieftrack_all_schools_naga_v2'
 const ALL_SCHOOLS_CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000
 
 function readAllSchoolsCache() {
@@ -157,6 +177,7 @@ out center;`
           const lat2 = el.lat != null ? el.lat : el.center?.lat
           const lng2 = el.lon != null ? el.lon : el.center?.lon
           if (!name || lat2 == null || lng2 == null) return null
+          if (!isInsideNaga(Number(lat2), Number(lng2))) return null
           return {
             name,
             lat: Number(lat2),
