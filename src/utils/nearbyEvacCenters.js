@@ -23,6 +23,27 @@ const OVERPASS_ENDPOINTS = [
   'https://overpass.private.coffee/api/interpreter',
 ]
 
+const FALLBACK_SCHOOLS = [
+  { name: 'Naga Central Elementary School', lat: 10.2075, lng: 123.7585, address: 'Poblacion, Naga' },
+  { name: 'Tuyan Elementary School', lat: 10.226, lng: 123.766, address: 'Tuyan, Naga' },
+  { name: 'Tuyan National High School', lat: 10.2245, lng: 123.764, address: 'Tuyan, Naga' },
+  { name: 'Inoburan Elementary School', lat: 10.189, lng: 123.740, address: 'Inoburan, Naga' },
+  { name: 'Langtad Elementary School', lat: 10.17, lng: 123.742, address: 'Langtad, Naga' },
+  { name: 'Uling Elementary School', lat: 10.28, lng: 123.715, address: 'Uling, Naga' },
+  { name: 'Patag Elementary School', lat: 10.23, lng: 123.695, address: 'Patag, Naga' },
+  { name: 'Tagjaguimit Elementary School', lat: 10.26, lng: 123.682, address: 'Tagjaguimit, Naga' },
+  { name: 'Mainit Elementary School', lat: 10.217, lng: 123.732, address: 'Mainit, Naga' },
+  { name: 'Cabungahan Elementary School', lat: 10.214, lng: 123.721, address: 'Cabungahan, Naga' },
+  { name: 'Pangdan Elementary School', lat: 10.25, lng: 123.735, address: 'Pangdan, Naga' },
+  { name: 'Bairan Elementary School', lat: 10.198, lng: 123.72, address: 'Bairan, Naga' },
+  { name: 'Alpaco Elementary School', lat: 10.245, lng: 123.69, address: 'Alpaco, Naga' },
+  { name: 'Cogon Elementary School', lat: 10.27, lng: 123.73, address: 'Cogon, Naga' },
+  { name: 'Lutac Elementary School', lat: 10.24, lng: 123.725, address: 'Lutac, Naga' },
+  { name: 'Naalad Elementary School', lat: 10.2095, lng: 123.744, address: 'Naalad, Naga' },
+  { name: 'Cantao-an Elementary School', lat: 10.238, lng: 123.745, address: 'Cantao-an, Naga' },
+  { name: 'Colon Elementary School', lat: 10.219, lng: 123.761, address: 'Colon, Naga' },
+]
+
 const CACHE_KEY = 'relieftrack_evac_cache_v2'
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000
 const ENDPOINT_TIMEOUT_MS = 8000
@@ -123,6 +144,15 @@ out center 100;`
       lastError = err
     }
   }
+  // Fallback to bundled schools if Overpass is down (504/timeout)
+  const fallback = FALLBACK_SCHOOLS.filter((s) => isInsideNaga(s.lat, s.lng))
+    .map((s) => ({ ...s, distKm: haversineKm(Number(lat), Number(lng), s.lat, s.lng) }))
+    .sort((a, b) => a.distKm - b.distKm)
+    .slice(0, 10)
+  if (fallback.length > 0) {
+    writeCache(lat, lng, fallback)
+    return fallback
+  }
   throw lastError || new Error('All evacuation center services failed.')
 }
 
@@ -192,6 +222,12 @@ out center;`
     } catch (err) {
       lastError = err
     }
+  }
+  // Fallback to bundled schools if Overpass is down
+  const fallback = FALLBACK_SCHOOLS.filter((s) => isInsideNaga(s.lat, s.lng))
+  if (fallback.length > 0) {
+    writeAllSchoolsCache(fallback)
+    return fallback
   }
   throw lastError || new Error('All school services failed.')
 }
