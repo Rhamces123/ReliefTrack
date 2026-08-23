@@ -105,3 +105,72 @@ out center 100;`
   }
   throw lastError || new Error('All evacuation center services failed.')
 }
+
+const ALL_SCHOOLS_CACHE_KEY = 'relieftrack_all_schools_naga'
+const ALL_SCHOOLS_CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000
+
+function readAllSchoolsCache() {
+  try {
+    const raw = localStorage.getItem(ALL_SCHOOLS_CACHE_KEY)
+    if (!raw) return null
+    const cache = JSON.parse(raw)
+    if (Date.now() - cache.timestamp > ALL_SCHOOLS_CACHE_TTL_MS) return null
+    return cache.schools
+  } catch {
+    return null
+  }
+}
+
+function writeAllSchoolsCache(schools) {
+  try {
+    localStorage.setItem(ALL_SCHOOLS_CACHE_KEY, JSON.stringify({
+      timestamp: Date.now(),
+      schools
+    }))
+  } catch {
+    /* ignore storage errors */
+  }
+}
+
+export async function findAllSchoolsInNaga() {
+  const cached = readAllSchoolsCache()
+  if (cached) return cached
+
+  // NAGA_BOUNDS: [10.13, 123.65, 10.32, 123.79] -> south, west, north, east
+  const query = `[out:json][timeout:25];
+(
+  node["amenity"="school"](10.13,123.65,10.32,123.79);
+  way["amenity"="school"](10.13,123.65,10.32,123.79);
+);
+out center;`
+
+  let lastError = null
+  for (const endpoint of OVERPASS_ENDPOINTS) {
+    const url = `${endpoint}?data=${encodeURIComponent(query)}`
+    try {
+      const res = await fetchWithTimeout(url, 30000)
+      if (!res.ok) throw new Error(`Overpass request failed: ${res.status}`)
+      const data = await res.json()
+      const schools = (data.elements || [])
+        .map((el) => {
+          const name = el.tags?.name
+          const lat2 = el.lat != null ? el.lat : el.center?.lat
+          const lng2 = el.lon != null ? el.lon : el.center?.lon
+          if (!name || lat2 == null || lng2 == null) return null
+          return {
+            name,
+            lat: Number(lat2),
+            lng: Number(lng2),
+            address: el.tags?.['addr:street'] || el.tags?.['addr:full'] || '',
+          }
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.name.localeCompare(b.name))
+      writeAllSchoolsCache(schools)
+      return schools
+    } catch (err) {
+      lastError = err
+    }
+  }
+  throw lastError || new Error('All school services failed.')
+}

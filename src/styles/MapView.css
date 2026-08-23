@@ -48,6 +48,7 @@
 .legend-dot.inprogress { background: #22c55e; }
 .legend-dot.completed { background: #3b82f6; }
 .legend-dot.evac { background: #8b5cf6; }
+.legend-dot.all-schools { background: #f97316; }
 
 .mapview-loading {
   flex: 1;

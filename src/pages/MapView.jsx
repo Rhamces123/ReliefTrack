@@ -13,7 +13,7 @@ function reverseGeocode(lat, lng) {
 import { getUserProfile } from '../firebase/users'
 import { subscribeReliefRequests, updateReliefRequestCoordinates } from '../firebase/requests'
 import { searchPhilippinesPlaces, searchPlaces } from '../utils/philippinesPlaces'
-import { findNearbySchools } from '../utils/nearbyEvacCenters'
+import { findNearbySchools, findAllSchoolsInNaga } from '../utils/nearbyEvacCenters'
 import nagaGeoJSON from '../utils/nagaBoundary'
 
 import DashboardLayout from '../components/DashboardLayout'
@@ -56,6 +56,14 @@ const geoIcon = L.divIcon({
 const evacIcon = L.divIcon({
   className: '',
   html: '<div style="width:30px;height:30px;background:#8b5cf6;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700">🏫</div>',
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+  popupAnchor: [0, -16],
+})
+
+const allSchoolsIcon = L.divIcon({
+  className: '',
+  html: '<div style="width:30px;height:30px;background:#f97316;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700">🏫</div>',
   iconSize: [30, 30],
   iconAnchor: [15, 15],
   popupAnchor: [0, -16],
@@ -191,6 +199,10 @@ export default function MapView() {
   const [evacCenters, setEvacCenters] = useState([])
   const [evacLoading, setEvacLoading] = useState(false)
   const [evacError, setEvacError] = useState('')
+  const [showAllSchools, setShowAllSchools] = useState(false)
+  const [allSchools, setAllSchools] = useState([])
+  const [allSchoolsLoading, setAllSchoolsLoading] = useState(false)
+  const [allSchoolsError, setAllSchoolsError] = useState('')
   const searchWrapRef = useRef(null)
   const geocodingRef = useRef(new Set())
   const savedCoordsRef = useRef(new Set())
@@ -274,6 +286,32 @@ export default function MapView() {
     }
   }, [showEvac, geoPosition, searchResult])
 
+  useEffect(() => {
+    if (!showAllSchools) {
+      setAllSchools([])
+      setAllSchoolsError('')
+      return
+    }
+    let cancelled = false
+    setAllSchoolsLoading(true)
+    setAllSchoolsError('')
+    findAllSchoolsInNaga()
+      .then((schools) => {
+        if (cancelled) return
+        setAllSchools(schools)
+        setAllSchoolsLoading(false)
+        if (schools.length === 0) setAllSchoolsError('No schools found in Naga City.')
+      })
+      .catch((err) => {
+        if (cancelled) return
+        setAllSchoolsError(err.message || 'Failed to load all schools.')
+        setAllSchoolsLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [showAllSchools])
+
   const markers = []
   const markerPositions = []
   for (const r of requests) {
@@ -291,6 +329,7 @@ export default function MapView() {
 
   const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
   const email = profile?.email || user?.email || ''
+  const isAdmin = profile?.role === 'Admin'
 
   return (
     <DashboardLayout title="Map View" userLabel={displayName} userEmail={email}>
@@ -302,12 +341,15 @@ export default function MapView() {
             {geocoding && <span className="mapview-geocoding">Geocoding locations...</span>}
             {evacLoading && <span className="mapview-geocoding">Finding evacuation centers...</span>}
             {evacError && <span className="mapview-search-error">{evacError}</span>}
+            {allSchoolsLoading && <span className="mapview-geocoding">Loading all schools...</span>}
+            {allSchoolsError && <span className="mapview-search-error">{allSchoolsError}</span>}
           </div>
           <div className="mapview-legend">
             <span><span className="legend-dot pending" /> Not Yet Assessed</span>
             <span><span className="legend-dot inprogress" /> Not Yet Received Relief</span>
             <span><span className="legend-dot completed" /> Already Received Relief</span>
             {showEvac && <span><span className="legend-dot evac" /> Evacuation Center</span>}
+            {isAdmin && showAllSchools && <span><span className="legend-dot all-schools" /> All Schools (Admin)</span>}
           </div>
           <div className="mapview-search" ref={searchWrapRef}>
             <input
@@ -355,6 +397,11 @@ export default function MapView() {
           <button className={`mapview-toggle ${showEvac ? 'active' : ''}`} onClick={() => setShowEvac((s) => !s)}>
             {showEvac ? '🏫 Hide Evac' : '🏫 Evac Centers'}
           </button>
+          {isAdmin && (
+            <button className={`mapview-toggle ${showAllSchools ? 'active' : ''}`} onClick={() => setShowAllSchools((s) => !s)}>
+              {showAllSchools ? '🏫 Hide All Schools' : '🏫 All Schools (Admin)'}
+            </button>
+          )}
           <button className="mapview-toggle" onClick={() => setLocateTrigger((t) => t + 1)}>
             📍 My Location
           </button>
@@ -450,6 +497,21 @@ export default function MapView() {
                       {c.address && <p className="mapview-popup-location">{c.address}</p>}
                       <p>Distance: <strong>{c.distKm.toFixed(2)} km</strong></p>
                       <p><em>Designated Evacuation Center</em></p>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+              {isAdmin && showAllSchools && allSchools.map((s) => (
+                <Marker
+                  key={`${s.name}-${s.lat}-${s.lng}`}
+                  position={[s.lat, s.lng]}
+                  icon={allSchoolsIcon}
+                >
+                  <Popup>
+                    <div className="mapview-popup">
+                      <h4>🏫 {s.name}</h4>
+                      {s.address && <p className="mapview-popup-location">{s.address}</p>}
+                      <p><em>All Schools (Admin View)</em></p>
                     </div>
                   </Popup>
                 </Marker>
