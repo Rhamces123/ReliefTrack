@@ -41,7 +41,42 @@ export function AuthProvider({ children }) {
           const registerDevice = httpsCallable(functions, 'registerDevice')
           await registerDevice({ fingerprintHash, userAgent: navigator.userAgent })
         } catch {
-          // non-blocking: if functions not deployed or offline, ignore
+          // Fallback: client-side tracking if functions not deployed (Blaze required)
+          try {
+            const { doc, getDocs, query, where, collection, setDoc, addDoc, serverTimestamp } = await import('firebase/firestore')
+            const { db } = await import('../firebase.js')
+            const fpRaw2 = navigator.userAgent + '|' + window.screen.width + 'x' + window.screen.height + '|' + Intl.DateTimeFormat().resolvedOptions().timeZone
+            const hashBuffer2 = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(fpRaw2))
+            const fingerprintHash2 = Array.from(new Uint8Array(hashBuffer2)).map((b) => b.toString(16).padStart(2, '0')).join('')
+            const q = query(collection(db, `users/${firebaseUser.uid}/knownDevices`), where('fingerprintHash', '==', fingerprintHash2))
+            const snap = await getDocs(q)
+            if (snap.empty) {
+              const deviceRef = doc(collection(db, `users/${firebaseUser.uid}/knownDevices`))
+              await setDoc(deviceRef, {
+                fingerprintHash: fingerprintHash2,
+                userAgent: navigator.userAgent,
+                firstSeen: serverTimestamp(),
+                lastSeen: serverTimestamp(),
+                isTrusted: false,
+              })
+              await addDoc(collection(db, `users/${firebaseUser.uid}/loginHistory`), {
+                timestamp: serverTimestamp(),
+                deviceId: deviceRef.id,
+                isNewDevice: true,
+                emailSent: false,
+              })
+              console.warn('New device detected - email alert requires Cloud Functions (Blaze plan + SendGrid key). Device logged to Firestore.')
+            } else {
+              const d = snap.docs[0]
+              await setDoc(d.ref, { lastSeen: serverTimestamp() }, { merge: true })
+              await addDoc(collection(db, `users/${firebaseUser.uid}/loginHistory`), {
+                timestamp: serverTimestamp(),
+                deviceId: d.id,
+                isNewDevice: false,
+                emailSent: false,
+              })
+            }
+          } catch {}
         }
       }
 
