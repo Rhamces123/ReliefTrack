@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from '../firebase.js'
+import { httpsCallable } from 'firebase/functions'
+import { auth, functions } from '../firebase.js'
 import { handleRedirectResult } from '../firebase/auth'
 import { ensureUserProfile, updateUserProfile } from '../firebase/users'
 import { requestBrowserLocation, getBrowserLocation } from '../utils/getBrowserLocation'
@@ -30,6 +31,17 @@ export function AuthProvider({ children }) {
           }
         } catch {
           // ignore — no pending redirect or already processed
+        }
+
+        // Device login security: fingerprint + register device (new device -> email alert)
+        try {
+          const fpRaw = navigator.userAgent + '|' + window.screen.width + 'x' + window.screen.height + '|' + Intl.DateTimeFormat().resolvedOptions().timeZone
+          const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(fpRaw))
+          const fingerprintHash = Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, '0')).join('')
+          const registerDevice = httpsCallable(functions, 'registerDevice')
+          await registerDevice({ fingerprintHash, userAgent: navigator.userAgent })
+        } catch {
+          // non-blocking: if functions not deployed or offline, ignore
         }
       }
 
