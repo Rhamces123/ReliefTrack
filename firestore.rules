@@ -41,8 +41,8 @@ service cloud.firestore {
       }
 
       function validApproval() {
-        return request.resource.data.approvalToken == resource.data.approvalToken
-          && request.resource.data.approvalToken == null
+        return resource.data.approvalToken != null
+          && request.resource.data.approvalToken == resource.data.approvalToken
           && request.resource.data.isTrusted == true
           && resource.data.isTrusted == false
           && request.resource.data.rejected == false
@@ -51,8 +51,8 @@ service cloud.firestore {
       }
 
       function validRejection() {
-        return request.resource.data.approvalToken == resource.data.approvalToken
-          && request.resource.data.approvalToken == null
+        return resource.data.approvalToken != null
+          && request.resource.data.approvalToken == resource.data.approvalToken
           && request.resource.data.rejected == true
           && resource.data.rejected == false
           && request.resource.data.isTrusted == false

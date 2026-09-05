@@ -23,13 +23,23 @@ export default function DeviceActionPage() {
 
     const data =
       action === 'approve'
-        ? { isTrusted: true, rejected: false, approvalToken: null, processedAt: serverTimestamp() }
-        : { isTrusted: false, rejected: true, approvalToken: null, processedAt: serverTimestamp() }
+        ? {
+            isTrusted: true,
+            rejected: false,
+            approvalToken: token,
+            processedAt: serverTimestamp(),
+          }
+        : {
+            isTrusted: false,
+            rejected: true,
+            approvalToken: token,
+            processedAt: serverTimestamp(),
+          }
 
     updateDoc(getDeviceDocRef(uid, deviceId), data)
       .then(() => setState(action))
       .catch(() => setState('invalid'))
-  }, [params, uid, deviceId, action, looksValid])
+  }, [params, uid, deviceId, token, action, looksValid])
 
   return (
     <div className="ndv-backdrop">
