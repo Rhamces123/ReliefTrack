@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { getUserProfile, updateUserProfile } from '../firebase/users'
 import DashboardLayout from '../components/DashboardLayout'
 import LocationAutocomplete from '../components/LocationAutocomplete'
+import TrustedDevicesSection from '../components/TrustedDevicesSection'
 import '../styles/Settings.css'
 
 function getInitials(name) {
@@ -209,6 +210,10 @@ export default function Settings() {
             </button>
           </form>
         </div>
+      </div>
+
+      <div className="settings-grid" style={{ marginTop: 20 }}>
+        <TrustedDevicesSection />
       </div>
     </DashboardLayout>
   )

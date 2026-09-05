@@ -114,3 +114,106 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Trusted Devices */
+.settings-devices-hint {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: -8px 0 16px;
+}
+
+.settings-devices-error {
+  background: rgba(255, 80, 80, 0.15);
+  border: 1px solid rgba(255, 100, 100, 0.4);
+  border-radius: 8px;
+  color: #ffb4b4;
+  font-size: 13px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+}
+
+.settings-devices-empty {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.settings-devices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settings-device-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.settings-device-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(120, 80, 255, 0.35), rgba(0, 200, 200, 0.3));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.settings-device-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-device-name {
+  font-size: 14px;
+  color: #fff;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.settings-device-current {
+  background: rgba(0, 200, 150, 0.2);
+  color: #6ee7b7;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+}
+
+.settings-device-meta {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 3px;
+}
+
+.settings-device-remove {
+  padding: 7px 14px;
+  border: 1px solid rgba(255, 100, 100, 0.4);
+  border-radius: 8px;
+  background: rgba(255, 80, 80, 0.12);
+  color: #ffb4b4;
+  font-size: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.settings-device-remove:hover:not(:disabled) {
+  background: rgba(255, 80, 80, 0.24);
+}
+
+.settings-device-remove:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

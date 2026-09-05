@@ -338,3 +338,193 @@ body:has(.login-bg) #root {
   .orb-2 { width: 160px; height: 160px; bottom: -40px; right: -30px; }
   .orb-3 { width: 120px; height: 120px; }
 }
+
+/* ===== New Device Verification Modal ===== */
+.ndv-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: rgba(5, 4, 18, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.ndv-card {
+  width: 400px;
+  max-width: 100%;
+  max-height: 92dvh;
+  overflow-y: auto;
+  background: linear-gradient(135deg, rgba(20, 14, 46, 0.98), rgba(8, 34, 46, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  padding: 32px 28px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.55);
+  animation: fadeInUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  font-family: var(--sans, system-ui, 'Segoe UI', Roboto, sans-serif);
+  text-align: center;
+}
+
+.ndv-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  background: linear-gradient(135deg, rgba(120, 80, 255, 0.4), rgba(0, 200, 200, 0.35));
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.ndv-title {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  letter-spacing: -0.2px;
+}
+
+.ndv-text {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 18px;
+}
+
+.ndv-details {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.ndv-info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.ndv-info-row + .ndv-info-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.ndv-label {
+  color: rgba(255, 255, 255, 0.45);
+  flex-shrink: 0;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding-top: 2px;
+}
+
+.ndv-value {
+  color: rgba(255, 255, 255, 0.85);
+  text-align: right;
+  word-break: break-word;
+}
+
+.ndv-untrusted {
+  color: #fcd34d;
+}
+
+.ndv-question {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0 0 16px;
+}
+
+.ndv-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ndv-btn {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+}
+
+.ndv-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ndv-btn-primary {
+  background: linear-gradient(135deg, #7850ff 0%, #00c8c8 100%);
+  background-size: 200% auto;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(120, 80, 255, 0.5);
+}
+
+.ndv-btn-primary:hover:not(:disabled) {
+  background-position: right center;
+  box-shadow: 0 6px 28px rgba(120, 80, 255, 0.65);
+  transform: translateY(-1px);
+}
+
+.ndv-btn-danger {
+  background: rgba(255, 80, 80, 0.16);
+  border: 1px solid rgba(255, 100, 100, 0.45);
+  color: #ffb4b4;
+}
+
+.ndv-btn-danger:hover:not(:disabled) {
+  background: rgba(255, 80, 80, 0.28);
+  transform: translateY(-1px);
+}
+
+.ndv-btn-ghost {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.ndv-btn-ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.ndv-hint {
+  margin-top: 14px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--mono, ui-monospace, Consolas, monospace);
+  word-break: break-all;
+}
+
+.ndv-spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid rgba(255, 255, 255, 0.12);
+  border-top: 4px solid #7850ff;
+  border-radius: 50%;
+  animation: ndv-spin 0.8s linear infinite;
+}
+
+@keyframes ndv-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+  .ndv-card {
+    padding: 24px 18px;
+    border-radius: 16px;
+  }
+}

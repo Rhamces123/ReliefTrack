@@ -1,86 +1,77 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
-import { httpsCallable } from 'firebase/functions'
-import { auth, functions } from '../firebase.js'
-import { handleRedirectResult } from '../firebase/auth'
-import { ensureUserProfile, updateUserProfile } from '../firebase/users'
-import { requestBrowserLocation, getBrowserLocation } from '../utils/getBrowserLocation'
+import { auth } from '../firebase.js'
+import { handleRedirectResult, signOutUser, sendPasswordReset } from '../firebase/auth'
+import { ensureUserProfile } from '../firebase/users'
+import { getBrowserName, getOsName, markDeviceTrusted, evaluateDevice } from '../firebase/devices'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [deviceStatus, setDeviceStatus] = useState(null) // 'trusted' | 'new' | 'pending'
+  const [deviceId, setDeviceId] = useState(null)
+  const [deviceChecked, setDeviceChecked] = useState(false)
+  const [deviceBlocked, setDeviceBlocked] = useState(false)
+  const [deviceInfo, setDeviceInfo] = useState(null)
+  const checkedRef = useRef(null)
 
   useEffect(() => {
     let cancelled = false
-
-    requestBrowserLocation()
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (cancelled) return
 
       if (firebaseUser) {
+        let redirectUser = null
         try {
-          const redirectUser = await handleRedirectResult()
+          redirectUser = await handleRedirectResult()
           if (redirectUser) {
             await ensureUserProfile(redirectUser)
-            getBrowserLocation().then((loc) => {
-              if (loc) updateUserProfile(redirectUser.uid, { location: loc }).catch(() => {})
-            })
           }
         } catch {
-          // ignore — no pending redirect or already processed
+          // ignore — no pending redirect or profile errors
         }
 
-        // Device login security: fingerprint + register device (new device -> email alert)
         try {
-          const fpRaw = navigator.userAgent + '|' + window.screen.width + 'x' + window.screen.height + '|' + Intl.DateTimeFormat().resolvedOptions().timeZone
-          const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(fpRaw))
-          const fingerprintHash = Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, '0')).join('')
-          const registerDevice = httpsCallable(functions, 'registerDevice')
-          await registerDevice({ fingerprintHash, userAgent: navigator.userAgent })
+          if (!redirectUser) await ensureUserProfile(firebaseUser)
         } catch {
-          // Fallback: client-side tracking if functions not deployed (Blaze required)
+          // ignore — profile creation errors are non-fatal
+        }
+
+        // Device verification: run once per auth session
+        if (checkedRef.current !== firebaseUser.uid) {
+          checkedRef.current = firebaseUser.uid
           try {
-            const { doc, getDocs, query, where, collection, setDoc, addDoc, serverTimestamp } = await import('firebase/firestore')
-            const { db } = await import('../firebase.js')
-            const fpRaw2 = navigator.userAgent + '|' + window.screen.width + 'x' + window.screen.height + '|' + Intl.DateTimeFormat().resolvedOptions().timeZone
-            const hashBuffer2 = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(fpRaw2))
-            const fingerprintHash2 = Array.from(new Uint8Array(hashBuffer2)).map((b) => b.toString(16).padStart(2, '0')).join('')
-            const q = query(collection(db, `users/${firebaseUser.uid}/knownDevices`), where('fingerprintHash', '==', fingerprintHash2))
-            const snap = await getDocs(q)
-            if (snap.empty) {
-              const deviceRef = doc(collection(db, `users/${firebaseUser.uid}/knownDevices`))
-              await setDoc(deviceRef, {
-                fingerprintHash: fingerprintHash2,
-                userAgent: navigator.userAgent,
-                firstSeen: serverTimestamp(),
-                lastSeen: serverTimestamp(),
-                isTrusted: false,
-              })
-              await addDoc(collection(db, `users/${firebaseUser.uid}/loginHistory`), {
-                timestamp: serverTimestamp(),
-                deviceId: deviceRef.id,
-                isNewDevice: true,
-                emailSent: false,
-              })
-              console.warn('New device detected - email alert requires Cloud Functions (Blaze plan + SendGrid key). Device logged to Firestore.')
-            } else {
-              const d = snap.docs[0]
-              await setDoc(d.ref, { lastSeen: serverTimestamp() }, { merge: true })
-              await addDoc(collection(db, `users/${firebaseUser.uid}/loginHistory`), {
-                timestamp: serverTimestamp(),
-                deviceId: d.id,
-                isNewDevice: false,
-                emailSent: false,
-              })
-            }
-          } catch {}
+            const result = await evaluateDevice(firebaseUser.uid)
+            setDeviceId(result.deviceId)
+            setDeviceStatus(result.status)
+            setDeviceChecked(true)
+            setDeviceBlocked(result.status === 'new' || result.status === 'pending')
+            setDeviceInfo({
+              browser: getBrowserName(),
+              operatingSystem: getOsName(),
+              deviceName: `${getBrowserName()} • ${getOsName()}`,
+            })
+          } catch (err) {
+            console.error('Device verification error:', err)
+            setDeviceStatus('trusted')
+            setDeviceChecked(true)
+            setDeviceBlocked(false)
+          }
         }
       }
 
       if (!cancelled) {
+        if (!firebaseUser) {
+          checkedRef.current = null
+          setDeviceStatus(null)
+          setDeviceId(null)
+          setDeviceChecked(false)
+          setDeviceBlocked(false)
+          setDeviceInfo(null)
+        }
         setUser(firebaseUser)
         setLoading(false)
       }
@@ -92,8 +83,41 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
+  const handleDeviceTrusted = useCallback(async () => {
+    if (user && deviceId) {
+      await markDeviceTrusted(user.uid, deviceId).catch(() => {})
+    }
+    setDeviceBlocked(false)
+    setDeviceStatus('trusted')
+  }, [user, deviceId])
+
+  const handleDeviceRejected = useCallback(async (secureAccount = false) => {
+    if (secureAccount && user?.email) {
+      try {
+        await sendPasswordReset(user.email)
+      } catch {
+        // ignore — password reset email failures are non-fatal
+      }
+    }
+    await signOutUser().catch(() => {})
+    setDeviceBlocked(false)
+    setDeviceStatus(null)
+  }, [user])
+
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        deviceStatus,
+        deviceId,
+        deviceChecked,
+        deviceBlocked,
+        deviceInfo,
+        handleDeviceTrusted,
+        handleDeviceRejected,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )
