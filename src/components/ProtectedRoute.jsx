@@ -12,9 +12,8 @@ export default function ProtectedRoute({ children }) {
     return <Navigate to="/login" replace />
   }
 
-  // While device security is being checked, show a full-screen guard.
-  // The NewDeviceModal renders on top if the device is blocked.
-  if (!deviceChecked || deviceBlocked) {
+  // While device security is being evaluated, show a full-screen guard.
+  if (!deviceChecked) {
     return (
       <div
         className="device-guard"
@@ -33,6 +32,11 @@ export default function ProtectedRoute({ children }) {
         <div className="ndv-spinner" />
       </div>
     )
+  }
+
+  // A new/unknown device must be approved from the user's email first.
+  if (deviceBlocked) {
+    return <Navigate to="/device-approval" replace />
   }
 
   return children

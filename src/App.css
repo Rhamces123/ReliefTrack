@@ -528,3 +528,21 @@ body:has(.login-bg) #root {
     border-radius: 16px;
   }
 }
+
+.ndv-actions .ndv-spinner {
+  margin-bottom: 12px;
+}
+
+.devp-hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.devp-warn {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #ffb4a6;
+}

@@ -5,6 +5,8 @@ import PublicRoute from './components/PublicRoute'
 import RootRedirect from './components/RootRedirect'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
+import DeviceApprovalPage from './pages/DeviceApprovalPage'
+import DeviceActionPage from './pages/DeviceActionPage'
 import Home from './pages/Home'
 import Requests from './pages/Requests'
 import Inventory from './pages/Inventory'
@@ -47,6 +49,8 @@ function App() {
           </PublicRoute>
         }
       />
+      <Route path="/device-approval" element={<DeviceApprovalPage />} />
+      <Route path="/device-action" element={<DeviceActionPage />} />
       <Route
         path="/home"
         element={

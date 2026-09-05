@@ -16,12 +16,60 @@ service cloud.firestore {
     match /donations/{donationId} {
       allow read, create, update, delete: if request.auth != null;
     }
-    // Trusted device records: only the owning user may read/modify their own devices.
+    // Device records with email-approval workflow.
+    // isTrusted can only be flipped false -> true (or rejected true) by a write
+    // that presents the approvalToken from the email link. The account owner
+    // cannot self-approve a device through normal updates.
     match /users/{userId}/knownDevices/{deviceId} {
-      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null
-        && request.auth.uid == userId
-        && request.resource.data.isTrusted == false;
+      function isOwner() {
+        return request.auth != null && request.auth.uid == userId;
+      }
+
+      function securityFieldsUnchanged() {
+        return request.resource.data.isTrusted == resource.data.isTrusted
+          && request.resource.data.rejected == resource.data.rejected
+          && request.resource.data.approvalToken == resource.data.approvalToken;
+      }
+
+      function metaFieldsUnchanged() {
+        return request.resource.data.deviceId == resource.data.deviceId
+          && request.resource.data.fingerprintHash == resource.data.fingerprintHash
+          && request.resource.data.browser == resource.data.browser
+          && request.resource.data.operatingSystem == resource.data.operatingSystem
+          && request.resource.data.deviceName == resource.data.deviceName
+          && request.resource.data.createdAt == resource.data.createdAt;
+      }
+
+      function validApproval() {
+        return request.resource.data.approvalToken == resource.data.approvalToken
+          && request.resource.data.approvalToken == null
+          && request.resource.data.isTrusted == true
+          && resource.data.isTrusted == false
+          && request.resource.data.rejected == false
+          && request.resource.data.processedAt != null
+          && metaFieldsUnchanged();
+      }
+
+      function validRejection() {
+        return request.resource.data.approvalToken == resource.data.approvalToken
+          && request.resource.data.approvalToken == null
+          && request.resource.data.rejected == true
+          && resource.data.rejected == false
+          && request.resource.data.isTrusted == false
+          && request.resource.data.processedAt != null
+          && metaFieldsUnchanged();
+      }
+
+      allow read: if isOwner();
+      allow create: if isOwner()
+        && request.resource.data.isTrusted == false
+        && request.resource.data.rejected == false
+        && request.resource.data.approvalToken is string
+        && request.resource.data.processedAt == null;
+      allow update: if (isOwner() && securityFieldsUnchanged())
+        || validApproval()
+        || validRejection();
+      allow delete: if isOwner();
     }
     match /users/{userId}/loginHistory/{loginId} {
       allow read, create: if request.auth != null && request.auth.uid == userId;
