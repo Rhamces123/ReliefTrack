@@ -6,6 +6,7 @@ import { getDeviceDocRef } from '../firebase/devices'
 export default function DeviceActionPage() {
   const [params] = useSearchParams()
   const [state, setState] = useState('processing') // 'processing' | 'approve' | 'reject' | 'invalid'
+  const [errorMsg, setErrorMsg] = useState('')
   const processedRef = useRef(false)
 
   const uid = params.get('uid')
@@ -38,7 +39,10 @@ export default function DeviceActionPage() {
 
     updateDoc(getDeviceDocRef(uid, deviceId), data)
       .then(() => setState(action))
-      .catch(() => setState('invalid'))
+      .catch((err) => {
+        setErrorMsg(err?.message || String(err))
+        setState('invalid')
+      })
   }, [params, uid, deviceId, token, action, looksValid])
 
   return (
@@ -52,6 +56,7 @@ export default function DeviceActionPage() {
               This approval link is no longer valid. Request a new approval email from the device
               that is trying to sign in.
             </p>
+            {errorMsg && <p className="devp-warn">{errorMsg}</p>}
           </>
         ) : state === 'processing' ? (
           <>

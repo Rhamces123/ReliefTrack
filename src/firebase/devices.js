@@ -112,6 +112,15 @@ export async function updateDeviceLogin(uid, deviceId) {
   })
 }
 
+export async function approveDeviceRecord(uid, deviceId, approvalToken) {
+  await updateDoc(getDeviceDocRef(uid, deviceId), {
+    isTrusted: true,
+    rejected: false,
+    approvalToken,
+    processedAt: serverTimestamp(),
+  })
+}
+
 export async function removeDevice(uid, deviceId) {
   await deleteDoc(getDeviceDocRef(uid, deviceId))
 }

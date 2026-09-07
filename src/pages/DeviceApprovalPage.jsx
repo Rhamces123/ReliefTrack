@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { onSnapshot } from 'firebase/firestore'
+import { onSnapshot, getDoc } from 'firebase/firestore'
 import { useAuth } from '../context/AuthContext'
 import { getDeviceDocRef, getBrowserName, getOsName } from '../firebase/devices'
 import { getBrowserLocation } from '../utils/getBrowserLocation'
@@ -21,7 +21,64 @@ export default function DeviceApprovalPage() {
   const [location, setLocation] = useState('')
   const [resending, setResending] = useState(false)
   const [denied, setDenied] = useState(false)
+  const [liveError, setLiveError] = useState('')
+  const [recheckTick, setRecheckTick] = useState(0)
   const processedRef = useRef(false)
+
+  const grantAccess = useCallback(
+    (email) => {
+      handleDeviceTrusted()
+      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
+      navigate(adminEmail && email === adminEmail ? '/admin' : '/home', { replace: true })
+    },
+    [handleDeviceTrusted, navigate],
+  )
+
+  const processSnapshot = useCallback(
+    (snap) => {
+      if (!snap.exists() || processedRef.current) return
+      const data = snap.data()
+      if (data.isTrusted) {
+        processedRef.current = true
+        grantAccess(user?.email)
+      } else if (data.rejected) {
+        processedRef.current = true
+        setDenied(true)
+        setTimeout(() => handleDeviceRejected(), 2500)
+      }
+    },
+    [user?.email, grantAccess, handleDeviceRejected],
+  )
+
+  useEffect(() => {
+    if (!user || !deviceId || !deviceBlocked) return
+    const ref = getDeviceDocRef(user.uid, deviceId)
+
+    const unsubscribe = onSnapshot(
+      ref,
+      (snap) => processSnapshot(snap),
+      (err) => {
+        console.error('Device approval listener error:', err)
+        setLiveError(err?.message || 'Live updates unavailable on this network.')
+      },
+    )
+
+    const runPoll = async () => {
+      try {
+        const snap = await getDoc(ref)
+        processSnapshot(snap)
+      } catch (err) {
+        console.error('Device approval poll error:', err)
+      }
+    }
+
+    runPoll()
+    const intervalId = setInterval(runPoll, 4000)
+    return () => {
+      unsubscribe()
+      clearInterval(intervalId)
+    }
+  }, [user, deviceId, deviceBlocked, processSnapshot, recheckTick])
 
   useEffect(() => {
     let mounted = true
@@ -34,26 +91,6 @@ export default function DeviceApprovalPage() {
       mounted = false
     }
   }, [])
-
-  useEffect(() => {
-    if (!user || !deviceId || !deviceBlocked) return
-    const ref = getDeviceDocRef(user.uid, deviceId)
-    const unsubscribe = onSnapshot(ref, (snap) => {
-      if (!snap.exists() || processedRef.current) return
-      const data = snap.data()
-      if (data.isTrusted) {
-        processedRef.current = true
-        handleDeviceTrusted()
-        const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
-        navigate(adminEmail && user.email === adminEmail ? '/admin' : '/home', { replace: true })
-      } else if (data.rejected) {
-        processedRef.current = true
-        setDenied(true)
-        setTimeout(() => handleDeviceRejected(), 2500)
-      }
-    })
-    return () => unsubscribe()
-  }, [user, deviceId, deviceBlocked, handleDeviceTrusted, handleDeviceRejected, navigate])
 
   if (loading) {
     return null
@@ -144,8 +181,16 @@ export default function DeviceApprovalPage() {
             <div className="ndv-spinner" />
             <p className="devp-hint">
               Open <strong>{user.email}</strong>, then tap <strong>Approve</strong> or{' '}
-              <strong>Reject</strong> in the email you received. This page updates automatically.
+              <strong>Reject</strong> in the email you received. This page checks automatically every
+              few seconds.
             </p>
+            <button
+              className="ndv-btn ndv-btn-ghost"
+              onClick={() => setRecheckTick((t) => t + 1)}
+            >
+              Check status now
+            </button>
+            {liveError && <p className="devp-hint">{liveError}</p>}
           </div>
         )}
 

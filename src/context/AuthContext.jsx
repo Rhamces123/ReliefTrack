@@ -3,10 +3,14 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../firebase.js'
 import { handleRedirectResult, signOutUser, sendPasswordReset } from '../firebase/auth'
 import { ensureUserProfile } from '../firebase/users'
-import { getBrowserName, getOsName, evaluateDevice, sendDeviceApprovalEmail } from '../firebase/devices'
+import {
+  getBrowserName, getOsName, evaluateDevice, approveDeviceRecord, sendDeviceApprovalEmail,
+} from '../firebase/devices'
 import { getBrowserLocation } from '../utils/getBrowserLocation'
 
 const AuthContext = createContext(null)
+
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -97,6 +101,10 @@ export function AuthProvider({ children }) {
           checkedRef.current = firebaseUser.uid
           try {
             const result = await evaluateDevice(firebaseUser.uid)
+            const isAdminEmail =
+              !!firebaseUser.email &&
+              !!ADMIN_EMAIL &&
+              firebaseUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()
             approvalTokenRef.current = result.approvalToken || null
             setDeviceId(result.deviceId)
             setDeviceStatus(result.status)
@@ -105,10 +113,21 @@ export function AuthProvider({ children }) {
             setDeviceInfo(getDeviceInfo())
 
             if (result.status === 'pending' && result.approvalToken) {
-              const key = `${firebaseUser.uid}:${result.deviceId}`
-              if (emailSentRef.current !== key) {
-                emailSentRef.current = key
-                await sendApprovalEmailForCurrent(firebaseUser, result.deviceId, result.approvalToken)
+              if (isAdminEmail) {
+                try {
+                  await approveDeviceRecord(firebaseUser.uid, result.deviceId, result.approvalToken)
+                } catch (approveErr) {
+                  console.error('Admin device auto-approve failed:', approveErr)
+                }
+                approvalTokenRef.current = null
+                setDeviceStatus('trusted')
+                setDeviceBlocked(false)
+              } else {
+                const key = `${firebaseUser.uid}:${result.deviceId}`
+                if (emailSentRef.current !== key) {
+                  emailSentRef.current = key
+                  await sendApprovalEmailForCurrent(firebaseUser, result.deviceId, result.approvalToken)
+                }
               }
             }
           } catch (err) {
