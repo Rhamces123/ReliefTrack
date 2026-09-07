@@ -4,7 +4,7 @@ import { signUpWithEmail, signOutUser } from '../firebase/auth'
 import { createUserProfile } from '../firebase/users'
 import AuthLayout from '../components/AuthLayout'
 
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'admin@reliefrack.com'
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'admin@relieftrack.com'
 const ADMIN_PASSWORD = 'Admin@123'
 
 export default function AdminSetup() {
