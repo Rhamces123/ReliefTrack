@@ -183,6 +183,18 @@
   background: rgba(255, 255, 255, 0.14);
 }
 
+.grm-btn-excel {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #6ee7b7;
+}
+
+.grm-btn-excel:hover {
+  background: rgba(16, 185, 129, 0.22);
+  border-color: rgba(16, 185, 129, 0.55);
+  color: #a7f3d0;
+}
+
 .grm-btn-primary {
   background: linear-gradient(135deg, #7850ff, #5b35db);
   color: #fff;
