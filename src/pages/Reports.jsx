@@ -6,6 +6,7 @@ import { subscribeInventoryItems } from '../firebase/inventory'
 import { countByStatus } from '../utils/requestHelpers'
 import { countByCategory, countLowStock, getCategoryLabel } from '../utils/inventoryHelpers'
 import DashboardLayout from '../components/DashboardLayout'
+import GenerateReportModal from '../components/GenerateReportModal'
 import '../styles/Reports.css'
 
 export default function Reports() {
@@ -15,6 +16,7 @@ export default function Reports() {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [showReportModal, setShowReportModal] = useState(false)
 
   const displayName =
     profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
@@ -68,11 +70,18 @@ export default function Reports() {
 
   return (
     <DashboardLayout title="Reports" userLabel={displayName} userEmail={email}>
-      <div className="reports-header">
+      <div className="reports-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
         <div className="reports-header-text">
           <h2>Reports</h2>
           <p>Overview of relief operations and inventory status.</p>
         </div>
+        <button
+          type="button"
+          className="requests-btn-primary"
+          onClick={() => setShowReportModal(true)}
+        >
+          📄 Generate Report
+        </button>
       </div>
 
       {error && <div className="requests-error">{error}</div>}
@@ -183,6 +192,15 @@ export default function Reports() {
           </table>
         )}
       </div>
+
+      <GenerateReportModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        initialRequests={requests}
+        initialItems={items}
+        user={user}
+        profile={profile}
+      />
     </DashboardLayout>
   )
 }

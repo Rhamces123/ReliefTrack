@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { getUserProfile } from '../firebase/users'
 import { subscribeReliefRequests } from '../firebase/requests'
 import DashboardLayout from '../components/DashboardLayout'
+import GenerateReportModal from '../components/GenerateReportModal'
 import '../styles/Requests.css'
 import {
   formatRequestDate,
@@ -14,9 +15,9 @@ import {
 
 const QUICK_ACTIONS = [
   { label: 'New Relief Request', icon: '➕', action: 'newRequest' },
-  { label: 'View Map', icon: '🗺️', action: 'soon' },
-  { label: 'Add Donation', icon: '🎁', action: 'soon' },
-  { label: 'Generate Report', icon: '📄', action: 'soon' },
+  { label: 'View Map', icon: '🗺️', action: 'viewMap' },
+  { label: 'Add Donation', icon: '🎁', action: 'addDonation' },
+  { label: 'Generate Report', icon: '📄', action: 'generateReport' },
 ]
 
 function getInitials(name) {
@@ -37,6 +38,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [toast, setToast] = useState('')
+  const [showReportModal, setShowReportModal] = useState(false)
 
   useEffect(() => {
     if (!user?.uid) return
@@ -86,6 +88,18 @@ export default function Home() {
   const handleQuickAction = (action) => {
     if (action === 'newRequest') {
       navigate('/requests', { state: { openForm: true } })
+      return
+    }
+    if (action === 'viewMap') {
+      navigate('/map')
+      return
+    }
+    if (action === 'addDonation') {
+      navigate('/donations', { state: { openForm: true } })
+      return
+    }
+    if (action === 'generateReport') {
+      setShowReportModal(true)
       return
     }
     setToast('This feature is coming soon.')
@@ -186,6 +200,14 @@ export default function Home() {
           </p>
         )}
       </div>
+
+      <GenerateReportModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        initialRequests={requests}
+        user={user}
+        profile={profile}
+      />
     </DashboardLayout>
   )
 }

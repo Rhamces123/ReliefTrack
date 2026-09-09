@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getUserProfile } from '../firebase/users'
 import {
@@ -70,6 +71,7 @@ function CountUp({ to, suffix = '' }) {
 
 export default function Donations() {
   const { user } = useAuth()
+  const location = useLocation()
   const [profile, setProfile] = useState(null)
   const [donations, setDonations] = useState([])
   const [loading, setLoading] = useState(true)
@@ -88,12 +90,24 @@ export default function Donations() {
   const email = profile?.email || user?.email || ''
 
   useEffect(() => {
+    if (location.state?.openForm) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setEditingDocId(null)
+      setForm(EMPTY_FORM)
+      setShowForm(true)
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state?.openForm])
+
+  useEffect(() => {
     if (!user?.uid) return
     getUserProfile(user.uid).then(setProfile).catch(() => setProfile(null))
   }, [user?.uid])
 
   useEffect(() => {
-    setLoading(true); setError('')
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLoading(true)
+    setError('')
     const unsub = subscribeDonations(
       (data) => { setDonations(data); setLoading(false) },
       (err) => { setError(err.message || 'Failed to load donations.'); setLoading(false) }
