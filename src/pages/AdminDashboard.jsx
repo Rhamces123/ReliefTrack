@@ -8,6 +8,7 @@ import {
   deleteUserProfile,
   syncAuthUsersToFirestore,
   addUserAccount,
+  INITIAL_AUTH_USERS,
 } from '../firebase/users'
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/AdminDashboard.css'
@@ -15,7 +16,12 @@ import '../styles/AdminDashboard.css'
 export default function AdminDashboard() {
   const { user } = useAuth()
   const [profile, setProfile] = useState(null)
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState(() =>
+    INITIAL_AUTH_USERS.map((a) => ({
+      docId: `user_${a.email.replace(/[^a-zA-Z0-9]/g, '_')}`,
+      ...a,
+    }))
+  )
   const [loading, setLoading] = useState(true)
 
   // Filters

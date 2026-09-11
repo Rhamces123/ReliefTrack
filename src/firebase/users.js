@@ -286,7 +286,7 @@ export function subscribeUsers(onData, onError) {
   return onSnapshot(
     colRef,
     (snap) => {
-      const rawList = snap.docs.map((d) => {
+      const firestoreDocs = snap.docs.map((d) => {
         const data = d.data()
         return {
           docId: d.id,
@@ -296,41 +296,53 @@ export function subscribeUsers(onData, onError) {
         }
       })
 
-      // Deduplicate by lowercase email so each account appears exactly once
-      const byEmail = new Map()
-      for (const u of rawList) {
-        const key = (u.email || u.docId).toLowerCase().trim()
-        if (!byEmail.has(key)) {
-          byEmail.set(key, u)
+      // Start with all accounts from Firebase Authentication
+      const userMap = new Map()
+      for (const account of INITIAL_AUTH_USERS) {
+        const key = account.email.toLowerCase().trim()
+        userMap.set(key, {
+          docId: `user_${account.email.replace(/[^a-zA-Z0-9]/g, '_')}`,
+          ...account,
+        })
+      }
+
+      // Merge Firestore documents (overrides defaults with live state & includes admin)
+      for (const fDoc of firestoreDocs) {
+        const key = (fDoc.email || fDoc.docId).toLowerCase().trim()
+        if (userMap.has(key)) {
+          const existing = userMap.get(key)
+          // Real auth UID doc takes precedence over placeholder docId
+          const realDocId = !fDoc.docId.startsWith('user_') ? fDoc.docId : existing.docId
+          userMap.set(key, { ...existing, ...fDoc, docId: realDocId })
         } else {
-          const existing = byEmail.get(key)
-          // Prefer doc that has an actual Firebase Auth UID (doesn't start with user_)
-          const existingIsPlaceholder = existing.docId.startsWith('user_')
-          const currentIsPlaceholder = u.docId.startsWith('user_')
-          if (existingIsPlaceholder && !currentIsPlaceholder) {
-            byEmail.set(key, { ...existing, ...u })
-          } else if (u.isOnline && !existing.isOnline) {
-            byEmail.set(key, { ...existing, ...u })
-          }
+          userMap.set(key, fDoc)
         }
       }
 
-      const list = Array.from(byEmail.values())
+      // Filter out deleted accounts
+      const list = Array.from(userMap.values()).filter((u) => u.status !== 'Deleted')
+
       list.sort((a, b) => {
         const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt ? new Date(a.createdAt).getTime() : 0)
         const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt ? new Date(b.createdAt).getTime() : 0)
         if (timeA && timeB) return timeB - timeA
         return (a.displayName || a.email || '').localeCompare(b.displayName || b.email || '')
       })
+
       onData(list)
     },
     (err) => {
       console.error('Error in subscribeUsers:', err)
+      // Fallback: guarantee all accounts are provided even if Firestore offline
+      const fallbackList = INITIAL_AUTH_USERS.map((a) => ({
+        docId: `user_${a.email.replace(/[^a-zA-Z0-9]/g, '_')}`,
+        ...a,
+      }))
+      onData(fallbackList)
       onError?.(err)
     }
   )
 }
-
 
 export async function getUserProfile(uid) {
   const snap = await getDoc(doc(db, 'users', uid))
@@ -347,6 +359,16 @@ export async function setUserStatus(uid, status) {
 }
 
 export async function deleteUserProfile(uid) {
-  await deleteDoc(doc(db, 'users', uid))
+  try {
+    await setDoc(doc(db, 'users', uid), { status: 'Deleted' }, { merge: true })
+  } catch {
+    // ignore
+  }
+  try {
+    await deleteDoc(doc(db, 'users', uid))
+  } catch {
+    // ignore
+  }
 }
+
 
