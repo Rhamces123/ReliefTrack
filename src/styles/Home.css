@@ -1179,6 +1179,47 @@ a.dashboard-nav-item {
   display: none;
 }
 
+/* Impact Gauge in Donations (Light & Dark) */
+.theme-light-blue .don-impact {
+  background: #ffffff !important;
+  border: 1.5px solid #c8ddf0 !important;
+  box-shadow: 0 4px 14px rgba(15, 45, 80, 0.05) !important;
+}
+
+.theme-light-blue .don-ring-val {
+  fill: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+.theme-light-blue .don-ring-lbl {
+  fill: #475569 !important;
+  font-weight: 700 !important;
+}
+
+.theme-light-blue .don-ring-bg {
+  stroke: #e2eaf3 !important;
+}
+
+.dashboard.theme-dark .don-impact {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+}
+
+.dashboard.theme-dark .don-ring-val {
+  fill: #ffffff !important;
+  font-weight: 800 !important;
+}
+
+.dashboard.theme-dark .don-ring-lbl {
+  fill: rgba(255, 255, 255, 0.6) !important;
+  font-weight: 600 !important;
+}
+
+.dashboard.theme-dark .don-ring-bg {
+  stroke: rgba(255, 255, 255, 0.1) !important;
+}
+
 /* =========================================================
    RESPONSIVE LAYOUT BREAKPOINTS
    ========================================================= */

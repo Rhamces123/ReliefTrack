@@ -1,7 +1,8 @@
 /* =========================================================
    DONATIONS STYLES
    - High Contrast, Senior-Friendly Text Hierarchy
-   - Distinct White Cards with Sky-Blue Borders
+   - Full Support for Both Light Blue & Dark Themes
+   - Impact Gauge Circular Progress Styling
    ========================================================= */
 
 /* ───────── Ambient Orbs ───────── */
@@ -203,22 +204,44 @@
   position: relative;
   z-index: 1;
   margin-bottom: 20px;
-  padding: 18px 24px;
+  padding: 22px 28px;
   border-radius: 16px;
   background: #ffffff;
   border: 1.5px solid #c8ddf0;
-  box-shadow: 0 2px 10px rgba(15, 45, 80, 0.04);
+  box-shadow: 0 4px 14px rgba(15, 45, 80, 0.05);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .don-impact-inner {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 32px;
+  gap: 40px;
+  flex-wrap: wrap;
 }
 
 .don-ring {
   display: block;
+}
+
+.don-ring-bg {
+  stroke: #e2eaf3;
+}
+
+.don-ring-val {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  fill: #0f172a;
+}
+
+.don-ring-lbl {
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  fill: #475569;
 }
 
 /* ───────── Filter Tabs ───────── */
@@ -538,8 +561,9 @@
 }
 
 .dashboard.theme-dark .don-stat-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: none;
 }
 
 .dashboard.theme-dark .don-stat-card strong {
@@ -547,12 +571,59 @@
 }
 
 .dashboard.theme-dark .don-stat-card span {
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.65);
 }
 
+/* Dark Mode Impact Gauge */
+.dashboard.theme-dark .don-impact {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.dashboard.theme-dark .don-ring-bg {
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard.theme-dark .don-ring-val {
+  fill: #ffffff;
+}
+
+.dashboard.theme-dark .don-ring-lbl {
+  fill: rgba(255, 255, 255, 0.6);
+}
+
+/* Dark Mode Filter Tabs */
+.dashboard.theme-dark .don-filter-tab {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
+  box-shadow: none;
+}
+
+.dashboard.theme-dark .don-filter-tab:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .don-filter-tab.active {
+  background: linear-gradient(135deg, #7850ff, #00c8c8);
+  border-color: rgba(120, 80, 255, 0.6);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(120, 80, 255, 0.35);
+}
+
+/* Dark Mode Card Grid */
 .dashboard.theme-dark .don-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard.theme-dark .don-card:hover {
+  border-color: rgba(120, 80, 255, 0.5);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
 }
 
 .dashboard.theme-dark .don-agency {
@@ -560,24 +631,67 @@
 }
 
 .dashboard.theme-dark .don-items {
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.dashboard.theme-dark .don-qty-bar-wrap {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .dashboard.theme-dark .don-notes {
-  color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.03);
-  border-left: 2px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 3px solid rgba(255, 255, 255, 0.15);
 }
 
 .dashboard.theme-dark .don-tag {
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dashboard.theme-dark .don-card-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dashboard.theme-dark .don-entered {
   color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.dashboard.theme-dark .don-date {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* Dark Mode Action Buttons */
+.dashboard.theme-dark .don-action-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dashboard.theme-dark .don-edit-btn:hover:not(:disabled) {
+  background: rgba(120, 80, 255, 0.3);
+  border-color: rgba(120, 80, 255, 0.6);
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .don-del-btn:hover:not(:disabled) {
+  background: rgba(255, 80, 80, 0.3);
+  border-color: rgba(255, 80, 80, 0.6);
+  color: #ffb4b4;
+}
+
+.dashboard.theme-dark .don-empty h3 {
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .don-empty p {
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .dashboard.theme-dark .don-modal {
   background: rgba(20, 18, 30, 0.95) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
   color: #ffffff !important;
 }
 
@@ -586,17 +700,21 @@
 }
 
 .dashboard.theme-dark .don-modal-close {
-  color: rgba(255, 255, 255, 0.4) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.dashboard.theme-dark .don-modal-close:hover {
+  color: #ffffff !important;
 }
 
 /* Responsive */
 @media (max-width: 900px) {
   .don-stats { grid-template-columns: repeat(2, 1fr); }
-  .don-impact-inner { gap: 16px; }
+  .don-impact-inner { gap: 20px; }
 }
 @media (max-width: 768px) {
   .don-grid { grid-template-columns: 1fr; }
-  .don-impact-inner { gap: 8px; }
+  .don-impact-inner { gap: 16px; }
 }
 @media (max-width: 500px) {
   .don-stats { grid-template-columns: 1fr; }

@@ -41,13 +41,13 @@ function CircularProgress({ value, max, gradient, label }) {
   const pct = Math.min(value / max, 1)
   const offset = circ - pct * circ
   return (
-    <svg width="72" height="72" viewBox="0 0 72 72" className="don-ring">
-      <circle cx="36" cy="36" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
+    <svg width="76" height="76" viewBox="0 0 72 72" className="don-ring">
+      <circle cx="36" cy="36" r={r} fill="none" className="don-ring-bg" strokeWidth="5" />
       <circle cx="36" cy="36" r={r} fill="none" stroke="currentColor" strokeWidth="5"
         strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={offset}
         style={{ color: tintColor(gradient), transition: 'stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)' }} />
-      <text x="36" y="34" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="700">{value}</text>
-      <text x="36" y="48" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="8">{label}</text>
+      <text x="36" y="34" textAnchor="middle" className="don-ring-val">{value}</text>
+      <text x="36" y="48" textAnchor="middle" className="don-ring-lbl">{label}</text>
     </svg>
   )
 }
