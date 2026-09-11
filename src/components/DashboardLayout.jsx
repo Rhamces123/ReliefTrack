@@ -45,8 +45,27 @@ export default function DashboardLayout({ title, children, userLabel, userEmail 
   const displayName = userLabel || user?.displayName || user?.email?.split('@')[0] || 'User'
   const email = userEmail || user?.email || ''
 
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('relieftrack_theme') || 'light-blue'
+  })
+
+  useEffect(() => {
+    localStorage.setItem('relieftrack_theme', theme)
+    if (theme === 'dark') {
+      document.body.classList.add('theme-dark')
+      document.body.classList.remove('theme-light-blue')
+    } else {
+      document.body.classList.add('theme-light-blue')
+      document.body.classList.remove('theme-dark')
+    }
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme((t) => (t === 'light-blue' ? 'dark' : 'light-blue'))
+  }
+
   return (
-    <div className="dashboard">
+    <div className={`dashboard ${theme === 'dark' ? 'theme-dark' : 'theme-light-blue'}`}>
       <aside className="dashboard-sidebar">
         <div className="dashboard-brand">
           <img src={nagaLogo} alt="ReliefTrack" />
@@ -85,6 +104,14 @@ export default function DashboardLayout({ title, children, userLabel, userEmail 
         <header className="dashboard-topbar">
           <h1>{title}</h1>
           <div className="dashboard-topbar-actions">
+            <button
+              type="button"
+              className="dashboard-theme-toggle"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Switch to Eye-Comfort Light Blue' : 'Switch to Dark Mode'}
+            >
+              {theme === 'dark' ? '🌤️ Light Blue' : '🌙 Dark'}
+            </button>
             <div className="dashboard-user-meta">
               <div className="name">{displayName}</div>
               <div className="email">{email}</div>
