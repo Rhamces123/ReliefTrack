@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import {
   getUserProfile,
@@ -6,6 +6,8 @@ import {
   updateUserProfile,
   setUserStatus,
   deleteUserProfile,
+  syncAuthUsersToFirestore,
+  addUserAccount,
 } from '../firebase/users'
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/AdminDashboard.css'
@@ -27,6 +29,15 @@ export default function AdminDashboard() {
 
   const [holdTarget, setHoldTarget] = useState(null)
   const [isHolding, setIsHolding] = useState(false)
+
+  // Add User Modal
+  const [isAddUserOpen, setIsAddUserOpen] = useState(false)
+  const [newUserData, setNewUserData] = useState({ name: '', email: '', location: '', role: 'Member' })
+  const [isAddingUser, setIsAddingUser] = useState(false)
+
+  // Sync state
+  const [isSyncing, setIsSyncing] = useState(false)
+  const autoSyncedRef = useRef(false)
 
   // Feedback Toast
   const [toast, setToast] = useState(null)
@@ -58,14 +69,58 @@ export default function AdminDashboard() {
     return () => unsubUsers()
   }, [])
 
+  // Auto-sync missing accounts from Firebase Auth on initial load
+  useEffect(() => {
+    if (!loading && !autoSyncedRef.current) {
+      autoSyncedRef.current = true
+      syncAuthUsersToFirestore(users)
+        .then((addedCount) => {
+          if (addedCount > 0) {
+            showToast(`Synchronized ${addedCount} registered account${addedCount === 1 ? '' : 's'} from Firebase!`, 'success')
+          }
+        })
+        .catch((err) => {
+          console.error('Auto-sync error:', err)
+        })
+    }
+  }, [loading, users])
+
+  // Online Presence Helpers
+  const isUserOnline = (u) => {
+    // Current user is always online
+    if (user?.uid && u.docId === user.uid) return true
+    if (u.isOnline === false) return false
+    if (!u.lastActiveAt) return false
+    const ms = u.lastActiveAt?.toMillis
+      ? u.lastActiveAt.toMillis()
+      : (typeof u.lastActiveAt === 'number' ? u.lastActiveAt : new Date(u.lastActiveAt).getTime())
+    if (isNaN(ms)) return false
+    // Active within the last 3 minutes
+    return Date.now() - ms < 3 * 60 * 1000
+  }
+
+  const formatLastSeen = (u) => {
+    if (isUserOnline(u)) return 'Active now'
+    if (!u.lastActiveAt) return 'Offline'
+    const ms = u.lastActiveAt?.toMillis
+      ? u.lastActiveAt.toMillis()
+      : (typeof u.lastActiveAt === 'number' ? u.lastActiveAt : new Date(u.lastActiveAt).getTime())
+    if (isNaN(ms)) return 'Offline'
+    const diffSec = Math.floor((Date.now() - ms) / 1000)
+    if (diffSec < 60) return 'Just now'
+    if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`
+    if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`
+    return new Date(ms).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  }
+
   // User Management Summary Metrics
   const userStats = useMemo(() => {
     const total = users.length
-    const active = users.filter((u) => u.status !== 'On Hold').length
+    const online = users.filter((u) => isUserOnline(u)).length
     const onHold = users.filter((u) => u.status === 'On Hold').length
     const admins = users.filter((u) => u.role === 'Admin').length
-    return { total, active, onHold, admins }
-  }, [users])
+    return { total, online, onHold, admins }
+  }, [users, user?.uid])
 
   // Filtered Users List
   const filteredUsers = useMemo(() => {
@@ -77,15 +132,56 @@ export default function AdminDashboard() {
         (u.email && u.email.toLowerCase().includes(q)) ||
         (u.location && u.location.toLowerCase().includes(q))
 
-      const status = u.status === 'On Hold' ? 'On Hold' : 'Active'
-      const matchesStatus = statusFilter === 'All' || status === statusFilter
+      const online = isUserOnline(u)
+      const matchesStatus =
+        statusFilter === 'All' ||
+        (statusFilter === 'Online' && online) ||
+        (statusFilter === 'Offline' && !online) ||
+        (statusFilter === 'Active' && u.status !== 'On Hold') ||
+        (statusFilter === 'On Hold' && u.status === 'On Hold')
 
       const role = u.role === 'Admin' ? 'Admin' : 'Member'
       const matchesRole = roleFilter === 'All' || role === roleFilter
 
       return matchesSearch && matchesStatus && matchesRole
     })
-  }, [users, search, statusFilter, roleFilter])
+  }, [users, search, statusFilter, roleFilter, user?.uid])
+
+  // Manual Sync Button
+  const handleManualSync = async () => {
+    setIsSyncing(true)
+    try {
+      const addedCount = await syncAuthUsersToFirestore(users)
+      if (addedCount > 0) {
+        showToast(`Synchronized ${addedCount} account${addedCount === 1 ? '' : 's'} from Firebase Authentication!`)
+      } else {
+        showToast('All registered accounts are already up-to-date.', 'info')
+      }
+    } catch (err) {
+      console.error('Sync failed:', err)
+      showToast('Failed to synchronize accounts.', 'error')
+    } finally {
+      setIsSyncing(false)
+    }
+  }
+
+  // Add User Form Submission
+  const handleAddUserSubmit = async (e) => {
+    e.preventDefault()
+    if (!newUserData.email) return
+    setIsAddingUser(true)
+    try {
+      await addUserAccount(newUserData)
+      showToast(`User account ${newUserData.email} added successfully!`)
+      setIsAddUserOpen(false)
+      setNewUserData({ name: '', email: '', location: '', role: 'Member' })
+    } catch (err) {
+      console.error('Failed to add user account:', err)
+      showToast('Failed to add user account.', 'error')
+    } finally {
+      setIsAddingUser(false)
+    }
+  }
 
   // Toggle Role
   const toggleRole = async (targetUser) => {
@@ -188,10 +284,10 @@ export default function AdminDashboard() {
           <div className="admin-stat-value">{loading ? '—' : userStats.total}</div>
           <div className="admin-stat-label">Total Accounts</div>
         </div>
-        <div className="admin-stat-card">
+        <div className="admin-stat-card stat-online">
           <span className="admin-stat-icon">🟢</span>
-          <div className="admin-stat-value">{loading ? '—' : userStats.active}</div>
-          <div className="admin-stat-label">Active Users</div>
+          <div className="admin-stat-value text-online">{loading ? '—' : userStats.online}</div>
+          <div className="admin-stat-label">Online Now</div>
         </div>
         <div className="admin-stat-card">
           <span className="admin-stat-icon">⏸️</span>
@@ -211,11 +307,32 @@ export default function AdminDashboard() {
           <div>
             <h3>All Registered Accounts</h3>
             <p className="admin-section-subtitle">
-              {filteredUsers.length} of {users.length} account{users.length === 1 ? '' : 's'} displayed
+              {filteredUsers.length} of {users.length} account{users.length === 1 ? '' : 's'} displayed • {userStats.online} online
             </p>
           </div>
 
           <div className="admin-controls-bar">
+            {/* Action Buttons */}
+            <div className="admin-actions-group">
+              <button
+                type="button"
+                className="admin-btn-sync"
+                onClick={handleManualSync}
+                disabled={isSyncing}
+                title="Synchronize accounts from Firebase Authentication"
+              >
+                {isSyncing ? '⏳ Syncing...' : '🔄 Sync Accounts'}
+              </button>
+              <button
+                type="button"
+                className="admin-btn-add-user"
+                onClick={() => setIsAddUserOpen(true)}
+                title="Register a new user account"
+              >
+                ➕ Add Account
+              </button>
+            </div>
+
             <div className="admin-search-wrap">
               <span className="admin-search-icon">🔍</span>
               <input
@@ -244,7 +361,9 @@ export default function AdminDashboard() {
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
                 <option value="All">All Statuses</option>
-                <option value="Active">Active</option>
+                <option value="Online">🟢 Online Now</option>
+                <option value="Offline">⚪ Offline</option>
+                <option value="Active">Active Status</option>
                 <option value="On Hold">On Hold</option>
               </select>
 
@@ -289,7 +408,8 @@ export default function AdminDashboard() {
                   <th>Email</th>
                   <th>Location</th>
                   <th>Role</th>
-                  <th>Status</th>
+                  <th>Account</th>
+                  <th>Presence</th>
                   <th>Registered</th>
                   <th>Actions</th>
                 </tr>
@@ -298,13 +418,20 @@ export default function AdminDashboard() {
                 {filteredUsers.map((u) => {
                   const isCurrentUser = user?.uid === u.docId
                   const isHold = u.status === 'On Hold'
+                  const online = isUserOnline(u)
 
                   return (
-                    <tr key={u.docId || u.email} className={isHold ? 'row-on-hold' : ''}>
+                    <tr key={u.docId || u.email} className={`${isHold ? 'row-on-hold' : ''} ${online ? 'row-online' : ''}`}>
                       <td>
                         <div className="admin-user-cell">
-                          <div className={`admin-user-avatar ${u.role === 'Admin' ? 'avatar-admin' : ''}`}>
-                            {getInitials(u.displayName, u.email)}
+                          <div className="admin-avatar-wrap">
+                            <div className={`admin-user-avatar ${u.role === 'Admin' ? 'avatar-admin' : ''}`}>
+                              {getInitials(u.displayName, u.email)}
+                            </div>
+                            <span
+                              className={`admin-avatar-dot ${online ? 'online' : 'offline'}`}
+                              title={online ? 'Online now' : `Offline (${formatLastSeen(u)})`}
+                            />
                           </div>
                           <div>
                             <span className="admin-user-name">
@@ -335,6 +462,19 @@ export default function AdminDashboard() {
                         <span className={`admin-status-badge ${isHold ? 'badge-hold' : 'badge-active'}`}>
                           {isHold ? '⏸ On Hold' : '● Active'}
                         </span>
+                      </td>
+                      <td>
+                        {online ? (
+                          <span className="admin-presence-badge online" title="Currently active on ReliefTrack">
+                            <span className="presence-pulse-dot" />
+                            Online
+                          </span>
+                        ) : (
+                          <span className="admin-presence-badge offline" title={`Last active: ${formatLastSeen(u)}`}>
+                            <span className="presence-offline-dot" />
+                            {formatLastSeen(u)}
+                          </span>
+                        )}
                       </td>
                       <td className="admin-user-date">
                         {formatUserDate(u.createdAt)}
@@ -386,6 +526,84 @@ export default function AdminDashboard() {
           )}
         </div>
       </div>
+
+      {/* Add User Modal */}
+      {isAddUserOpen && (
+        <div className="admin-modal-overlay" onClick={() => !isAddingUser && setIsAddUserOpen(false)}>
+          <div className="admin-modal-dialog" onClick={(e) => e.stopPropagation()}>
+            <div className="admin-modal-header primary">
+              <span className="admin-modal-icon">👤</span>
+              <h4>Add User Account</h4>
+            </div>
+            <form onSubmit={handleAddUserSubmit}>
+              <div className="admin-modal-body">
+                <p style={{ margin: '0 0 16px', fontSize: '13px', color: 'rgba(255,255,255,0.7)' }}>
+                  Register or track an account in the ReliefTrack User Management dashboard.
+                </p>
+                <div className="admin-form-group">
+                  <label className="admin-form-label">Email Address *</label>
+                  <input
+                    type="email"
+                    required
+                    className="admin-form-input"
+                    placeholder="user@example.com"
+                    value={newUserData.email}
+                    onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
+                  />
+                </div>
+                <div className="admin-form-group">
+                  <label className="admin-form-label">Full Name</label>
+                  <input
+                    type="text"
+                    className="admin-form-input"
+                    placeholder="e.g. Maria Santos"
+                    value={newUserData.name}
+                    onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })}
+                  />
+                </div>
+                <div className="admin-form-group">
+                  <label className="admin-form-label">Location</label>
+                  <input
+                    type="text"
+                    className="admin-form-input"
+                    placeholder="e.g. Naga, Camarines Sur"
+                    value={newUserData.location}
+                    onChange={(e) => setNewUserData({ ...newUserData, location: e.target.value })}
+                  />
+                </div>
+                <div className="admin-form-group">
+                  <label className="admin-form-label">Role</label>
+                  <select
+                    className="admin-form-input"
+                    value={newUserData.role}
+                    onChange={(e) => setNewUserData({ ...newUserData, role: e.target.value })}
+                  >
+                    <option value="Member">Member</option>
+                    <option value="Admin">Admin</option>
+                  </select>
+                </div>
+              </div>
+              <div className="admin-modal-actions">
+                <button
+                  type="button"
+                  className="admin-modal-btn cancel"
+                  onClick={() => setIsAddUserOpen(false)}
+                  disabled={isAddingUser}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="admin-modal-btn confirm"
+                  disabled={isAddingUser}
+                >
+                  {isAddingUser ? 'Adding...' : 'Add Account'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Delete Confirmation Modal */}
       {deleteTarget && (

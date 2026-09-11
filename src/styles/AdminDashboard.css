@@ -78,6 +78,16 @@
   border-color: rgba(255, 255, 255, 0.24);
 }
 
+.admin-stat-card.stat-online {
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.admin-stat-value.text-online {
+  color: #34d399;
+  text-shadow: 0 0 15px rgba(52, 211, 153, 0.4);
+}
+
 .admin-stat-icon {
   font-size: 24px;
   margin-bottom: 12px;
@@ -139,6 +149,58 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
+}
+
+.admin-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-btn-sync {
+  padding: 9px 15px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 200, 200, 0.4);
+  background: rgba(0, 200, 200, 0.12);
+  color: #67e8f9;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-btn-sync:hover:not(:disabled) {
+  background: rgba(0, 200, 200, 0.25);
+  border-color: rgba(0, 200, 200, 0.7);
+  transform: translateY(-1px);
+}
+
+.admin-btn-sync:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-btn-add-user {
+  padding: 9px 15px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #7850ff 0%, #00c8c8 100%);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(120, 80, 255, 0.35);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.admin-btn-add-user:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(120, 80, 255, 0.5);
 }
 
 .admin-search-wrap {
@@ -231,6 +293,30 @@
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.admin-avatar-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.admin-avatar-dot {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #161036;
+}
+
+.admin-avatar-dot.online {
+  background: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+}
+
+.admin-avatar-dot.offline {
+  background: #64748b;
 }
 
 .admin-user-avatar {
@@ -344,6 +430,67 @@
 
 .row-on-hold {
   background: rgba(245, 158, 11, 0.04);
+}
+
+.row-online {
+  background: rgba(16, 185, 129, 0.03);
+}
+
+/* Presence Badges */
+.admin-presence-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.admin-presence-badge.online {
+  background: rgba(16, 185, 129, 0.16);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #6ee7b7;
+  font-weight: 600;
+}
+
+.admin-presence-badge.offline {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 11px;
+}
+
+.presence-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: presencePulse 1.8s infinite;
+}
+
+@keyframes presencePulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.presence-offline-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #64748b;
 }
 
 /* Role Badges */
@@ -663,6 +810,44 @@
   box-shadow: 0 6px 18px rgba(5, 150, 105, 0.6);
 }
 
+/* Add User Form */
+.admin-form-group {
+  margin-bottom: 16px;
+}
+
+.admin-form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.admin-form-input:focus {
+  border-color: rgba(120, 80, 255, 0.7);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+select.admin-form-input option {
+  background: #140d30;
+  color: #fff;
+}
+
 /* Light Blue Theme Adjustments */
 body.theme-light-blue .admin-header-text h2 {
   color: #0f172a;
@@ -678,8 +863,17 @@ body.theme-light-blue .admin-stat-card {
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
 }
 
+body.theme-light-blue .admin-stat-card.stat-online {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+}
+
 body.theme-light-blue .admin-stat-value {
   color: #0f172a;
+}
+
+body.theme-light-blue .admin-stat-value.text-online {
+  color: #059669;
 }
 
 body.theme-light-blue .admin-stat-label {
@@ -701,6 +895,22 @@ body.theme-light-blue .admin-section-header h3 {
 }
 
 body.theme-light-blue .admin-section-subtitle {
+  color: #64748b;
+}
+
+body.theme-light-blue .admin-btn-sync {
+  background: #e0f2fe;
+  border-color: #7dd3fc;
+  color: #0284c7;
+}
+
+body.theme-light-blue .admin-avatar-dot {
+  border-color: #ffffff;
+}
+
+body.theme-light-blue .admin-presence-badge.offline {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
   color: #64748b;
 }
 
@@ -744,6 +954,21 @@ body.theme-light-blue .admin-user-date {
 body.theme-light-blue .admin-modal-dialog {
   background: #ffffff;
   border-color: #cbd5e1;
+}
+
+body.theme-light-blue .admin-form-label {
+  color: #475569;
+}
+
+body.theme-light-blue .admin-form-input {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+body.theme-light-blue select.admin-form-input option {
+  background: #ffffff;
+  color: #0f172a;
 }
 
 body.theme-light-blue .admin-modal-body p {

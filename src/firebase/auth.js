@@ -8,7 +8,8 @@ import {
   signOut,
   sendPasswordResetEmail,
 } from 'firebase/auth'
-import { auth } from '../firebase.js'
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore'
+import { auth, db } from '../firebase.js'
 
 const googleProvider = new GoogleAuthProvider()
 googleProvider.setCustomParameters({ prompt: 'select_account' })
@@ -41,5 +42,17 @@ export async function handleRedirectResult() {
 }
 
 export async function signOutUser() {
+  const currentUid = auth.currentUser?.uid
+  if (currentUid) {
+    try {
+      await setDoc(doc(db, 'users', currentUid), {
+        isOnline: false,
+        lastActiveAt: serverTimestamp(),
+      }, { merge: true })
+    } catch {
+      // non-fatal
+    }
+  }
   await signOut(auth)
 }
+

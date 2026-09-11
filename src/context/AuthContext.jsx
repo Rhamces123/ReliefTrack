@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
-import { doc, onSnapshot } from 'firebase/firestore'
+import { doc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore'
 import { auth, db } from '../firebase.js'
 import { handleRedirectResult, signOutUser, sendPasswordReset } from '../firebase/auth'
 import { ensureUserProfile } from '../firebase/users'
@@ -204,6 +204,78 @@ export function AuthProvider({ children }) {
       console.error('Profile snapshot error:', err)
     })
     return () => unsub()
+  }, [user?.uid])
+
+  // Real-time online presence heartbeat
+  useEffect(() => {
+    if (!user?.uid) return
+
+    const userRef = doc(db, 'users', user.uid)
+
+    // Mark online immediately
+    setDoc(userRef, {
+      isOnline: true,
+      lastActiveAt: serverTimestamp(),
+    }, { merge: true }).catch(() => {})
+
+    // Periodic heartbeat every 45s while tab is visible
+    const heartbeatTimer = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        setDoc(userRef, {
+          isOnline: true,
+          lastActiveAt: serverTimestamp(),
+        }, { merge: true }).catch(() => {})
+      }
+    }, 45000)
+
+    // Throttled activity listener (clicks, mouse, typing)
+    let lastActivity = Date.now()
+    const handleActivity = () => {
+      const now = Date.now()
+      if (now - lastActivity > 40000) {
+        lastActivity = now
+        setDoc(userRef, {
+          isOnline: true,
+          lastActiveAt: serverTimestamp(),
+        }, { merge: true }).catch(() => {})
+      }
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        setDoc(userRef, {
+          isOnline: true,
+          lastActiveAt: serverTimestamp(),
+        }, { merge: true }).catch(() => {})
+      }
+    }
+
+    const handleBeforeUnload = () => {
+      setDoc(userRef, {
+        isOnline: false,
+        lastActiveAt: serverTimestamp(),
+      }, { merge: true }).catch(() => {})
+    }
+
+    window.addEventListener('mousemove', handleActivity)
+    window.addEventListener('keydown', handleActivity)
+    window.addEventListener('click', handleActivity)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => {
+      clearInterval(heartbeatTimer)
+      window.removeEventListener('mousemove', handleActivity)
+      window.removeEventListener('keydown', handleActivity)
+      window.removeEventListener('click', handleActivity)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+      // When component teardown / logging out
+      setDoc(userRef, {
+        isOnline: false,
+        lastActiveAt: serverTimestamp(),
+      }, { merge: true }).catch(() => {})
+    }
   }, [user?.uid])
 
   const isAccountOnHold = !!(userProfile && userProfile.status === 'On Hold' && userProfile.role !== 'Admin')
