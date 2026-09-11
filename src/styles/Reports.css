@@ -1,20 +1,28 @@
 @import './Requests.css';
 
+/* =========================================================
+   REPORTS STYLES
+   - High Contrast, Senior-Friendly Text Hierarchy
+   - Distinct White Stat Cards & Visual Progress Bars
+   ========================================================= */
+
 .reports-header {
   margin-bottom: 24px;
 }
 
 .reports-header-text h2 {
-  font-size: 22px;
-  font-weight: 500;
-  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
   margin: 0 0 6px;
+  letter-spacing: -0.4px;
 }
 
 .reports-header-text p {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  color: #475569;
   margin: 0;
+  line-height: 1.5;
 }
 
 .reports-stats {
@@ -25,15 +33,22 @@
 }
 
 .reports-stat-card {
-  background: rgba(255, 255, 255, 0.09);
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #ffffff;
+  border: 1.5px solid #c8ddf0;
   border-radius: 14px;
   padding: 20px;
+  box-shadow: 0 4px 14px rgba(15, 45, 80, 0.05);
+  transition: transform 0.15s ease, border-color 0.2s ease;
+}
+
+.reports-stat-card:hover {
+  border-color: #93c5fd;
+  transform: translateY(-2px);
 }
 
 .reports-stat-card.warn {
-  border-color: rgba(255, 100, 100, 0.4);
+  border-color: #fca5a5;
+  background: #fffafa;
 }
 
 .reports-stat-icon {
@@ -43,19 +58,20 @@
 
 .reports-stat-value {
   font-size: 28px;
-  font-weight: 600;
-  color: #fff;
+  font-weight: 800;
+  color: #0f172a;
   line-height: 1;
   margin-bottom: 6px;
 }
 
 .reports-stat-card.warn .reports-stat-value {
-  color: #ffb4b4;
+  color: #dc2626;
 }
 
 .reports-stat-label {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+  color: #475569;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -68,25 +84,27 @@
 }
 
 .reports-card {
-  background: rgba(255, 255, 255, 0.09);
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #ffffff;
+  border: 1.5px solid #c8ddf0;
   border-radius: 16px;
   padding: 24px;
+  box-shadow: 0 4px 14px rgba(15, 45, 80, 0.05);
 }
 
 .reports-card h3 {
-  font-size: 16px;
-  font-weight: 500;
-  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
   margin: 0 0 20px;
+  letter-spacing: -0.3px;
 }
 
 .reports-empty {
   text-align: center;
   padding: 32px 16px;
-  color: rgba(255, 255, 255, 0.4);
+  color: #64748b;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .reports-bar-group {
@@ -105,22 +123,63 @@
   display: flex;
   justify-content: space-between;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.75);
+  font-weight: 600;
+  color: #1e293b;
 }
 
 .reports-bar-track {
-  height: 8px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.08);
+  height: 10px;
+  border-radius: 6px;
+  background: #e2eaf3;
   overflow: hidden;
 }
 
 .reports-bar-fill {
   height: 100%;
-  border-radius: 4px;
-  background: linear-gradient(90deg, #7850ff, #00c8c8);
+  border-radius: 6px;
+  background: linear-gradient(90deg, #1d4ed8, #0284c7);
   transition: width 0.4s ease;
   min-width: 0;
+}
+
+/* =========================================================
+   DARK THEME OVERRIDES FOR REPORTS
+   ========================================================= */
+
+.dashboard.theme-dark .reports-header-text h2,
+.dashboard.theme-dark .reports-card h3 {
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .reports-header-text p {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.dashboard.theme-dark .reports-stat-card,
+.dashboard.theme-dark .reports-card {
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard.theme-dark .reports-stat-value {
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .reports-stat-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.dashboard.theme-dark .reports-bar-label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dashboard.theme-dark .reports-bar-track {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dashboard.theme-dark .reports-bar-fill {
+  background: linear-gradient(90deg, #7850ff, #00c8c8);
 }
 
 @media (max-width: 1024px) {

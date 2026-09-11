@@ -736,10 +736,45 @@ a.dashboard-nav-item {
 /* Select Elements */
 .theme-light-blue select.requests-status-select,
 .theme-light-blue select.pri-filter,
+.theme-light-blue select.benef-filter,
 .theme-light-blue .settings-input {
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  color: #0f172a;
+  background: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+/* Beneficiary Card Overrides in Light Theme */
+.theme-light-blue .benef-card {
+  background: #ffffff !important;
+  border: 1.5px solid #c8ddf0 !important;
+  box-shadow: 0 4px 14px rgba(15, 45, 80, 0.05) !important;
+}
+
+.theme-light-blue .benef-card-title h3 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+.theme-light-blue .benef-card-members {
+  color: #1e40af !important;
+  background: #eff6ff !important;
+  border: 1px solid #bfdbfe !important;
+  font-weight: 700 !important;
+}
+
+.theme-light-blue .benef-label {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+.theme-light-blue .benef-card-row span:not(.benef-label) {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+.theme-light-blue .benef-notes {
+  color: #334155 !important;
 }
 
 /* Secondary Button */

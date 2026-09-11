@@ -1,5 +1,11 @@
 @import './Requests.css';
 
+/* =========================================================
+   INVENTORY STYLES
+   - High Contrast, Senior-Friendly Text Hierarchy
+   - Accessible Category Badges and Summary Chips
+   ========================================================= */
+
 .inventory-summary {
   display: flex;
   flex-wrap: wrap;
@@ -8,59 +14,72 @@
 }
 
 .inventory-summary-chip {
-  padding: 8px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.06);
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.75);
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 1.5px solid #c8ddf0;
+  background: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+  box-shadow: 0 2px 8px rgba(15, 45, 80, 0.04);
+  display: inline-flex;
+  align-items: center;
 }
 
 .inventory-summary-chip strong {
-  color: #fff;
-  font-weight: 500;
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 16px;
+  margin-left: 6px;
 }
 
 .inventory-summary-chip.low-stock strong {
-  color: #ffb4b4;
+  color: #dc2626;
 }
 
+/* Category Badges with Accessible Contrast */
 .inventory-category-badge {
   display: inline-block;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 20px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 700;
+  letter-spacing: 0.2px;
 }
 
 .inventory-category-badge.food {
-  background: rgba(255, 180, 80, 0.2);
-  color: #ffc966;
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fdba74;
 }
 
 .inventory-category-badge.water {
-  background: rgba(80, 180, 255, 0.2);
-  color: #7ec8ff;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #93c5fd;
 }
 
 .inventory-category-badge.medical {
-  background: rgba(255, 100, 120, 0.2);
-  color: #ff9aaa;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
 }
 
 .inventory-category-badge.shelter {
-  background: rgba(120, 200, 120, 0.2);
-  color: #8ee08e;
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #86efac;
 }
 
 .inventory-category-badge.other {
-  background: rgba(180, 160, 255, 0.2);
-  color: #c4b4ff;
+  background: #faf5ff;
+  color: #7e22ce;
+  border: 1px solid #d8b4fe;
 }
 
 .inventory-qty-low {
-  color: #ffb4b4;
-  font-weight: 500;
+  color: #dc2626;
+  font-weight: 700;
 }
 
 .inventory-notes-cell {
@@ -68,27 +87,34 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #334155;
+  font-weight: 500;
 }
 
 .inventory-viewonly-label {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.3);
+  color: #64748b;
   font-style: italic;
+  font-weight: 600;
 }
 
 .inventory-edit-btn {
   margin-right: 8px;
-  padding: 6px 10px;
+  padding: 7px 14px;
   border-radius: 8px;
-  border: 1px solid rgba(120, 80, 255, 0.35);
-  background: rgba(120, 80, 255, 0.15);
-  color: rgba(200, 180, 255, 0.95);
-  font-size: 12px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .inventory-edit-btn:hover:not(:disabled) {
-  background: rgba(120, 80, 255, 0.3);
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1e40af;
 }
 
 .inventory-edit-btn:disabled {
@@ -102,12 +128,13 @@
   gap: 12px;
 }
 
+/* Inventory Report Modal */
 .inventory-report-modal {
   max-width: 900px !important;
 }
 
 .inventory-report {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .inventory-report-header {
@@ -116,73 +143,164 @@
   align-items: flex-start;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #e2eaf3;
 }
 
 .inventory-report-header h3 {
-  font-size: 18px;
-  font-weight: 500;
-  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
   margin: 0 0 4px;
 }
 
 .inventory-report-header p {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  color: #475569;
   margin: 0;
 }
 
 .inventory-report-summary {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 20px;
 }
 
 .irs-item {
-  padding: 12px 14px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1.5px solid #c8ddf0;
+  box-shadow: 0 2px 8px rgba(15, 45, 80, 0.04);
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
 .irs-item span {
-  font-size: 10px;
+  font-size: 11px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
-  letter-spacing: 0.3px;
-}
-
-.irs-item strong {
-  font-size: 20px;
-  color: #fff;
+  color: #475569;
+  letter-spacing: 0.4px;
   font-weight: 600;
 }
 
-.irs-item.warn strong { color: #ffb4b4; }
+.irs-item strong {
+  font-size: 22px;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.irs-item.warn strong {
+  color: #dc2626;
+}
 
 .inventory-report-section {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .inventory-report-section h4 {
-  font-size: 14px;
-  font-weight: 500;
-  color: #fff;
-  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 12px;
 }
 
 .inventory-report-section h4 span {
-  font-weight: 400;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
+  font-size: 13px;
+  color: #475569;
 }
 
 .inventory-report-section.warn h4 {
+  color: #dc2626;
+}
+
+/* =========================================================
+   DARK THEME OVERRIDES FOR INVENTORY
+   ========================================================= */
+
+.dashboard.theme-dark .inventory-summary-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.75);
+  box-shadow: none;
+}
+
+.dashboard.theme-dark .inventory-summary-chip strong {
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .inventory-summary-chip.low-stock strong {
   color: #ffb4b4;
+}
+
+.dashboard.theme-dark .inventory-category-badge.food {
+  background: rgba(255, 180, 80, 0.2);
+  color: #ffc966;
+  border-color: rgba(255, 180, 80, 0.35);
+}
+
+.dashboard.theme-dark .inventory-category-badge.water {
+  background: rgba(80, 180, 255, 0.2);
+  color: #7ec8ff;
+  border-color: rgba(80, 180, 255, 0.35);
+}
+
+.dashboard.theme-dark .inventory-category-badge.medical {
+  background: rgba(255, 100, 120, 0.2);
+  color: #ff9aaa;
+  border-color: rgba(255, 100, 120, 0.35);
+}
+
+.dashboard.theme-dark .inventory-category-badge.shelter {
+  background: rgba(120, 200, 120, 0.2);
+  color: #8ee08e;
+  border-color: rgba(120, 200, 120, 0.35);
+}
+
+.dashboard.theme-dark .inventory-category-badge.other {
+  background: rgba(180, 160, 255, 0.2);
+  color: #c4b4ff;
+  border-color: rgba(180, 160, 255, 0.35);
+}
+
+.dashboard.theme-dark .inventory-qty-low {
+  color: #ffb4b4;
+}
+
+.dashboard.theme-dark .inventory-notes-cell {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dashboard.theme-dark .inventory-edit-btn {
+  background: rgba(120, 80, 255, 0.2);
+  border: 1px solid rgba(120, 80, 255, 0.4);
+  color: #c4b5fd;
+}
+
+.dashboard.theme-dark .inventory-edit-btn:hover:not(:disabled) {
+  background: rgba(120, 80, 255, 0.35);
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .inventory-report-header h3,
+.dashboard.theme-dark .inventory-report-section h4 {
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .irs-item {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+.dashboard.theme-dark .irs-item strong {
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .irs-item span {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 @media print {
@@ -214,13 +332,12 @@
 }
 
 @media (max-width: 480px) {
-.requests-header-actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.inventory-form-row {
+  .requests-header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .inventory-form-row {
     grid-template-columns: 1fr;
   }
 }

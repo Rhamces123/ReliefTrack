@@ -1,24 +1,33 @@
 @import './Requests.css';
 @import './Inventory.css';
 
+/* =========================================================
+   BENEFICIARIES STYLES
+   - High Contrast, Senior-Friendly Text Hierarchy
+   - Distinct White Cards with Sky-Blue Borders
+   - Accessible Badges and Controls
+   ========================================================= */
+
 .benef-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .benef-header-text h2 {
-  font-size: 22px;
-  font-weight: 500;
-  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
   margin: 0 0 6px;
+  letter-spacing: -0.4px;
 }
 
 .benef-header-text p {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  color: #475569;
   margin: 0;
+  line-height: 1.5;
 }
 
 .benef-header-actions {
@@ -27,79 +36,124 @@
   align-items: center;
 }
 
+/* Summary Chips */
 .benef-summary {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .benef-chip {
-  padding: 8px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.06);
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.75);
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 1.5px solid #c8ddf0;
+  background: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+  box-shadow: 0 2px 8px rgba(15, 45, 80, 0.04);
+  display: inline-flex;
+  align-items: center;
 }
 
 .benef-chip strong {
-  color: #fff;
-  font-weight: 500;
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 16px;
+  margin-left: 6px;
 }
 
+/* Toolbar Controls */
 .benef-toolbar {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 
 .benef-search {
   flex: 1;
-  max-width: 320px;
-  padding: 10px 14px;
+  max-width: 360px;
+  padding: 11px 16px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
-  font-size: 13px;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 500;
   outline: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.benef-search:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 .benef-search::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: #64748b;
 }
 
 .benef-filter {
-  padding: 10px 14px;
+  padding: 11px 16px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.06);
-  color: gray;
-  font-size: 13px;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 600;
   outline: none;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.benef-filter:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Container & Grid */
+.dashboard-activity:has(.benef-grid) {
+  background: #f1f7fd;
+  border: 1.5px solid #c8ddf0;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(15, 45, 80, 0.04);
 }
 
 .benef-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
 }
 
+/* Individual Beneficiary Card */
 .benef-card {
-  background: rgba(255, 255, 255, 0.09);
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #ffffff;
+  border: 1.5px solid #c8ddf0;
   border-radius: 16px;
-  padding: 18px 20px;
-  transition: border-color 0.2s;
+  padding: 20px 22px;
+  box-shadow: 0 4px 14px rgba(15, 45, 80, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.benef-card:hover {
+  border-color: #93c5fd;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(15, 45, 80, 0.1);
 }
 
 .benef-card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  gap: 8px;
 }
 
 .benef-card-title {
@@ -107,83 +161,316 @@
 }
 
 .benef-card-title h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 8px;
+  letter-spacing: -0.3px;
 }
 
+/* Members pill */
+.benef-card-members {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e40af;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* Badges with accessible contrast */
 .benef-class-badge {
   display: inline-block;
   padding: 3px 10px;
   border-radius: 12px;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 700;
+  letter-spacing: 0.2px;
 }
 
-.benef-class-badge.pregnant { background: rgba(255, 100, 150, 0.2); color: #ff9abb; }
-.benef-class-badge.elderly { background: rgba(180, 160, 255, 0.2); color: #c4b4ff; }
-.benef-class-badge.pwd { background: rgba(255, 180, 80, 0.2); color: #ffc966; }
-.benef-class-badge.child { background: rgba(80, 200, 255, 0.2); color: #7ec8ff; }
-.benef-class-badge.solo-parent { background: rgba(120, 200, 120, 0.2); color: #8ee08e; }
-.benef-class-badge.none { background: rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.5); }
+.benef-class-badge.pregnant {
+  background: #fdf2f8;
+  color: #9d174d;
+  border: 1px solid #fbcfe8;
+}
+
+.benef-class-badge.elderly {
+  background: #f5f3ff;
+  color: #5b21b6;
+  border: 1px solid #ddd6fe;
+}
+
+.benef-class-badge.pwd {
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.benef-class-badge.child {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.benef-class-badge.solo-parent {
+  background: #ecfeff;
+  color: #0e7490;
+  border: 1px solid #a5f3fc;
+}
+
+.benef-class-badge.none {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
 
 .benef-econ-badge {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 8px;
-  font-size: 10px;
-  font-weight: 500;
-  margin-left: 4px;
-}
-.benef-econ-badge.financially-incapable { background: rgba(255, 70, 70, 0.2); color: #ff7070; border: 1px solid rgba(255, 70, 70, 0.25); }
-.benef-econ-badge.lower-middle { background: rgba(255, 180, 50, 0.2); color: #ffb833; border: 1px solid rgba(255, 180, 50, 0.25); }
-.benef-econ-badge.middle { background: rgba(80, 180, 255, 0.2); color: #6bbaff; border: 1px solid rgba(80, 180, 255, 0.25); }
-.benef-econ-badge.upper-middle { background: rgba(120, 220, 120, 0.2); color: #7ddb7d; border: 1px solid rgba(120, 220, 120, 0.25); }
-.benef-econ-badge.wealthy { background: rgba(220, 200, 80, 0.2); color: #d4c44a; border: 1px solid rgba(220, 200, 80, 0.25); }
-
-.benef-card-members {
-  font-size: 24px;
+  font-size: 11px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.2);
-  white-space: nowrap;
-  margin-left: 12px;
+  margin-left: 6px;
+  letter-spacing: 0.2px;
 }
 
+.benef-econ-badge.financially-incapable {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.benef-econ-badge.lower-middle {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+
+.benef-econ-badge.middle {
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #93c5fd;
+}
+
+.benef-econ-badge.upper-middle {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.benef-econ-badge.wealthy {
+  background: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #fde047;
+}
+
+/* Card Body & Rows */
 .benef-card-body {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex: 1;
 }
 
 .benef-card-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #f1f5f9;
   font-size: 13px;
 }
 
+.benef-card-row:last-child {
+  border-bottom: none;
+}
+
 .benef-label {
-  color: rgba(255, 255, 255, 0.4);
+  color: #475569;
   font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.benef-card-row span:not(.benef-label) {
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .benef-notes {
-  color: rgba(255, 255, 255, 0.5);
+  color: #334155;
   font-style: italic;
+  font-weight: 500;
   max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* Card Action Buttons */
 .benef-card-actions {
   display: flex;
-  gap: 8px;
-  padding-top: 10px;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid #e2eaf3;
+  margin-top: auto;
+}
+
+.benef-card-actions .inventory-edit-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  text-align: center;
+}
+
+.benef-card-actions .inventory-edit-btn:hover:not(:disabled) {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1e40af;
+}
+
+.benef-card-actions .requests-delete-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #fca5a5;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 0;
+  flex: 1;
+  text-align: center;
+}
+
+.benef-card-actions .requests-delete-btn:hover:not(:disabled) {
+  background: #fecaca;
+  border-color: #f87171;
+  color: #991b1b;
+}
+
+/* =========================================================
+   DARK THEME OVERRIDES FOR BENEFICIARIES
+   ========================================================= */
+
+.dashboard.theme-dark .benef-header-text h2 {
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .benef-header-text p {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.dashboard.theme-dark .benef-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
+  box-shadow: none;
+}
+
+.dashboard.theme-dark .benef-chip strong {
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .benef-search {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .benef-search::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.dashboard.theme-dark .benef-filter {
+  background: rgba(20, 15, 50, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .dashboard-activity:has(.benef-grid) {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dashboard.theme-dark .benef-card {
+  background: rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard.theme-dark .benef-card:hover {
+  border-color: rgba(120, 80, 255, 0.5);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+}
+
+.dashboard.theme-dark .benef-card-title h3 {
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .benef-card-members {
+  color: #c4b5fd;
+  background: rgba(120, 80, 255, 0.25);
+  border: 1px solid rgba(120, 80, 255, 0.4);
+}
+
+.dashboard.theme-dark .benef-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.dashboard.theme-dark .benef-card-row span:not(.benef-label) {
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .benef-card-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dashboard.theme-dark .benef-notes {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.dashboard.theme-dark .benef-card-actions {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.dashboard.theme-dark .benef-card-actions .inventory-edit-btn {
+  background: rgba(120, 80, 255, 0.2);
+  border: 1px solid rgba(120, 80, 255, 0.4);
+  color: #c4b5fd;
+}
+
+.dashboard.theme-dark .benef-card-actions .inventory-edit-btn:hover:not(:disabled) {
+  background: rgba(120, 80, 255, 0.35);
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .benef-card-actions .requests-delete-btn {
+  background: rgba(255, 80, 80, 0.2);
+  border: 1px solid rgba(255, 80, 80, 0.4);
+  color: #fca5a5;
+}
+
+.dashboard.theme-dark .benef-card-actions .requests-delete-btn:hover:not(:disabled) {
+  background: rgba(255, 80, 80, 0.35);
+  color: #ffffff;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .benef-toolbar {
     flex-direction: column;
