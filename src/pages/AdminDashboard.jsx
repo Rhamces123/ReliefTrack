@@ -32,7 +32,7 @@ export default function AdminDashboard() {
 
   // Add User Modal
   const [isAddUserOpen, setIsAddUserOpen] = useState(false)
-  const [newUserData, setNewUserData] = useState({ name: '', email: '', location: '', role: 'Member' })
+  const [newUserData, setNewUserData] = useState({ name: '', email: '', location: '', role: 'Member', password: '' })
   const [isAddingUser, setIsAddingUser] = useState(false)
 
   // Sync state
@@ -171,13 +171,18 @@ export default function AdminDashboard() {
     if (!newUserData.email) return
     setIsAddingUser(true)
     try {
-      await addUserAccount(newUserData)
-      showToast(`User account ${newUserData.email} added successfully!`)
+      const res = await addUserAccount(newUserData)
+      showToast(
+        res?.hasAuth
+          ? `User account ${res.email} created with login credentials! Visible in User Management.`
+          : `User account ${res?.email || newUserData.email} added and visible in User Management!`,
+        'success'
+      )
       setIsAddUserOpen(false)
-      setNewUserData({ name: '', email: '', location: '', role: 'Member' })
+      setNewUserData({ name: '', email: '', location: '', role: 'Member', password: '' })
     } catch (err) {
       console.error('Failed to add user account:', err)
-      showToast('Failed to add user account.', 'error')
+      showToast(err?.message || 'Failed to add user account.', 'error')
     } finally {
       setIsAddingUser(false)
     }
@@ -581,6 +586,19 @@ export default function AdminDashboard() {
                     <option value="Member">Member</option>
                     <option value="Admin">Admin</option>
                   </select>
+                </div>
+                <div className="admin-form-group">
+                  <label className="admin-form-label">Login Password (Optional)</label>
+                  <input
+                    type="password"
+                    className="admin-form-input"
+                    placeholder="Min. 6 characters (creates login credentials)"
+                    value={newUserData.password}
+                    onChange={(e) => setNewUserData({ ...newUserData, password: e.target.value })}
+                  />
+                  <small style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginTop: '4px', display: 'block' }}>
+                    Optional. If entered, creates credentials so the user can immediately sign in.
+                  </small>
                 </div>
               </div>
               <div className="admin-modal-actions">

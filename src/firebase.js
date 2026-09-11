@@ -28,4 +28,4 @@ isSupported().then((supported) => {
     analytics = getAnalytics(app)
   }
 })
-export { analytics }
+export { firebaseConfig, analytics }

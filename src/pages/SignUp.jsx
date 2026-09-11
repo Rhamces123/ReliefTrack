@@ -39,9 +39,15 @@ export default function SignUp() {
         email: user.email,
         displayName: displayName.trim() || user.displayName || '',
         role,
+        status: 'Active',
+        isOnline: true,
       })
-      const loc = await getBrowserLocation()
-      if (loc) updateUserProfile(user.uid, { location: loc })
+      try {
+        const loc = await getBrowserLocation()
+        if (loc) await updateUserProfile(user.uid, { location: loc })
+      } catch {
+        // Location lookup failure is non-fatal
+      }
       navigate(role === 'Admin' ? '/admin' : '/home')
     } catch (err) {
       const message = getAuthErrorMessage(err, 'Sign up failed. Please try again.')
