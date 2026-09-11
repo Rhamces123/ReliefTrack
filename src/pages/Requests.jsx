@@ -85,7 +85,9 @@ export default function Requests() {
           })
           const data = await res.json()
           if (data?.display_name) setForm((f) => ({ ...f, location: data.display_name }))
-        } catch {}
+        } catch {
+          // ignore reverse geocoding lookup failure
+        }
         setLocating(false)
       },
       () => setLocating(false),
@@ -314,74 +316,55 @@ export default function Requests() {
                 <th>Location</th>
                 <th>Family</th>
                 <th>Evac</th>
-                <th>Groups</th>
                 <th>Status</th>
                 <th>Date</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map((row) => {
-                const catEntries = row.categories ? Object.entries(row.categories).filter(([, v]) => v.count || v.needs) : []
-                const total = totalAffected(row.categories)
-                return (
-                  <tr
-                    key={row.docId}
-                    className="requests-row-clickable"
-                    onClick={() => setDetailRequest(row)}
-                  >
-                    <td className="requests-id-cell">{row.requestId}</td>
-                    <td><span className="requests-name-cell">{row.requesterName || '—'}</span></td>
-                    <td className="requests-loc-cell">{row.location}</td>
-                    <td>{row.familyMembers || '—'}</td>
-                    <td>{row.hasEvacuationCenter ? '✅' : '❌'}</td>
-                    <td>
-                      {catEntries.length > 0 ? (
-                        <div className="requests-cat-chips">
-                          {catEntries.map(([key]) => (
-                            <span key={key} className={`requests-cat-chip ${key}`}>
-                              {CATEGORY_ICONS[key]} {CATEGORY_LABELS[key]}
-                            </span>
-                          ))}
-                          {total > 0 && <span className="requests-cat-total">×{total}</span>}
-                        </div>
-                      ) : (
-                        <span className="requests-muted">—</span>
-                      )}
-                    </td>
-                    <td>
-                      <span className={`dashboard-status ${getStatusClass(row.status)}`}>
-                        {getStatusLabel(row.status)}
-                      </span>
-                    </td>
-                    <td className="requests-date-cell">{formatRequestDate(row.createdAt)}</td>
-                    <td className="requests-actions-cell" onClick={(e) => e.stopPropagation()}>
-                      {isAdmin ? (
-                        <select
-                          className="requests-status-select"
-                          value={row.status}
-                          disabled={updatingId === row.docId}
-                          onChange={(e) => handleStatusChange(row.docId, e.target.value)}
-                        >
-                          {REQUEST_STATUSES.map((s) => (
-                            <option key={s} value={s}>{getStatusLabel(s)}</option>
-                          ))}
-                        </select>
-                      ) : (
-                        <span className="requests-status-readonly">{getStatusLabel(row.status)}</span>
-                      )}
-                      <button
-                        type="button"
-                        className="requests-delete-btn"
+              {filtered.map((row) => (
+                <tr
+                  key={row.docId}
+                  className="requests-row-clickable"
+                  onClick={() => setDetailRequest(row)}
+                >
+                  <td className="requests-id-cell">{row.requestId}</td>
+                  <td><span className="requests-name-cell">{row.requesterName || '—'}</span></td>
+                  <td className="requests-loc-cell">{row.location}</td>
+                  <td>{row.familyMembers || '—'}</td>
+                  <td>{row.hasEvacuationCenter ? '✅' : '❌'}</td>
+                  <td>
+                    <span className={`dashboard-status ${getStatusClass(row.status)}`}>
+                      {getStatusLabel(row.status)}
+                    </span>
+                  </td>
+                  <td className="requests-date-cell">{formatRequestDate(row.createdAt)}</td>
+                  <td className="requests-actions-cell" onClick={(e) => e.stopPropagation()}>
+                    {isAdmin ? (
+                      <select
+                        className="requests-status-select"
+                        value={row.status}
                         disabled={updatingId === row.docId}
-                        onClick={() => handleDelete(row.docId)}
+                        onChange={(e) => handleStatusChange(row.docId, e.target.value)}
                       >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
+                        {REQUEST_STATUSES.map((s) => (
+                          <option key={s} value={s}>{getStatusLabel(s)}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <span className="requests-status-readonly">{getStatusLabel(row.status)}</span>
+                    )}
+                    <button
+                      type="button"
+                      className="requests-delete-btn"
+                      disabled={updatingId === row.docId}
+                      onClick={() => handleDelete(row.docId)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         )}
