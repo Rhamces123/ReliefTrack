@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getUserProfile } from '../firebase/users'
 import {
@@ -12,6 +12,7 @@ import {
 } from '../firebase/requests'
 import DashboardLayout from '../components/DashboardLayout'
 import LocationAutocomplete from '../components/LocationAutocomplete'
+import RequestMiniMap from '../components/RequestMiniMap'
 import {
   formatRequestDate,
   getStatusLabel,
@@ -57,6 +58,7 @@ function totalAffected(categories) {
 export default function Requests() {
   const { user } = useAuth()
   const location = useLocation()
+  const navigate = useNavigate()
   const [profile, setProfile] = useState(null)
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
@@ -427,14 +429,31 @@ export default function Requests() {
                       </div>
                     )
                   })}
-                  {detailRequest.description && (
-                    <div className="requests-detail-notes">
-                      <div className="requests-detail-section-title">Additional Notes</div>
-                      <p>{detailRequest.description}</p>
-                    </div>
-                  )}
                 </div>
               )}
+
+              {detailRequest.description && (
+                <div className="requests-detail-section requests-detail-notes">
+                  <div className="requests-detail-section-title">Additional Notes</div>
+                  <p>{detailRequest.description}</p>
+                </div>
+              )}
+
+              <RequestMiniMap
+                request={detailRequest}
+                onOpenMap={(target) => {
+                  navigate('/map', {
+                    state: {
+                      focusRequestId: target.docId,
+                      focusLat: target.lat,
+                      focusLng: target.lng,
+                      focusName: target.requesterName,
+                      focusLocation: target.location,
+                      status: target.status,
+                    },
+                  })
+                }}
+              />
             </div>
             <div className="requests-detail-footer">
               {isAdmin ? (

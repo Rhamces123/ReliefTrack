@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
+import { useLocation } from 'react-router-dom'
 import { MapContainer, TileLayer, Marker, Popup, Rectangle, GeoJSON, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -101,16 +102,17 @@ function totalAffected(categories) {
   return Object.values(categories).reduce((sum, c) => sum + (Number(c.count) || 0), 0)
 }
 
-function MapBounds({ markers }) {
+function MapBounds({ markers, disabled }) {
   const map = useMap()
   useEffect(() => {
+    if (disabled) return
     if (markers.length === 0) return
     if (markers.length === 1) {
       map.setView(markers[0], 13)
     } else {
       map.fitBounds(L.latLngBounds(markers), { padding: [50, 50] })
     }
-  }, [markers, map])
+  }, [markers, map, disabled])
   return null
 }
 
@@ -179,6 +181,7 @@ function FitEvac({ evacCenters, trigger }) {
 
 export default function MapView() {
   const { user } = useAuth()
+  const routeLocation = useLocation()
   const [profile, setProfile] = useState(null)
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
@@ -189,6 +192,8 @@ export default function MapView() {
   const streetViewRef = useRef(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [flyTarget, setFlyTarget] = useState(null)
+  const [focusedDocId, setFocusedDocId] = useState(null)
+  const [hasInitialFocus, setHasInitialFocus] = useState(false)
   const [searchBounds, setSearchBounds] = useState(null)
   const [locateTrigger, setLocateTrigger] = useState(0)
   const [geoPosition, setGeoPosition] = useState(null)
@@ -206,6 +211,18 @@ export default function MapView() {
   const searchWrapRef = useRef(null)
   const geocodingRef = useRef(new Set())
   const savedCoordsRef = useRef(new Set())
+
+  useEffect(() => {
+    if (routeLocation.state?.focusLat && routeLocation.state?.focusLng) {
+      const lat = Number(routeLocation.state.focusLat)
+      const lng = Number(routeLocation.state.focusLng)
+      setFlyTarget({ lat, lng })
+      if (routeLocation.state.focusRequestId) {
+        setFocusedDocId(routeLocation.state.focusRequestId)
+      }
+      setHasInitialFocus(true)
+    }
+  }, [routeLocation.state])
 
 
   useEffect(() => {
@@ -447,27 +464,80 @@ export default function MapView() {
               <FlyToSearch target={flyTarget} onDone={() => {}} />
               <LocateMe trigger={locateTrigger} onLocated={handleLocated} />
               <MapClick streetViewRef={streetViewRef} onStreetViewDone={() => setStreetViewActive(false)} />
-              <MapBounds markers={markerPositions} />
+              <MapBounds markers={markerPositions} disabled={hasInitialFocus} />
               <FitEvac evacCenters={evacCenters} trigger={showEvac} />
 
               {/* Relief request markers */}
-              {markers.map((m) => (
+              {markers.map((m) => {
+                const isTarget = m.docId === focusedDocId
+                return (
+                  <Marker
+                    key={m.docId}
+                    position={[m.lat, m.lng]}
+                    icon={markerIcon(m.status)}
+                    ref={(ref) => {
+                      if (ref && isTarget) {
+                        setTimeout(() => {
+                          try {
+                            ref.openPopup()
+                          } catch {
+                            // ignore
+                          }
+                        }, 500)
+                      }
+                    }}
+                  >
+                    <Popup>
+                      <div className="mapview-popup">
+                        <h4>{m.requesterName || 'Unknown'}</h4>
+                        <p className="mapview-popup-location">{m.location}</p>
+                        <p>Status: <strong style={{ color: m.status === 'completed' ? '#3b82f6' : m.status === 'in-progress' ? '#22c55e' : '#ef4444' }}>{m.status === 'completed' ? 'Already Received' : m.status === 'in-progress' ? 'Not Yet Received' : 'Not Yet Assessed'}</strong></p>
+                        {m.familyMembers > 0 && <p>Family Members: {m.familyMembers}</p>}
+                        {totalAffected(m.categories) > 0 && <p>Affected: {totalAffected(m.categories)}</p>}
+                        {m.description && <p className="mapview-popup-desc">{m.description}</p>}
+                        <div className="mapview-popup-actions">
+                          <a
+                            href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${m.lat},${m.lng}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mapview-streetview"
+                          >
+                            🏙️ Street View
+                          </a>
+                        </div>
+                      </div>
+                    </Popup>
+                  </Marker>
+                )
+              })}
+
+              {/* Instant focus marker if specific requested location has not populated into markers yet */}
+              {focusedDocId && !markers.some((m) => m.docId === focusedDocId) && routeLocation.state?.focusLat && (
                 <Marker
-                  key={m.docId}
-                  position={[m.lat, m.lng]}
-                  icon={markerIcon(m.status)}
+                  position={[Number(routeLocation.state.focusLat), Number(routeLocation.state.focusLng)]}
+                  icon={markerIcon(routeLocation.state?.status || 'pending')}
+                  ref={(ref) => {
+                    if (ref) {
+                      setTimeout(() => {
+                        try {
+                          ref.openPopup()
+                        } catch {
+                          // ignore
+                        }
+                      }, 500)
+                    }
+                  }}
                 >
                   <Popup>
                     <div className="mapview-popup">
-                      <h4>{m.requesterName || 'Unknown'}</h4>
-                      <p className="mapview-popup-location">{m.location}</p>
-                       <p>Status: <strong style={{ color: m.status === 'completed' ? '#3b82f6' : m.status === 'in-progress' ? '#22c55e' : '#ef4444' }}>{m.status === 'completed' ? 'Already Received' : m.status === 'in-progress' ? 'Not Yet Received' : 'Not Yet Assessed'}</strong></p>
-                      {m.familyMembers > 0 && <p>Family Members: {m.familyMembers}</p>}
-                      {totalAffected(m.categories) > 0 && <p>Affected: {totalAffected(m.categories)}</p>}
-                      {m.description && <p className="mapview-popup-desc">{m.description}</p>}
+                      <h4>{routeLocation.state.focusName || 'Requested Location'}</h4>
+                      {routeLocation.state.focusLocation && (
+                        <p className="mapview-popup-location">{routeLocation.state.focusLocation}</p>
+                      )}
+                      <p>Status: <strong style={{ color: '#ef4444' }}>Not Yet Assessed</strong></p>
                       <div className="mapview-popup-actions">
                         <a
-                          href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${m.lat},${m.lng}`}
+                          href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${routeLocation.state.focusLat},${routeLocation.state.focusLng}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="mapview-streetview"
@@ -478,7 +548,7 @@ export default function MapView() {
                     </div>
                   </Popup>
                 </Marker>
-              ))}
+              )}
 
               <GeoJSON
                 key="naga-boundary"
