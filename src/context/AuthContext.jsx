@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from '../firebase.js'
+import { doc, onSnapshot } from 'firebase/firestore'
+import { auth, db } from '../firebase.js'
 import { handleRedirectResult, signOutUser, sendPasswordReset } from '../firebase/auth'
 import { ensureUserProfile } from '../firebase/users'
 import {
@@ -14,6 +15,7 @@ const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
+  const [userProfile, setUserProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [deviceStatus, setDeviceStatus] = useState(null) // 'trusted' | 'pending'
   const [deviceId, setDeviceId] = useState(null)
@@ -187,10 +189,31 @@ export function AuthProvider({ children }) {
     await sendApprovalEmailForCurrent(user, deviceId, approvalTokenRef.current)
   }, [user, deviceId, sendApprovalEmailForCurrent])
 
+  useEffect(() => {
+    if (!user?.uid) {
+      setUserProfile(null)
+      return
+    }
+    const unsub = onSnapshot(doc(db, 'users', user.uid), (docSnap) => {
+      if (docSnap.exists()) {
+        setUserProfile({ docId: docSnap.id, ...docSnap.data() })
+      } else {
+        setUserProfile(null)
+      }
+    }, (err) => {
+      console.error('Profile snapshot error:', err)
+    })
+    return () => unsub()
+  }, [user?.uid])
+
+  const isAccountOnHold = !!(userProfile && userProfile.status === 'On Hold' && userProfile.role !== 'Admin')
+
   return (
     <AuthContext.Provider
       value={{
         user,
+        userProfile,
+        isAccountOnHold,
         loading,
         deviceStatus,
         deviceId,

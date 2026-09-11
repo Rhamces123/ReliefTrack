@@ -29,7 +29,7 @@ export default function DashboardLayout({ title, children, userLabel, userEmail 
   }, [user?.uid])
 
   const navItems = isAdmin
-    ? [...NAV_ITEMS, { id: 'autosuggest', label: 'Auto Suggest', icon: '💡', path: '/admin/auto-suggest' }, { id: 'admin', label: 'Admin', icon: '🛡️', path: '/admin' }]
+    ? [...NAV_ITEMS, { id: 'autosuggest', label: 'Auto Suggest', icon: '💡', path: '/admin/auto-suggest' }, { id: 'admin', label: 'User Management', icon: '👥', path: '/admin' }]
     : NAV_ITEMS
 
   useEffect(() => {

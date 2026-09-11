@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout'
-import { signInWithEmail, signUpWithEmail } from '../firebase/auth'
-import { ensureUserProfile, updateUserProfile } from '../firebase/users'
+import { signInWithEmail, signUpWithEmail, signOutUser } from '../firebase/auth'
+import { ensureUserProfile, getUserProfile, updateUserProfile } from '../firebase/users'
 import { getAuthErrorMessage } from '../utils/authErrors'
 import { getBrowserLocation } from '../utils/getBrowserLocation'
 
@@ -31,6 +31,12 @@ export default function Login() {
         }
       }
       await ensureUserProfile(user)
+      const profile = await getUserProfile(user.uid)
+      if (profile?.status === 'On Hold' && profile?.role !== 'Admin') {
+        await signOutUser()
+        setError('Your account has been placed on hold by the administrator. Please contact admin@relieftrack.com.')
+        return
+      }
       const loc = await getBrowserLocation()
       if (loc) updateUserProfile(user.uid, { location: loc })
       const adminEmail = import.meta.env.VITE_ADMIN_EMAIL

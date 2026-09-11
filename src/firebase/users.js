@@ -1,15 +1,16 @@
 import {
-  doc, getDoc, setDoc, serverTimestamp,
-  collection, query, orderBy, onSnapshot,
+  doc, getDoc, setDoc, deleteDoc, serverTimestamp,
+  collection, onSnapshot,
 } from 'firebase/firestore'
 import { db } from '../firebase.js'
 
-export async function createUserProfile(uid, { email, displayName, location, role }) {
+export async function createUserProfile(uid, { email, displayName, location, role, status }) {
   await setDoc(doc(db, 'users', uid), {
     email,
     displayName: displayName || '',
     location: location || '',
     role: role || 'Member',
+    status: status || 'Active',
     createdAt: serverTimestamp(),
   })
 }
@@ -27,19 +28,42 @@ export async function ensureUserProfile(user) {
       email: user.email,
       displayName: user.displayName || '',
       role: resolveRole(user.email),
+      status: 'Active',
     })
+  } else {
+    const data = snap.data()
+    if (!data.status) {
+      await setDoc(ref, { status: 'Active' }, { merge: true })
+    }
   }
 }
 
 export function subscribeUsers(onData, onError) {
-  const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'))
+  const colRef = collection(db, 'users')
   return onSnapshot(
-    q,
+    colRef,
     (snap) => {
-      const list = snap.docs.map((d) => ({ docId: d.id, ...d.data() }))
+      const list = snap.docs.map((d) => {
+        const data = d.data()
+        return {
+          docId: d.id,
+          status: data.status || 'Active',
+          role: data.role || 'Member',
+          ...data,
+        }
+      })
+      list.sort((a, b) => {
+        const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt ? new Date(a.createdAt).getTime() : 0)
+        const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt ? new Date(b.createdAt).getTime() : 0)
+        if (timeA && timeB) return timeB - timeA
+        return (a.displayName || a.email || '').localeCompare(b.displayName || b.email || '')
+      })
       onData(list)
     },
-    (err) => onError?.(err)
+    (err) => {
+      console.error('Error in subscribeUsers:', err)
+      onError?.(err)
+    }
   )
 }
 
@@ -52,3 +76,12 @@ export async function getUserProfile(uid) {
 export async function updateUserProfile(uid, data) {
   await setDoc(doc(db, 'users', uid), data, { merge: true })
 }
+
+export async function setUserStatus(uid, status) {
+  await setDoc(doc(db, 'users', uid), { status }, { merge: true })
+}
+
+export async function deleteUserProfile(uid) {
+  await deleteDoc(doc(db, 'users', uid))
+}
+
