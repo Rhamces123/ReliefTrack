@@ -8,10 +8,30 @@ import {
   deleteUserProfile,
   syncAuthUsersToFirestore,
   addUserAccount,
+  updateUserLocation,
   INITIAL_AUTH_USERS,
 } from '../firebase/users'
+import { getBrowserLocation } from '../utils/getBrowserLocation'
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/AdminDashboard.css'
+
+const NAGA_BARANGAYS = [
+  'Brgy. Central Poblacion, City of Naga, Cebu',
+  'Brgy. North Poblacion, City of Naga, Cebu',
+  'Brgy. South Poblacion, City of Naga, Cebu',
+  'Brgy. Colon, City of Naga, Cebu',
+  'Brgy. Tinaan, City of Naga, Cebu',
+  'Brgy. Inoburan, City of Naga, Cebu',
+  'Brgy. Mainit, City of Naga, Cebu',
+  'Brgy. Pangdan, City of Naga, Cebu',
+  'Brgy. Cantao-an, City of Naga, Cebu',
+  'Brgy. Lutac, City of Naga, Cebu',
+  'Brgy. Uling, City of Naga, Cebu',
+  'Brgy. Tuyan, City of Naga, Cebu',
+  'Brgy. Langtad, City of Naga, Cebu',
+  'Brgy. Inayagan, City of Naga, Cebu',
+  'Brgy. Balirong, City of Naga, Cebu',
+]
 
 export default function AdminDashboard() {
   const { user } = useAuth()
@@ -35,6 +55,13 @@ export default function AdminDashboard() {
 
   const [holdTarget, setHoldTarget] = useState(null)
   const [isHolding, setIsHolding] = useState(false)
+
+  // Location Sync & Edit Modal
+  const [editLocationTarget, setEditLocationTarget] = useState(null)
+  const [editLocationValue, setEditLocationValue] = useState('')
+  const [isSavingLocation, setIsSavingLocation] = useState(false)
+  const [isDetectingLoc, setIsDetectingLoc] = useState(false)
+  const [isLocSyncing, setIsLocSyncing] = useState(false)
 
   // Add User Modal
   const [isAddUserOpen, setIsAddUserOpen] = useState(false)
@@ -248,9 +275,69 @@ export default function AdminDashboard() {
       setDeleteTarget(null)
     } catch (err) {
       console.error('Error deleting user:', err)
-      showToast('Failed to delete user account.', 'error')
     } finally {
       setIsDeleting(false)
+    }
+  }
+
+  // Sync Current Admin Location
+  const handleSyncCurrentLocation = async () => {
+    if (!user?.uid) return
+    setIsLocSyncing(true)
+    try {
+      const loc = await getBrowserLocation()
+      if (loc) {
+        await updateUserLocation(user.uid, loc)
+        showToast(`📍 Your location updated: ${loc}`)
+      } else {
+        showToast('Could not detect device location. Please enable location permissions.', 'warning')
+      }
+    } catch (err) {
+      console.error('Location sync error:', err)
+      showToast('Failed to detect device location.', 'error')
+    } finally {
+      setIsLocSyncing(false)
+    }
+  }
+
+  // Open Edit Location Modal for any user
+  const openEditLocation = (targetUser) => {
+    setEditLocationTarget(targetUser)
+    setEditLocationValue(targetUser.location || '')
+  }
+
+  // Save updated location for target user
+  const handleSaveLocation = async (e) => {
+    e.preventDefault()
+    if (!editLocationTarget) return
+    setIsSavingLocation(true)
+    try {
+      await updateUserLocation(editLocationTarget.docId, editLocationValue)
+      showToast(`Location updated for ${editLocationTarget.displayName || editLocationTarget.email}!`)
+      setEditLocationTarget(null)
+    } catch (err) {
+      console.error('Error updating location:', err)
+      showToast('Failed to update location.', 'error')
+    } finally {
+      setIsSavingLocation(false)
+    }
+  }
+
+  // Detect location for modal input
+  const handleDetectForTarget = async () => {
+    setIsDetectingLoc(true)
+    try {
+      const loc = await getBrowserLocation()
+      if (loc) {
+        setEditLocationValue(loc)
+        showToast(`Detected location: ${loc}`)
+      } else {
+        showToast('Could not detect device location. Please enable location permissions.', 'warning')
+      }
+    } catch {
+      showToast('Location detection failed.', 'error')
+    } finally {
+      setIsDetectingLoc(false)
     }
   }
 
@@ -325,6 +412,15 @@ export default function AdminDashboard() {
           <div className="admin-controls-bar">
             {/* Action Buttons */}
             <div className="admin-actions-group">
+              <button
+                type="button"
+                className="admin-btn-sync"
+                onClick={handleSyncCurrentLocation}
+                disabled={isLocSyncing}
+                title="Detect and sync your real live location to your profile"
+              >
+                {isLocSyncing ? '📍 Detecting...' : '📍 Sync Location'}
+              </button>
               <button
                 type="button"
                 className="admin-btn-sync"
@@ -457,12 +553,19 @@ export default function AdminDashboard() {
                           {u.email || '—'}
                         </a>
                       </td>
-                      <td className="admin-user-location" title={u.location || ''}>
-                        {u.location ? (
-                          <span>📍 {u.location}</span>
-                        ) : (
-                          <span className="admin-dim-text">Not specified</span>
-                        )}
+                      <td className="admin-user-location">
+                        <button
+                          type="button"
+                          className="admin-location-pill"
+                          onClick={() => openEditLocation(u)}
+                          title="Click to edit or sync this user's location"
+                        >
+                          <span className="admin-location-icon">📍</span>
+                          <span className="admin-location-pill-text">
+                            {u.location || 'Set Location'}
+                          </span>
+                          <span className="admin-location-edit-icon">✏️</span>
+                        </button>
                       </td>
                       <td>
                         <span className={`admin-role-badge ${u.role === 'Admin' ? 'admin' : 'member'}`}>
@@ -724,6 +827,83 @@ export default function AdminDashboard() {
                   : 'Reactivate Account'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit User Location Modal */}
+      {editLocationTarget && (
+        <div className="admin-modal-overlay" onClick={() => !isSavingLocation && setEditLocationTarget(null)}>
+          <div className="admin-modal-dialog" onClick={(e) => e.stopPropagation()}>
+            <div className="admin-modal-header primary">
+              <span className="admin-modal-icon">📍</span>
+              <h4>Sync User Location</h4>
+            </div>
+            <form onSubmit={handleSaveLocation}>
+              <div className="admin-modal-body">
+                <p style={{ margin: '0 0 14px', fontSize: '13px', color: 'rgba(255,255,255,0.7)' }}>
+                  Updating location for <strong>{editLocationTarget.displayName || editLocationTarget.email}</strong>.
+                </p>
+
+                <div className="admin-form-group">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                    <label className="admin-form-label" style={{ margin: 0 }}>Location / Address</label>
+                    <button
+                      type="button"
+                      className="admin-quick-loc-btn"
+                      onClick={handleDetectForTarget}
+                      disabled={isDetectingLoc}
+                      title="Detect current device coordinates and fill address"
+                    >
+                      {isDetectingLoc ? '📍 Detecting...' : '📍 Detect Device Location'}
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    required
+                    className="admin-form-input"
+                    placeholder="e.g. Brgy. Central Poblacion, City of Naga, Cebu"
+                    value={editLocationValue}
+                    onChange={(e) => setEditLocationValue(e.target.value)}
+                  />
+                </div>
+
+                <div className="admin-form-group">
+                  <label className="admin-form-label" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)' }}>
+                    Quick Select Naga City Barangay:
+                  </label>
+                  <div className="admin-barangay-chips">
+                    {NAGA_BARANGAYS.map((b) => (
+                      <button
+                        key={b}
+                        type="button"
+                        className={`admin-barangay-chip ${editLocationValue === b ? 'selected' : ''}`}
+                        onClick={() => setEditLocationValue(b)}
+                      >
+                        {b.replace(', City of Naga, Cebu', '')}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="admin-modal-actions">
+                <button
+                  type="button"
+                  className="admin-modal-btn cancel"
+                  onClick={() => setEditLocationTarget(null)}
+                  disabled={isSavingLocation}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="admin-modal-btn confirm"
+                  disabled={isSavingLocation}
+                >
+                  {isSavingLocation ? 'Saving...' : 'Save & Sync Location'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

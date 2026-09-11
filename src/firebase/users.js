@@ -10,7 +10,7 @@ export const INITIAL_AUTH_USERS = [
   {
     email: 'iyasjessa1@gmail.com',
     displayName: 'Jessa Iyas',
-    location: 'Cebu City, Central Visayas',
+    location: 'Brgy. Central Poblacion, City of Naga, Cebu',
     role: 'Member',
     status: 'Active',
     createdAt: new Date('2026-09-02T10:00:00Z'),
@@ -20,7 +20,7 @@ export const INITIAL_AUTH_USERS = [
   {
     email: 'iyasjessa22@gmail.com',
     displayName: 'Jessa Iyas (Alt)',
-    location: 'Mandaue City, Central Visayas',
+    location: 'Brgy. Inoburan, City of Naga, Cebu',
     role: 'Member',
     status: 'Active',
     createdAt: new Date('2026-09-02T11:00:00Z'),
@@ -30,7 +30,7 @@ export const INITIAL_AUTH_USERS = [
   {
     email: 'algarmeria@gmail.com',
     displayName: 'Al Garmeria',
-    location: 'Naga, Camarines Sur',
+    location: 'Brgy. Colon, City of Naga, Cebu',
     role: 'Member',
     status: 'Active',
     createdAt: new Date('2026-09-02T09:00:00Z'),
@@ -40,7 +40,7 @@ export const INITIAL_AUTH_USERS = [
   {
     email: 'ponce.cassandrajade1@gmail.com',
     displayName: 'Cassandra Jade Ponce',
-    location: 'Naga, Camarines Sur',
+    location: 'Brgy. Tinaan, City of Naga, Cebu',
     role: 'Member',
     status: 'Active',
     createdAt: new Date('2026-08-23T08:00:00Z'),
@@ -50,7 +50,7 @@ export const INITIAL_AUTH_USERS = [
   {
     email: 'marinarcblnca@gmail.com',
     displayName: 'Marina Blanca',
-    location: 'Naga, Camarines Sur',
+    location: 'Brgy. Mainit, City of Naga, Cebu',
     role: 'Member',
     status: 'Active',
     createdAt: new Date('2026-08-23T08:15:00Z'),
@@ -60,7 +60,7 @@ export const INITIAL_AUTH_USERS = [
   {
     email: 'requintoriagrace@gmail.com',
     displayName: 'Grace Requintoria',
-    location: 'Naga, Camarines Sur',
+    location: 'Brgy. Pangdan, City of Naga, Cebu',
     role: 'Member',
     status: 'Active',
     createdAt: new Date('2026-08-23T09:00:00Z'),
@@ -70,7 +70,7 @@ export const INITIAL_AUTH_USERS = [
   {
     email: 'keithabalo03@gmail.com',
     displayName: 'Keith Abalo',
-    location: 'Naga, Camarines Sur',
+    location: 'Brgy. Cantao-an, City of Naga, Cebu',
     role: 'Member',
     status: 'Active',
     createdAt: new Date('2026-08-23T10:00:00Z'),
@@ -80,7 +80,7 @@ export const INITIAL_AUTH_USERS = [
   {
     email: 'cpecidas@gmail.com',
     displayName: 'C Pecidas',
-    location: 'Naga, Camarines Sur',
+    location: 'Brgy. Lutac, City of Naga, Cebu',
     role: 'Member',
     status: 'Active',
     createdAt: new Date('2026-08-23T11:00:00Z'),
@@ -90,7 +90,7 @@ export const INITIAL_AUTH_USERS = [
   {
     email: 'futureniya02@gmail.com',
     displayName: 'Future Niya',
-    location: 'Naga, Camarines Sur',
+    location: 'Brgy. Uling, City of Naga, Cebu',
     role: 'Member',
     status: 'Active',
     createdAt: new Date('2026-08-22T08:00:00Z'),
@@ -100,7 +100,7 @@ export const INITIAL_AUTH_USERS = [
   {
     email: 'karljosephmalayao@gmail.com',
     displayName: 'Karl Joseph Malayao',
-    location: 'Naga, Camarines Sur',
+    location: 'Brgy. North Poblacion, City of Naga, Cebu',
     role: 'Member',
     status: 'Active',
     createdAt: new Date('2026-08-03T09:00:00Z'),
@@ -110,7 +110,7 @@ export const INITIAL_AUTH_USERS = [
   {
     email: 'keithabalo02@gmail.com',
     displayName: 'Keith Abalo (Alt)',
-    location: 'Naga, Camarines Sur',
+    location: 'Brgy. Tuyan, City of Naga, Cebu',
     role: 'Member',
     status: 'Active',
     createdAt: new Date('2026-07-11T08:00:00Z'),
@@ -358,6 +358,14 @@ export async function setUserStatus(uid, status) {
   await setDoc(doc(db, 'users', uid), { status }, { merge: true })
 }
 
+export async function updateUserLocation(uid, location) {
+  if (!uid) return
+  await setDoc(doc(db, 'users', uid), {
+    location: (location || '').trim(),
+    lastLocationSync: serverTimestamp(),
+  }, { merge: true })
+}
+
 export async function deleteUserProfile(uid) {
   try {
     await setDoc(doc(db, 'users', uid), { status: 'Deleted' }, { merge: true })
@@ -370,5 +378,7 @@ export async function deleteUserProfile(uid) {
     // ignore
   }
 }
+
+
 
 

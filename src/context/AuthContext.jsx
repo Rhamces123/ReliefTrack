@@ -218,6 +218,18 @@ export function AuthProvider({ children }) {
       lastActiveAt: serverTimestamp(),
     }, { merge: true }).catch(() => {})
 
+    // Automatically detect and sync user's live location
+    getBrowserLocation()
+      .then((loc) => {
+        if (loc) {
+          setDoc(userRef, {
+            location: loc,
+            lastLocationSync: serverTimestamp(),
+          }, { merge: true }).catch(() => {})
+        }
+      })
+      .catch(() => {})
+
     // Periodic heartbeat every 45s while tab is visible
     const heartbeatTimer = setInterval(() => {
       if (document.visibilityState === 'visible') {
