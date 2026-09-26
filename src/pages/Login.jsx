@@ -25,6 +25,11 @@ export default function Login() {
         user = await signInWithEmail(email, password)
       } catch (signInErr) {
         if (signInErr.code === 'auth/user-not-found') {
+          try {
+            sessionStorage.setItem('relieftrack_new_signup', 'true')
+          } catch {
+            // non-fatal
+          }
           user = await signUpWithEmail(email, password)
         } else {
           throw signInErr

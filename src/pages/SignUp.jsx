@@ -32,6 +32,11 @@ export default function SignUp() {
 
     setLoading(true)
     try {
+      try {
+        sessionStorage.setItem('relieftrack_new_signup', 'true')
+      } catch {
+        // non-fatal
+      }
       const user = await signUpWithEmail(email, password, displayName.trim() || undefined)
       const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
       const role = adminEmail && user.email === adminEmail ? 'Admin' : 'Member'

@@ -15,6 +15,11 @@ const googleProvider = new GoogleAuthProvider()
 googleProvider.setCustomParameters({ prompt: 'select_account' })
 
 export async function signUpWithEmail(email, password, displayName) {
+  try {
+    sessionStorage.setItem('relieftrack_new_signup', 'true')
+  } catch {
+    // non-fatal if sessionStorage is blocked
+  }
   const { user } = await createUserWithEmailAndPassword(auth, email, password)
   if (displayName) {
     await updateProfile(user, { displayName })

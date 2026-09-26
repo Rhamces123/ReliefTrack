@@ -87,7 +87,7 @@ export async function listDevices(uid) {
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
 }
 
-export async function createDeviceRecord(uid, deviceId, fingerprintHash, approvalToken) {
+export async function createDeviceRecord(uid, deviceId, fingerprintHash, approvalToken, isTrusted = false) {
   const now = serverTimestamp()
   const ref = getDeviceDocRef(uid, deviceId)
   await setDoc(ref, {
@@ -96,10 +96,10 @@ export async function createDeviceRecord(uid, deviceId, fingerprintHash, approva
     browser: getBrowserName(),
     operatingSystem: getOsName(),
     deviceName: `${getBrowserName()} • ${getOsName()}`,
-    isTrusted: false,
+    isTrusted: !!isTrusted,
     rejected: false,
-    approvalToken,
-    processedAt: null,
+    approvalToken: isTrusted ? null : (approvalToken || null),
+    processedAt: isTrusted ? now : null,
     createdAt: now,
     lastLogin: now,
   })
@@ -116,7 +116,7 @@ export async function approveDeviceRecord(uid, deviceId, approvalToken) {
   await updateDoc(getDeviceDocRef(uid, deviceId), {
     isTrusted: true,
     rejected: false,
-    approvalToken,
+    approvalToken: approvalToken || null,
     processedAt: serverTimestamp(),
   })
 }
@@ -126,16 +126,49 @@ export async function removeDevice(uid, deviceId) {
 }
 
 /**
+ * Check whether the current session represents a newly created account.
+ * Accounts just created on this device should not ask for device approval.
+ */
+export function checkIsNewAccount(firebaseUser) {
+  // 1. Session storage flag set during sign up on this device
+  try {
+    const flag = sessionStorage.getItem('relieftrack_new_signup')
+    if (flag === 'true' || (firebaseUser?.uid && flag === firebaseUser.uid)) {
+      return true
+    }
+  } catch {
+    // sessionStorage may be disabled/restricted
+  }
+
+  // 2. Firebase Auth metadata check: when newly created, creationTime === lastSignInTime (within 45s)
+  if (firebaseUser?.metadata?.creationTime && firebaseUser?.metadata?.lastSignInTime) {
+    const cTime = new Date(firebaseUser.metadata.creationTime).getTime()
+    const sTime = new Date(firebaseUser.metadata.lastSignInTime).getTime()
+    if (!isNaN(cTime) && !isNaN(sTime)) {
+      if (Math.abs(sTime - cTime) < 45000) {
+        return true
+      }
+    }
+  }
+
+  return false
+}
+
+/**
  * Core verification logic used right after auth state changes.
  * The persistent device token (localStorage) is the SOLE identity key:
  * clearing storage, incognito, another browser, or another machine all
  * produce a fresh token and are therefore treated as a NEW device.
  *
+ * Rule:
+ *  - If NEW account created: automatically trust this initial device (no approval request).
+ *  - If account ALREADY created and logs into a NEW device: request device approval via email.
+ *
  * Returns one of:
  *  - { status: 'trusted', deviceId }                 -> known & trusted token
  *  - { status: 'pending', deviceId, approvalToken }  -> needs email approval
  */
-export async function evaluateDevice(uid) {
+export async function evaluateDevice(uid, firebaseUser = null) {
   const deviceId = getDeviceId()
   const fingerprint = await buildFingerprint()
   let existing = await findDeviceById(uid, deviceId)
@@ -147,16 +180,42 @@ export async function evaluateDevice(uid) {
     existing = null
   }
 
+  const existingDevices = await listDevices(uid)
+  const isNew = checkIsNewAccount(firebaseUser)
+
   if (existing) {
     await updateDeviceLogin(uid, deviceId)
     if (existing.isTrusted) {
       return { status: 'trusted', deviceId }
     }
+
+    // If an existing device record was saved as untrusted during new account creation
+    // and there are no other devices, auto-trust it now for the new account.
+    if (isNew && existingDevices.length <= 1) {
+      await approveDeviceRecord(uid, deviceId, existing.approvalToken || generateApprovalToken())
+      try {
+        sessionStorage.removeItem('relieftrack_new_signup')
+      } catch {}
+      return { status: 'trusted', deviceId }
+    }
+
     return { status: 'pending', deviceId, approvalToken: existing.approvalToken }
   }
 
+  // Device is not yet recognized.
+  // If this is a newly created account on its initial device, automatically trust it.
+  if (isNew && existingDevices.length === 0) {
+    await createDeviceRecord(uid, deviceId, fingerprint, null, true)
+    try {
+      sessionStorage.removeItem('relieftrack_new_signup')
+    } catch {}
+    return { status: 'trusted', deviceId }
+  }
+
+  // If the account was ALREADY created and is logging into a newly detected device,
+  // request approval via email.
   const approvalToken = generateApprovalToken()
-  const { id } = await createDeviceRecord(uid, deviceId, fingerprint, approvalToken)
+  const { id } = await createDeviceRecord(uid, deviceId, fingerprint, approvalToken, false)
   return { status: 'pending', deviceId: id, approvalToken }
 }
 

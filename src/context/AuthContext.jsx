@@ -102,7 +102,7 @@ export function AuthProvider({ children }) {
         if (checkedRef.current !== firebaseUser.uid) {
           checkedRef.current = firebaseUser.uid
           try {
-            const result = await evaluateDevice(firebaseUser.uid)
+            const result = await evaluateDevice(firebaseUser.uid, firebaseUser)
             const isAdminEmail =
               !!firebaseUser.email &&
               !!ADMIN_EMAIL &&
