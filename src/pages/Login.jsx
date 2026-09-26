@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout'
 import { signInWithEmail, signUpWithEmail, signOutUser } from '../firebase/auth'
 import { ensureUserProfile, getUserProfile, updateUserProfile } from '../firebase/users'
@@ -8,8 +8,9 @@ import { getBrowserLocation } from '../utils/getBrowserLocation'
 
 export default function Login() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [showPassword, setShowPassword] = useState(false)
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(location.state?.email || '')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(true)
   const [error, setError] = useState('')

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout'
-import { signUpWithEmail } from '../firebase/auth'
+import { signUpWithEmail, signOutUser } from '../firebase/auth'
 import { createUserProfile, updateUserProfile } from '../firebase/users'
 import { getAuthErrorMessage } from '../utils/authErrors'
 import { getBrowserLocation } from '../utils/getBrowserLocation'
@@ -15,6 +15,8 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [successModal, setSuccessModal] = useState(false)
+  const [registeredEmail, setRegisteredEmail] = useState('')
 
   const handleSignUp = async (e) => {
     e.preventDefault()
@@ -34,6 +36,7 @@ export default function SignUp() {
     try {
       try {
         sessionStorage.setItem('relieftrack_new_signup', 'true')
+        sessionStorage.setItem('relieftrack_signup_success', 'true')
       } catch {
         // non-fatal
       }
@@ -45,7 +48,7 @@ export default function SignUp() {
         displayName: displayName.trim() || user.displayName || '',
         role,
         status: 'Active',
-        isOnline: true,
+        isOnline: false,
       })
       try {
         const loc = await getBrowserLocation()
@@ -53,13 +56,26 @@ export default function SignUp() {
       } catch {
         // Location lookup failure is non-fatal
       }
-      navigate(role === 'Admin' ? '/admin' : '/home')
+
+      setRegisteredEmail(user.email || email)
+      await signOutUser()
+      setSuccessModal(true)
     } catch (err) {
+      try {
+        sessionStorage.removeItem('relieftrack_signup_success')
+      } catch {}
       const message = getAuthErrorMessage(err, 'Sign up failed. Please try again.')
       if (message) setError(message)
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleSuccessOk = () => {
+    try {
+      sessionStorage.removeItem('relieftrack_signup_success')
+    } catch {}
+    navigate('/login', { replace: true, state: { email: registeredEmail } })
   }
 
   return (
@@ -143,6 +159,26 @@ export default function SignUp() {
       <p className="signup-row">
         Already have an account? <Link to="/login">Sign in</Link>
       </p>
+
+      {successModal && (
+        <div className="auth-modal-overlay" role="dialog" aria-modal="true">
+          <div className="auth-modal-card">
+            <div className="auth-modal-icon">✅</div>
+            <h3 className="auth-modal-title">Registration Successful!</h3>
+            <p className="auth-modal-desc">
+              Your account{registeredEmail ? <> (<strong className="auth-modal-email">{registeredEmail}</strong>)</> : ''} has been created successfully. Please sign in to continue.
+            </p>
+            <button
+              type="button"
+              className="auth-modal-btn"
+              onClick={handleSuccessOk}
+              autoFocus
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </AuthLayout>
   )
 }
