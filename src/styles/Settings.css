@@ -1,7 +1,12 @@
 @import './Requests.css';
 
 .settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 
 .settings-header-text h2 {
@@ -216,4 +221,67 @@
 .settings-device-remove:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Sign out button & session styles */
+.settings-signout-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.settings-signout-btn:hover:not(:disabled) {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+}
+
+.settings-signout-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Dark mode styling for sign out button */
+.dashboard.theme-dark .settings-signout-btn {
+  border-color: rgba(255, 100, 100, 0.45);
+  background: rgba(255, 80, 80, 0.15);
+  color: #ffb4b4;
+}
+
+.dashboard.theme-dark .settings-signout-btn:hover:not(:disabled) {
+  background: rgba(255, 80, 80, 0.3);
+  border-color: rgba(255, 100, 100, 0.6);
+  color: #ffffff;
+}
+
+/* Light blue theme styling for sign out button */
+.dashboard.theme-light-blue .settings-signout-btn,
+body.theme-light-blue .settings-signout-btn {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.dashboard.theme-light-blue .settings-signout-btn:hover:not(:disabled),
+body.theme-light-blue .settings-signout-btn:hover:not(:disabled) {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+}
+
+/* Session Box */
+.settings-session-box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }

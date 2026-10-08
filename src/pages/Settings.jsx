@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth'
 import { useAuth } from '../context/AuthContext'
 import { getUserProfile, updateUserProfile } from '../firebase/users'
+import { signOutUser } from '../firebase/auth'
 import DashboardLayout from '../components/DashboardLayout'
 import LocationAutocomplete from '../components/LocationAutocomplete'
 import TrustedDevicesSection from '../components/TrustedDevicesSection'
@@ -19,8 +21,10 @@ function getInitials(name) {
 
 export default function Settings() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [profile, setProfile] = useState(null)
   const [saving, setSaving] = useState(false)
+  const [signingOut, setSigningOut] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
@@ -102,6 +106,18 @@ export default function Settings() {
     }
   }
 
+  const handleSignOut = async () => {
+    setSigningOut(true)
+    setError('')
+    try {
+      await signOutUser()
+      navigate('/login')
+    } catch (err) {
+      setError(err.message || 'Failed to sign out.')
+      setSigningOut(false)
+    }
+  }
+
   return (
     <DashboardLayout title="Settings" userLabel={displayNameFallback} userEmail={email}>
       <div className="settings-header">
@@ -109,6 +125,15 @@ export default function Settings() {
           <h2>Settings</h2>
           <p>Manage your account and profile preferences.</p>
         </div>
+        <button
+          type="button"
+          className="settings-signout-btn"
+          onClick={handleSignOut}
+          disabled={signingOut}
+          title="Sign out of ReliefTrack"
+        >
+          {signingOut ? 'Signing out...' : 'Sign out'}
+        </button>
       </div>
 
       {error && <div className="requests-error">{error}</div>}
@@ -214,6 +239,35 @@ export default function Settings() {
 
       <div className="settings-grid" style={{ marginTop: 20 }}>
         <TrustedDevicesSection />
+        <div className="settings-card">
+          <div className="settings-card-header">
+            <span className="settings-card-icon">🚪</span>
+            <h3>Account Session</h3>
+          </div>
+          <p className="settings-devices-hint">
+            You are signed in as <strong>{email}</strong>. Logging out will end your active session on this device.
+          </p>
+          <div className="settings-session-box">
+            <div className="settings-profile-preview" style={{ marginBottom: 16, borderBottom: 'none', paddingBottom: 0 }}>
+              <div className="dashboard-avatar">{getInitials(displayNameFallback)}</div>
+              <div>
+                <div className="settings-profile-name">{displayNameFallback}</div>
+                <div className="settings-profile-email">{email}</div>
+                <div className="settings-profile-role">{role}</div>
+              </div>
+            </div>
+            <div>
+              <button
+                type="button"
+                className="settings-signout-btn"
+                onClick={handleSignOut}
+                disabled={signingOut}
+              >
+                {signingOut ? 'Signing out...' : 'Sign out of ReliefTrack'}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   )

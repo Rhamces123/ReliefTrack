@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { signOutUser } from '../firebase/auth'
 import { getUserProfile } from '../firebase/users'
 import nagaLogo from '../assets/naga-logo.jpg'
 import '../styles/Home.css'
@@ -19,7 +18,6 @@ const NAV_ITEMS = [
 ]
 
 export default function DashboardLayout({ title, children, userLabel, userEmail }) {
-  const navigate = useNavigate()
   const { user } = useAuth()
   const [isAdmin, setIsAdmin] = useState(false)
 
@@ -36,11 +34,6 @@ export default function DashboardLayout({ title, children, userLabel, userEmail 
     document.body.classList.add('dashboard-active')
     return () => document.body.classList.remove('dashboard-active')
   }, [])
-
-  const handleSignOut = async () => {
-    await signOutUser()
-    navigate('/login')
-  }
 
   const displayName = userLabel || user?.displayName || user?.email?.split('@')[0] || 'User'
   const email = userEmail || user?.email || ''
@@ -116,9 +109,6 @@ export default function DashboardLayout({ title, children, userLabel, userEmail 
               <div className="name">{displayName}</div>
               <div className="email">{email}</div>
             </div>
-            <button type="button" className="dashboard-signout" onClick={handleSignOut}>
-              Sign out
-            </button>
           </div>
         </header>
         <main className="dashboard-content">{children}</main>
