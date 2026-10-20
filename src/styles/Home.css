@@ -104,28 +104,33 @@ body.dashboard-active {
   backdrop-filter: blur(20px);
   display: flex;
   flex-direction: column;
-  padding: 24px 16px;
+  padding: 20px 14px;
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
   z-index: 50;
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  overflow: hidden;
   box-shadow: 2px 0 12px rgba(15, 45, 80, 0.03);
   transition: background 0.3s ease, border-color 0.3s ease;
 }
 
-.dashboard-sidebar::-webkit-scrollbar {
-  display: none;
+@media (max-height: 520px) {
+  .dashboard-sidebar {
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .dashboard-sidebar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .dashboard-brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
   padding: 0 8px;
 }
 
@@ -147,14 +152,14 @@ body.dashboard-active {
 .dashboard-nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .dashboard-nav-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 11px 14px;
+  padding: 9px 12px;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 500;
