@@ -5,50 +5,7 @@
    - Impact Gauge Circular Progress Styling
    ========================================================= */
 
-/* ───────── Ambient Orbs ───────── */
-.don-ambient {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
 
-.don-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.15;
-  animation: donOrbFloat 12s ease-in-out infinite;
-}
-
-.don-orb-1 {
-  width: 500px;
-  height: 500px;
-  top: -120px;
-  right: -100px;
-  background: radial-gradient(circle, #7850ff, transparent 70%);
-  animation-delay: 0s;
-}
-
-.don-orb-2 {
-  width: 400px;
-  height: 400px;
-  bottom: -80px;
-  left: -80px;
-  background: radial-gradient(circle, #00c8c8, transparent 70%);
-  animation-delay: -4s;
-}
-
-.don-orb-3 {
-  width: 350px;
-  height: 350px;
-  top: 40%;
-  left: 50%;
-  background: radial-gradient(circle, #f59e0b, transparent 70%);
-  animation-delay: -8s;
-  transform: translate(-50%, -50%);
-}
 
 /* ───────── Confetti ───────── */
 .don-confetti {

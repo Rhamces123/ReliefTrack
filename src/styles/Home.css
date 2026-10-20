@@ -1174,10 +1174,7 @@ a.dashboard-nav-item {
   color: #475569;
 }
 
-/* Ambient Orbs on Donations */
-.theme-light-blue .don-ambient {
-  display: none;
-}
+
 
 /* Impact Gauge in Donations (Light & Dark) */
 .theme-light-blue .don-impact {

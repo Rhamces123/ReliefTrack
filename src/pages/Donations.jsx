@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef, useCallback } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getUserProfile } from '../firebase/users'
@@ -83,7 +83,6 @@ export default function Donations() {
   const [saving, setSaving] = useState(false)
   const [actionId, setActionId] = useState(null)
   const [celebrate, setCelebrate] = useState(false)
-  const gridRef = useRef(null)
 
   const isAdmin = profile?.role === 'Admin'
   const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
@@ -170,33 +169,8 @@ export default function Donations() {
     finally { setActionId(null) }
   }
 
-  const handleMouseMove = useCallback((e) => {
-    if (!gridRef.current) return
-    const cards = gridRef.current.querySelectorAll('.don-card')
-    cards.forEach((card) => {
-      const rect = card.getBoundingClientRect()
-      const x = e.clientX - rect.left; const y = e.clientY - rect.top
-      card.style.setProperty('--mouse-x', `${x}px`)
-      card.style.setProperty('--mouse-y', `${y}px`)
-      const cx = rect.width / 2; const cy = rect.height / 2
-      const rx = ((y - cy) / cy) * -8; const ry = ((x - cx) / cx) * 8
-      card.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-3px)`
-    })
-  }, [])
-
-  const handleMouseLeave = useCallback(() => {
-    if (!gridRef.current) return
-    const cards = gridRef.current.querySelectorAll('.don-card')
-    cards.forEach((card) => {
-      card.style.transform = 'perspective(600px) rotateX(0deg) rotateY(0deg) translateY(0)'
-    })
-  }, [])
-
   return (
     <DashboardLayout title="Donations" userLabel={displayName} userEmail={email}>
-      <div className="don-ambient">
-        <div className="don-orb don-orb-1" /><div className="don-orb don-orb-2" /><div className="don-orb don-orb-3" />
-      </div>
 
       {celebrate && <div className="don-confetti"><span /><span /><span /><span /><span /><span /><span /><span /></div>}
 
@@ -296,13 +270,12 @@ export default function Donations() {
             )}
           </div>
         ) : (
-          <div className="don-grid" ref={gridRef} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+          <div className="don-grid">
             {filtered.map((d, idx) => {
               const meta = TYPE_META[d.type] || TYPE_META.Other
               const qty = Number(d.quantity) || 0
               return (
                 <div key={d.docId} className="don-card" style={{ '--card-glow': meta.gradient, '--idx': idx }}>
-                  <div className="don-card-glow" />
                   <div className="don-card-top">
                     <span className="don-badge" style={{ background: meta.gradient }}>
                       {meta.emoji} {d.type}
