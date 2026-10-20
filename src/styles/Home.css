@@ -96,7 +96,6 @@ body.dashboard-active {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Sidebar Navigation */
 .dashboard-sidebar {
   width: 240px;
   flex-shrink: 0;
@@ -112,8 +111,14 @@ body.dashboard-active {
   bottom: 0;
   z-index: 50;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   box-shadow: 2px 0 12px rgba(15, 45, 80, 0.03);
   transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.dashboard-sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 .dashboard-brand {
