@@ -435,7 +435,7 @@ export default function Home() {
               center={NAGA_CENTER}
               zoom={12}
               scrollWheelZoom={false}
-              style={{ width: '100%', height: '240px', borderRadius: '8px' }}
+              style={{ width: '100%', height: '240px', borderRadius: '8px', zIndex: 1 }}
             >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

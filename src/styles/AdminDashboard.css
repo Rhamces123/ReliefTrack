@@ -728,6 +728,15 @@
 
 .operations-map-wrap {
   padding: 14px;
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+.operations-map-wrap .leaflet-container {
+  position: relative;
+  z-index: 1 !important;
+  isolation: isolate;
 }
 
 .map-legend-row {

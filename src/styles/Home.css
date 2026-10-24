@@ -361,7 +361,7 @@ body.dashboard-active {
   background: var(--dash-topbar-bg);
   position: sticky;
   top: 0;
-  z-index: 40;
+  z-index: 100;
   box-shadow: 0 1px 4px rgba(18, 59, 102, 0.04);
 }
 
@@ -506,7 +506,7 @@ body.dashboard-active {
   border: 1px solid var(--dash-border);
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(18, 59, 102, 0.15);
-  z-index: 100;
+  z-index: 150;
   overflow: hidden;
   animation: popoverFadeIn 0.2s ease;
 }
@@ -670,7 +670,7 @@ body.dashboard-active {
   border: 1px solid var(--dash-border);
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(18, 59, 102, 0.15);
-  z-index: 100;
+  z-index: 150;
   padding: 8px;
   animation: popoverFadeIn 0.2s ease;
 }
@@ -1152,6 +1152,16 @@ body.dashboard-active {
 
 .map-preview-container {
   padding: 14px;
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+.map-preview-container .leaflet-container,
+.dashboard-panel .leaflet-container {
+  position: relative;
+  z-index: 1 !important;
+  isolation: isolate;
 }
 
 .map-preview-legend {
@@ -1480,7 +1490,7 @@ body.dashboard-active {
   bottom: 0;
   background: rgba(18, 59, 102, 0.45);
   backdrop-filter: blur(4px);
-  z-index: 1000;
+  z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1705,6 +1715,7 @@ body.dashboard-active {
 @media (max-width: 1024px) {
   .dashboard-sidebar {
     transform: translateX(-100%);
+    z-index: 1050;
   }
 
   .dashboard-sidebar.mobile-open {
@@ -1730,7 +1741,7 @@ body.dashboard-active {
     right: 0;
     bottom: 0;
     background: rgba(18, 59, 102, 0.5);
-    z-index: 45;
+    z-index: 1040;
   }
 
   .dashboard-stats-grid {
