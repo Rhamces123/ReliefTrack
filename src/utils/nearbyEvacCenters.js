@@ -23,7 +23,7 @@ const OVERPASS_ENDPOINTS = [
   'https://overpass.private.coffee/api/interpreter',
 ]
 
-const FALLBACK_SCHOOLS = [
+export const FALLBACK_SCHOOLS = [
   { name: 'Naga Central Elementary School', lat: 10.2075, lng: 123.7585, address: 'Poblacion, Naga' },
   { name: 'Tuyan Elementary School', lat: 10.226, lng: 123.766, address: 'Tuyan, Naga' },
   { name: 'Tuyan National High School', lat: 10.2245, lng: 123.764, address: 'Tuyan, Naga' },

@@ -1,4 +1,5 @@
-import { useEffect, useState, useMemo, useRef } from 'react'
+import { useEffect, useState, useMemo, useRef, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import {
   getUserProfile,
@@ -11,31 +12,109 @@ import {
   updateUserLocation,
   INITIAL_AUTH_USERS,
 } from '../firebase/users'
+import {
+  subscribeReliefRequests,
+  updateReliefRequestStatus,
+  deleteReliefRequest,
+} from '../firebase/requests'
+import { subscribeInventoryItems } from '../firebase/inventory'
+import { subscribeFamilies } from '../firebase/families'
 import { getBrowserLocation } from '../utils/getBrowserLocation'
+import { FALLBACK_SCHOOLS } from '../utils/nearbyEvacCenters'
+import { formatRequestDate, getStatusLabel, getStatusClass } from '../utils/requestHelpers'
 import DashboardLayout from '../components/DashboardLayout'
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 import '../styles/AdminDashboard.css'
+import {
+  Files,
+  Hourglass,
+  CircleCheck,
+  Siren,
+  Users,
+  Package,
+  Search,
+  RefreshCw,
+  Eye,
+  CheckCircle2,
+  X,
+  AlertTriangle,
+  MapPin,
+  ShieldCheck,
+  Map,
+  ArrowRight,
+  UserPlus,
+  Trash2,
+  Clock,
+  ExternalLink,
+} from 'lucide-react'
 
-const NAGA_BARANGAYS = [
-  'Brgy. Central Poblacion, City of Naga, Cebu',
-  'Brgy. North Poblacion, City of Naga, Cebu',
-  'Brgy. South Poblacion, City of Naga, Cebu',
-  'Brgy. Colon, City of Naga, Cebu',
-  'Brgy. Tinaan, City of Naga, Cebu',
-  'Brgy. Inoburan, City of Naga, Cebu',
-  'Brgy. Mainit, City of Naga, Cebu',
-  'Brgy. Pangdan, City of Naga, Cebu',
-  'Brgy. Cantao-an, City of Naga, Cebu',
-  'Brgy. Lutac, City of Naga, Cebu',
-  'Brgy. Uling, City of Naga, Cebu',
-  'Brgy. Tuyan, City of Naga, Cebu',
-  'Brgy. Langtad, City of Naga, Cebu',
-  'Brgy. Inayagan, City of Naga, Cebu',
-  'Brgy. Balirong, City of Naga, Cebu',
-]
+const NAGA_CENTER = [10.2085, 123.7591]
+
+const evacMarkerIcon = L.divIcon({
+  className: 'custom-evac-marker',
+  html: `
+    <div style="
+      width: 26px; height: 26px;
+      background: #39A935;
+      border: 2.5px solid #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: bold;
+      font-size: 13px;
+    ">
+      🏫
+    </div>
+  `,
+  iconSize: [26, 26],
+  iconAnchor: [13, 13],
+})
+
+const requestMarkerIcon = (status) => {
+  const color =
+    status === 'completed'
+      ? '#39A935'
+      : status === 'in-progress'
+      ? '#1674D1'
+      : '#F59E0B'
+  return L.divIcon({
+    className: 'custom-req-marker',
+    html: `
+      <div style="
+        width: 24px; height: 24px;
+        background: ${color};
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      ">
+        <div style="width: 8px; height: 8px; background: #ffffff; border-radius: 50%;"></div>
+      </div>
+    `,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+  })
+}
 
 export default function AdminDashboard() {
-  const { user } = useAuth()
+  const { user, userProfile } = useAuth()
+  const navigate = useNavigate()
+
   const [profile, setProfile] = useState(null)
+  const [activeTab, setActiveTab] = useState('operations') // 'operations' | 'users'
+  const [dateFilter, setDateFilter] = useState('all') // 'all' | 'today' | '7d' | '30d'
+
+  // Data Collections
+  const [requests, setRequests] = useState([])
+  const [inventory, setInventory] = useState([])
+  const [families, setFamilies] = useState([])
   const [users, setUsers] = useState(() =>
     INITIAL_AUTH_USERS.map((a) => ({
       docId: `user_${a.email.replace(/[^a-zA-Z0-9]/g, '_')}`,
@@ -44,35 +123,43 @@ export default function AdminDashboard() {
   )
   const [loading, setLoading] = useState(true)
 
-  // Filters
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('All')
-  const [roleFilter, setRoleFilter] = useState('All')
+  // Filters for Operations
+  const [requestSearch, setRequestSearch] = useState('')
+  const [requestStatusFilter, setRequestStatusFilter] = useState('All')
 
-  // Modals
+  // Modals for Operations
+  const [selectedRequest, setSelectedRequest] = useState(null)
+  const [confirmModal, setConfirmModal] = useState(null) // { action, requestId, docId, targetStatus }
+  const [actionLoading, setActionLoading] = useState(false)
+
+  // User Management Filters & Modals (Preserved 100%)
+  const [userSearch, setUserSearch] = useState('')
+  const [userStatusFilter, setUserStatusFilter] = useState('All')
+  const [userRoleFilter, setUserRoleFilter] = useState('All')
+
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
 
   const [holdTarget, setHoldTarget] = useState(null)
   const [isHolding, setIsHolding] = useState(false)
 
-  // Location Sync & Edit Modal
   const [editLocationTarget, setEditLocationTarget] = useState(null)
   const [editLocationValue, setEditLocationValue] = useState('')
   const [isSavingLocation, setIsSavingLocation] = useState(false)
   const [isDetectingLoc, setIsDetectingLoc] = useState(false)
-  const [isLocSyncing, setIsLocSyncing] = useState(false)
 
-  // Add User Modal
   const [isAddUserOpen, setIsAddUserOpen] = useState(false)
-  const [newUserData, setNewUserData] = useState({ name: '', email: '', location: '', role: 'Member', password: '' })
+  const [newUserData, setNewUserData] = useState({
+    name: '',
+    email: '',
+    location: '',
+    role: 'Member',
+    password: '',
+  })
   const [isAddingUser, setIsAddingUser] = useState(false)
 
-  // Sync state
   const [isSyncing, setIsSyncing] = useState(false)
   const autoSyncedRef = useRef(false)
-
-  // Feedback Toast
   const [toast, setToast] = useState(null)
 
   const showToast = (message, type = 'success') => {
@@ -80,7 +167,14 @@ export default function AdminDashboard() {
     setTimeout(() => setToast(null), 4000)
   }
 
-  const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'Admin'
+  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
+  const isAdmin =
+    (adminEmail && user?.email?.toLowerCase() === adminEmail.toLowerCase()) ||
+    userProfile?.role === 'Admin' ||
+    profile?.role === 'Admin'
+
+  const displayName =
+    profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'Administrator'
   const email = profile?.email || user?.email || ''
 
   useEffect(() => {
@@ -88,77 +182,186 @@ export default function AdminDashboard() {
     getUserProfile(user.uid).then(setProfile).catch(() => setProfile(null))
   }, [user?.uid])
 
+  // Subscriptions to live Firestore collections
   useEffect(() => {
     const unsubUsers = subscribeUsers(
+      (data) => setUsers(data),
+      (err) => console.error('Error fetching users:', err)
+    )
+
+    const unsubRequests = subscribeReliefRequests(
       (data) => {
-        setUsers(data)
+        setRequests(data)
         setLoading(false)
       },
-      (err) => {
-        console.error('Error fetching users:', err)
-        setLoading(false)
-      }
+      (err) => console.error('Error fetching requests:', err),
+      { uid: user?.uid, role: 'Admin' }
     )
-    return () => unsubUsers()
-  }, [])
+
+    const unsubInventory = subscribeInventoryItems(
+      (data) => setInventory(data),
+      (err) => console.error('Error fetching inventory:', err)
+    )
+
+    const unsubFamilies = subscribeFamilies(
+      (data) => setFamilies(data),
+      (err) => console.error('Error fetching families:', err),
+      { uid: user?.uid, role: 'Admin' }
+    )
+
+    return () => {
+      unsubUsers()
+      unsubRequests()
+      unsubInventory()
+      unsubFamilies()
+    }
+  }, [user?.uid])
 
   // Auto-sync missing accounts from Firebase Auth on initial load
   useEffect(() => {
-    if (!loading && !autoSyncedRef.current) {
+    if (!loading && !autoSyncedRef.current && users.length > 0) {
       autoSyncedRef.current = true
       syncAuthUsersToFirestore(users)
         .then((addedCount) => {
           if (addedCount > 0) {
-            showToast(`Synchronized ${addedCount} registered account${addedCount === 1 ? '' : 's'} from Firebase!`, 'success')
+            showToast(
+              `Synchronized ${addedCount} registered account${addedCount === 1 ? '' : 's'} from Firebase!`,
+              'success'
+            )
           }
         })
-        .catch((err) => {
-          console.error('Auto-sync error:', err)
-        })
+        .catch((err) => console.error('Auto-sync error:', err))
     }
   }, [loading, users])
 
-  // Online Presence Helpers
-  const isUserOnline = (u) => {
-    // Current user is always online
+  // Date Filter calculations for Requests
+  const dateFilteredRequests = useMemo(() => {
+    if (dateFilter === 'all') return requests
+    // eslint-disable-next-line react-hooks/purity
+    const now = Date.now()
+    const msInDay = 24 * 60 * 60 * 1000
+
+    return requests.filter((r) => {
+      if (!r.createdAt) return false
+      const reqMs = r.createdAt.getTime ? r.createdAt.getTime() : new Date(r.createdAt).getTime()
+      if (isNaN(reqMs)) return false
+
+      if (dateFilter === 'today') {
+        return now - reqMs < msInDay
+      }
+      if (dateFilter === '7d') {
+        return now - reqMs < 7 * msInDay
+      }
+      if (dateFilter === '30d') {
+        return now - reqMs < 30 * msInDay
+      }
+      return true
+    })
+  }, [requests, dateFilter])
+
+  // Overview Statistics (Calculated from real data)
+  const totalRequestsCount = dateFilteredRequests.length
+  const pendingRequestsCount = dateFilteredRequests.filter((r) => r.status === 'pending').length
+  const activeOpsCount = dateFilteredRequests.filter((r) => r.status === 'in-progress').length
+  const completedOpsCount = dateFilteredRequests.filter((r) => r.status === 'completed').length
+  const registeredBeneficiariesCount = families.length
+  const totalSuppliesCount = inventory.reduce((acc, it) => acc + (Number(it.quantity) || 0), 0)
+  const lowStockItemsCount = inventory.filter((it) => (Number(it.quantity) || 0) < 20).length
+
+  // Filtered Requests for Table
+  const filteredRequests = useMemo(() => {
+    return dateFilteredRequests.filter((r) => {
+      const q = requestSearch.trim().toLowerCase()
+      const matchesSearch =
+        !q ||
+        (r.requestId && r.requestId.toLowerCase().includes(q)) ||
+        (r.requesterName && r.requesterName.toLowerCase().includes(q)) ||
+        (r.location && r.location.toLowerCase().includes(q)) ||
+        (r.description && r.description.toLowerCase().includes(q))
+
+      const matchesStatus =
+        requestStatusFilter === 'All' ||
+        (requestStatusFilter === 'Pending' && r.status === 'pending') ||
+        (requestStatusFilter === 'In Progress' && r.status === 'in-progress') ||
+        (requestStatusFilter === 'Completed' && r.status === 'completed')
+
+      return matchesSearch && matchesStatus
+    })
+  }, [dateFilteredRequests, requestSearch, requestStatusFilter])
+
+  // Priority classification helper
+  const getRequestPriority = (r) => {
+    let score = 0
+    if (r.categories) {
+      if (r.categories.pwd?.count > 0) score += 3
+      if (r.categories.pregnantWomen?.count > 0) score += 3
+      if (r.categories.elders?.count > 0) score += 2
+      if (r.categories.childrenBelow7?.count > 0) score += 2
+    }
+    const desc = (r.description || '').toLowerCase()
+    if (desc.includes('urgent') || desc.includes('emergency') || desc.includes('flood') || desc.includes('trapped')) {
+      score += 4
+    }
+    if (score >= 4) return { label: 'Critical', class: 'priority-critical' }
+    if (score >= 2) return { label: 'High', class: 'priority-high' }
+    return { label: 'Normal', class: 'priority-normal' }
+  }
+
+  // Urgent/Critical Incidents List
+  const urgentIncidents = useMemo(() => {
+    return requests
+      .filter((r) => r.status !== 'completed' && getRequestPriority(r).label !== 'Normal')
+      .slice(0, 4)
+  }, [requests])
+
+  // Status update confirmation
+  const handleConfirmStatusChange = async () => {
+    if (!confirmModal) return
+    setActionLoading(true)
+    try {
+      if (confirmModal.action === 'delete') {
+        await deleteReliefRequest(confirmModal.docId)
+        showToast(`Request ${confirmModal.requestId} has been removed.`)
+      } else {
+        await updateReliefRequestStatus(confirmModal.docId, confirmModal.targetStatus)
+        showToast(
+          `Request ${confirmModal.requestId} updated to ${getStatusLabel(confirmModal.targetStatus)}!`
+        )
+      }
+      setConfirmModal(null)
+    } catch (err) {
+      console.error('Status change error:', err)
+      showToast('Failed to update request status.', 'error')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  // User Management Presence Helpers (Preserved 100%)
+  const isUserOnline = useCallback((u) => {
     if (user?.uid && u.docId === user.uid) return true
     if (u.isOnline === false) return false
     if (!u.lastActiveAt) return false
     const ms = u.lastActiveAt?.toMillis
       ? u.lastActiveAt.toMillis()
-      : (typeof u.lastActiveAt === 'number' ? u.lastActiveAt : new Date(u.lastActiveAt).getTime())
+      : typeof u.lastActiveAt === 'number'
+      ? u.lastActiveAt
+      : new Date(u.lastActiveAt).getTime()
     if (isNaN(ms)) return false
-    // Active within the last 3 minutes
     return Date.now() - ms < 3 * 60 * 1000
-  }
+  }, [user])
 
-  const formatLastSeen = (u) => {
-    if (isUserOnline(u)) return 'Active now'
-    if (!u.lastActiveAt) return 'Offline'
-    const ms = u.lastActiveAt?.toMillis
-      ? u.lastActiveAt.toMillis()
-      : (typeof u.lastActiveAt === 'number' ? u.lastActiveAt : new Date(u.lastActiveAt).getTime())
-    if (isNaN(ms)) return 'Offline'
-    const diffSec = Math.floor((Date.now() - ms) / 1000)
-    if (diffSec < 60) return 'Just now'
-    if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`
-    if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`
-    return new Date(ms).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-  }
-
-  // User Management Summary Metrics
   const userStats = useMemo(() => {
     const total = users.length
     const online = users.filter((u) => isUserOnline(u)).length
     const onHold = users.filter((u) => u.status === 'On Hold').length
     const admins = users.filter((u) => u.role === 'Admin').length
     return { total, online, onHold, admins }
-  }, [users, user?.uid])
+  }, [users, isUserOnline])
 
-  // Filtered Users List
   const filteredUsers = useMemo(() => {
     return users.filter((u) => {
-      const q = search.trim().toLowerCase()
+      const q = userSearch.trim().toLowerCase()
       const matchesSearch =
         !q ||
         (u.displayName && u.displayName.toLowerCase().includes(q)) ||
@@ -167,26 +370,28 @@ export default function AdminDashboard() {
 
       const online = isUserOnline(u)
       const matchesStatus =
-        statusFilter === 'All' ||
-        (statusFilter === 'Online' && online) ||
-        (statusFilter === 'Offline' && !online) ||
-        (statusFilter === 'Active' && u.status !== 'On Hold') ||
-        (statusFilter === 'On Hold' && u.status === 'On Hold')
+        userStatusFilter === 'All' ||
+        (userStatusFilter === 'Online' && online) ||
+        (userStatusFilter === 'Offline' && !online) ||
+        (userStatusFilter === 'Active' && u.status !== 'On Hold') ||
+        (userStatusFilter === 'On Hold' && u.status === 'On Hold')
 
       const role = u.role === 'Admin' ? 'Admin' : 'Member'
-      const matchesRole = roleFilter === 'All' || role === roleFilter
+      const matchesRole = userRoleFilter === 'All' || role === userRoleFilter
 
       return matchesSearch && matchesStatus && matchesRole
     })
-  }, [users, search, statusFilter, roleFilter, user?.uid])
+  }, [users, userSearch, userStatusFilter, userRoleFilter, isUserOnline])
 
-  // Manual Sync Button
+  // User Management Actions
   const handleManualSync = async () => {
     setIsSyncing(true)
     try {
       const addedCount = await syncAuthUsersToFirestore(users)
       if (addedCount > 0) {
-        showToast(`Synchronized ${addedCount} account${addedCount === 1 ? '' : 's'} from Firebase Authentication!`)
+        showToast(
+          `Synchronized ${addedCount} account${addedCount === 1 ? '' : 's'} from Firebase Authentication!`
+        )
       } else {
         showToast('All registered accounts are already up-to-date.', 'info')
       }
@@ -198,7 +403,6 @@ export default function AdminDashboard() {
     }
   }
 
-  // Add User Form Submission
   const handleAddUserSubmit = async (e) => {
     e.preventDefault()
     if (!newUserData.email) return
@@ -207,8 +411,8 @@ export default function AdminDashboard() {
       const res = await addUserAccount(newUserData)
       showToast(
         res?.hasAuth
-          ? `User account ${res.email} created with login credentials! Visible in User Management.`
-          : `User account ${res?.email || newUserData.email} added and visible in User Management!`,
+          ? `User account ${res.email} created with login credentials!`
+          : `User account ${res?.email || newUserData.email} added successfully!`,
         'success'
       )
       setIsAddUserOpen(false)
@@ -221,7 +425,6 @@ export default function AdminDashboard() {
     }
   }
 
-  // Toggle Role
   const toggleRole = async (targetUser) => {
     const newRole = targetUser.role === 'Admin' ? 'Member' : 'Admin'
     try {
@@ -233,37 +436,21 @@ export default function AdminDashboard() {
     }
   }
 
-  // Hold / Unhold
-  const promptHoldToggle = (targetUser) => {
-    const isCurrentlyHold = targetUser.status === 'On Hold'
-    setHoldTarget({
-      ...targetUser,
-      nextStatus: isCurrentlyHold ? 'Active' : 'On Hold',
-    })
-  }
-
   const confirmHoldToggle = async () => {
     if (!holdTarget) return
     setIsHolding(true)
     try {
       await setUserStatus(holdTarget.docId, holdTarget.nextStatus)
       showToast(
-        holdTarget.nextStatus === 'On Hold'
-          ? `Account for ${holdTarget.displayName || holdTarget.email} has been placed ON HOLD.`
-          : `Hold released for ${holdTarget.displayName || holdTarget.email}. Account is now Active.`
+        `Account ${holdTarget.nextStatus === 'On Hold' ? 'placed On Hold' : 'Reactivated'} for ${holdTarget.displayName || holdTarget.email}`
       )
       setHoldTarget(null)
     } catch (err) {
-      console.error('Error changing hold status:', err)
-      showToast('Failed to update account hold status.', 'error')
+      console.error('Error updating status:', err)
+      showToast('Failed to update account status.', 'error')
     } finally {
       setIsHolding(false)
     }
-  }
-
-  // Delete User
-  const promptDelete = (targetUser) => {
-    setDeleteTarget(targetUser)
   }
 
   const confirmDelete = async () => {
@@ -271,42 +458,16 @@ export default function AdminDashboard() {
     setIsDeleting(true)
     try {
       await deleteUserProfile(deleteTarget.docId)
-      showToast(`User account ${deleteTarget.displayName || deleteTarget.email} deleted successfully.`)
+      showToast(`Account removed for ${deleteTarget.displayName || deleteTarget.email}`)
       setDeleteTarget(null)
     } catch (err) {
-      console.error('Error deleting user:', err)
+      console.error('Error deleting account:', err)
+      showToast('Failed to delete account.', 'error')
     } finally {
       setIsDeleting(false)
     }
   }
 
-  // Sync Current Admin Location
-  const handleSyncCurrentLocation = async () => {
-    if (!user?.uid) return
-    setIsLocSyncing(true)
-    try {
-      const loc = await getBrowserLocation()
-      if (loc) {
-        await updateUserLocation(user.uid, loc)
-        showToast(`📍 Your location updated: ${loc}`)
-      } else {
-        showToast('Could not detect device location. Please enable location permissions.', 'warning')
-      }
-    } catch (err) {
-      console.error('Location sync error:', err)
-      showToast('Failed to detect device location.', 'error')
-    } finally {
-      setIsLocSyncing(false)
-    }
-  }
-
-  // Open Edit Location Modal for any user
-  const openEditLocation = (targetUser) => {
-    setEditLocationTarget(targetUser)
-    setEditLocationValue(targetUser.location || '')
-  }
-
-  // Save updated location for target user
   const handleSaveLocation = async (e) => {
     e.preventDefault()
     if (!editLocationTarget) return
@@ -323,7 +484,6 @@ export default function AdminDashboard() {
     }
   }
 
-  // Detect location for modal input
   const handleDetectForTarget = async () => {
     setIsDetectingLoc(true)
     try {
@@ -332,7 +492,7 @@ export default function AdminDashboard() {
         setEditLocationValue(loc)
         showToast(`Detected location: ${loc}`)
       } else {
-        showToast('Could not detect device location. Please enable location permissions.', 'warning')
+        showToast('Could not detect device location. Check permissions.', 'warning')
       }
     } catch {
       showToast('Location detection failed.', 'error')
@@ -341,569 +501,1232 @@ export default function AdminDashboard() {
     }
   }
 
-  const getInitials = (name, mail) => {
-    const val = name?.trim() || mail?.split('@')[0] || 'U'
-    const parts = val.split(' ').filter(Boolean)
-    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase()
-    return val.slice(0, 2).toUpperCase()
-  }
-
-  const formatUserDate = (createdAt) => {
-    if (!createdAt) return '—'
-    try {
-      const d = createdAt.toDate ? createdAt.toDate() : new Date(createdAt)
-      if (isNaN(d.getTime())) return '—'
-      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    } catch {
-      return '—'
-    }
+  // Security Access Control
+  if (!loading && !isAdmin) {
+    return (
+      <DashboardLayout title="Access Denied" userLabel={displayName} userEmail={email}>
+        <div className="admin-access-denied">
+          <div className="access-denied-card">
+            <AlertTriangle size={48} className="text-red" />
+            <h2>Administrator Access Restricted</h2>
+            <p>
+              Your account ({email}) does not have administrative privileges to manage city-wide relief operations.
+            </p>
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => navigate('/home')}
+            >
+              Return to Community Dashboard
+            </button>
+          </div>
+        </div>
+      </DashboardLayout>
+    )
   }
 
   return (
-    <DashboardLayout title="User Management" userLabel={displayName} userEmail={email}>
+    <DashboardLayout title="Admin Dashboard" userLabel={displayName} userEmail={email}>
       {toast && (
         <div className={`admin-toast ${toast.type}`}>
-          <span>{toast.type === 'error' ? '⚠️' : '✅'}</span>
+          {toast.type === 'error' ? <AlertTriangle size={18} /> : <CheckCircle2 size={18} />}
           <span>{toast.message}</span>
         </div>
       )}
 
-      <div className="admin-header">
-        <div className="admin-header-text">
-          <h2>User Management</h2>
-          <p>System overview of all registered accounts, account hold controls, and permissions.</p>
+      {/* Admin Dashboard Header */}
+      <div className="admin-dashboard-header">
+        <div className="admin-header-main">
+          <div className="admin-title-row">
+            <h2 className="admin-title">Admin Dashboard</h2>
+            <span className="admin-badge-eoc">
+              <span className="live-pulse" /> Naga EOC Live Operations
+            </span>
+          </div>
+          <p className="admin-subtitle">
+            Coordinate emergency relief operations, approve requests, monitor active incidents, and manage resources across the City of Naga, Cebu.
+          </p>
+        </div>
+
+        {/* Date Filter & Tab Controls */}
+        <div className="admin-header-controls">
+          <div className="date-filter-group">
+            <span className="filter-label">Date Filter:</span>
+            <select
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              className="admin-select"
+            >
+              <option value="all">All Time</option>
+              <option value="today">Today</option>
+              <option value="7d">Last 7 Days</option>
+              <option value="30d">Last 30 Days</option>
+            </select>
+          </div>
+
+          <div className="admin-tabs-toggle">
+            <button
+              type="button"
+              className={`tab-btn ${activeTab === 'operations' ? 'active' : ''}`}
+              onClick={() => setActiveTab('operations')}
+            >
+              <Siren size={16} />
+              <span>Operations & Relief</span>
+            </button>
+            <button
+              type="button"
+              className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`}
+              onClick={() => setActiveTab('users')}
+            >
+              <Users size={16} />
+              <span>User Accounts ({users.length})</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* User Management Metrics */}
-      <div className="admin-stats user-stats-grid">
-        <div className="admin-stat-card">
-          <span className="admin-stat-icon">👥</span>
-          <div className="admin-stat-value">{loading ? '—' : userStats.total}</div>
-          <div className="admin-stat-label">Total Accounts</div>
+      {/* 6 Administrative Overview Statistic Cards */}
+      <div className="admin-stats-grid-six">
+        {/* Total Relief Requests */}
+        <div className="admin-stat-card card-requests">
+          <div className="stat-card-top">
+            <div className="stat-icon-wrap icon-navy">
+              <Files size={22} />
+            </div>
+            <span className="stat-trend">Live</span>
+          </div>
+          <div className="stat-value">{loading ? '—' : totalRequestsCount}</div>
+          <div className="stat-label">Total Relief Requests</div>
         </div>
-        <div className="admin-stat-card stat-online">
-          <span className="admin-stat-icon">🟢</span>
-          <div className="admin-stat-value text-online">{loading ? '—' : userStats.online}</div>
-          <div className="admin-stat-label">Online Now</div>
+
+        {/* Pending Approvals */}
+        <div className="admin-stat-card card-pending">
+          <div className="stat-card-top">
+            <div className="stat-icon-wrap icon-orange">
+              <Hourglass size={22} />
+            </div>
+            <span className="stat-badge-orange">Needs Action</span>
+          </div>
+          <div className="stat-value text-orange">{loading ? '—' : pendingRequestsCount}</div>
+          <div className="stat-label">Pending Approvals</div>
         </div>
-        <div className="admin-stat-card">
-          <span className="admin-stat-icon">⏸️</span>
-          <div className="admin-stat-value">{loading ? '—' : userStats.onHold}</div>
-          <div className="admin-stat-label">On Hold</div>
+
+        {/* Active Incidents / Operations */}
+        <div className="admin-stat-card card-operations">
+          <div className="stat-card-top">
+            <div className="stat-icon-wrap icon-blue">
+              <Siren size={22} />
+            </div>
+            <span className="stat-badge-blue">In Dispatch</span>
+          </div>
+          <div className="stat-value text-bright-blue">{loading ? '—' : activeOpsCount}</div>
+          <div className="stat-label">Active Operations</div>
         </div>
-        <div className="admin-stat-card">
-          <span className="admin-stat-icon">🛡️</span>
-          <div className="admin-stat-value">{loading ? '—' : userStats.admins}</div>
-          <div className="admin-stat-label">Administrators</div>
+
+        {/* Completed Operations */}
+        <div className="admin-stat-card card-completed">
+          <div className="stat-card-top">
+            <div className="stat-icon-wrap icon-green">
+              <CircleCheck size={22} />
+            </div>
+            <span className="stat-badge-green">Delivered</span>
+          </div>
+          <div className="stat-value text-green">{loading ? '—' : completedOpsCount}</div>
+          <div className="stat-label">Completed Operations</div>
+        </div>
+
+        {/* Registered Beneficiaries */}
+        <div className="admin-stat-card card-beneficiaries">
+          <div className="stat-card-top">
+            <div className="stat-icon-wrap icon-navy">
+              <Users size={22} />
+            </div>
+            <span className="stat-badge-gray">Families</span>
+          </div>
+          <div className="stat-value">{loading ? '—' : registeredBeneficiariesCount}</div>
+          <div className="stat-label">Registered Beneficiaries</div>
+        </div>
+
+        {/* Relief Inventory Supplies */}
+        <div className="admin-stat-card card-inventory">
+          <div className="stat-card-top">
+            <div className="stat-icon-wrap icon-blue">
+              <Package size={22} />
+            </div>
+            {lowStockItemsCount > 0 ? (
+              <span className="stat-badge-orange">{lowStockItemsCount} Low Stock</span>
+            ) : (
+              <span className="stat-badge-green">Stocked</span>
+            )}
+          </div>
+          <div className="stat-value">{loading ? '—' : totalSuppliesCount}</div>
+          <div className="stat-label">Available Relief Inventory</div>
         </div>
       </div>
 
-      {/* User Management Section */}
-      <div className="admin-section">
-        <div className="admin-section-header">
-          <div>
-            <h3>All Registered Accounts</h3>
-            <p className="admin-section-subtitle">
-              {filteredUsers.length} of {users.length} account{users.length === 1 ? '' : 's'} displayed • {userStats.online} online
-            </p>
-          </div>
-
-          <div className="admin-controls-bar">
-            {/* Action Buttons */}
-            <div className="admin-actions-group">
-              <button
-                type="button"
-                className="admin-btn-sync"
-                onClick={handleSyncCurrentLocation}
-                disabled={isLocSyncing}
-                title="Detect and sync your real live location to your profile"
-              >
-                {isLocSyncing ? '📍 Detecting...' : '📍 Sync Location'}
-              </button>
-              <button
-                type="button"
-                className="admin-btn-sync"
-                onClick={handleManualSync}
-                disabled={isSyncing}
-                title="Synchronize accounts from Firebase Authentication"
-              >
-                {isSyncing ? '⏳ Syncing...' : '🔄 Sync Accounts'}
-              </button>
-              <button
-                type="button"
-                className="admin-btn-add-user"
-                onClick={() => setIsAddUserOpen(true)}
-                title="Register a new user account"
-              >
-                ➕ Add Account
-              </button>
-            </div>
-
-            <div className="admin-search-wrap">
-              <span className="admin-search-icon">🔍</span>
-              <input
-                type="text"
-                className="admin-search-input"
-                placeholder="Search by name, email, or location..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              {search && (
+      {/* TAB 1: OPERATIONS & RELIEF MANAGEMENT */}
+      {activeTab === 'operations' && (
+        <div className="admin-tab-content">
+          {/* Urgent Incidents & Priority Assessment Section */}
+          {urgentIncidents.length > 0 && (
+            <div className="admin-priority-section">
+              <div className="priority-section-header">
+                <div className="priority-header-title">
+                  <AlertTriangle size={20} className="text-red" />
+                  <h3>Urgent Relief & High-Priority Incidents</h3>
+                </div>
                 <button
                   type="button"
-                  className="admin-search-clear"
-                  onClick={() => setSearch('')}
-                  title="Clear search"
+                  className="btn-link-small"
+                  onClick={() => navigate('/priority')}
                 >
-                  ✕
+                  View Priority Matrix <ArrowRight size={14} />
                 </button>
-              )}
-            </div>
+              </div>
 
-            <div className="admin-filters-group">
-              <select
-                className="admin-select-filter"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <option value="All">All Statuses</option>
-                <option value="Online">🟢 Online Now</option>
-                <option value="Offline">⚪ Offline</option>
-                <option value="Active">Active Status</option>
-                <option value="On Hold">On Hold</option>
-              </select>
-
-              <select
-                className="admin-select-filter"
-                value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
-              >
-                <option value="All">All Roles</option>
-                <option value="Admin">Admin</option>
-                <option value="Member">Member</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div className="admin-table-wrap">
-          {loading ? (
-            <p className="admin-empty">Loading user accounts...</p>
-          ) : filteredUsers.length === 0 ? (
-            <div className="admin-empty">
-              <p>No user accounts found matching your filters.</p>
-              {(search || statusFilter !== 'All' || roleFilter !== 'All') && (
-                <button
-                  type="button"
-                  className="admin-role-btn"
-                  onClick={() => {
-                    setSearch('')
-                    setStatusFilter('All')
-                    setRoleFilter('All')
-                  }}
-                >
-                  Reset Filters
-                </button>
-              )}
-            </div>
-          ) : (
-            <table className="dashboard-table admin-users-table">
-              <thead>
-                <tr>
-                  <th>User</th>
-                  <th>Email</th>
-                  <th>Location</th>
-                  <th>Role</th>
-                  <th>Account</th>
-                  <th>Presence</th>
-                  <th>Registered</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredUsers.map((u) => {
-                  const isCurrentUser = user?.uid === u.docId
-                  const isHold = u.status === 'On Hold'
-                  const online = isUserOnline(u)
-
+              <div className="urgent-incidents-grid">
+                {urgentIncidents.map((inc) => {
+                  const prio = getRequestPriority(inc)
                   return (
-                    <tr key={u.docId || u.email} className={`${isHold ? 'row-on-hold' : ''} ${online ? 'row-online' : ''}`}>
-                      <td>
-                        <div className="admin-user-cell">
-                          <div className="admin-avatar-wrap">
-                            <div className={`admin-user-avatar ${u.role === 'Admin' ? 'avatar-admin' : ''}`}>
-                              {getInitials(u.displayName, u.email)}
-                            </div>
-                            <span
-                              className={`admin-avatar-dot ${online ? 'online' : 'offline'}`}
-                              title={online ? 'Online now' : `Offline (${formatLastSeen(u)})`}
-                            />
-                          </div>
-                          <div>
-                            <span className="admin-user-name">
-                              {u.displayName || 'No name set'}
-                            </span>
-                            {isCurrentUser && <span className="admin-current-user-tag">You</span>}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="admin-user-email">
-                        <a href={`mailto:${u.email}`} className="admin-email-link">
-                          {u.email || '—'}
-                        </a>
-                      </td>
-                      <td className="admin-user-location">
-                        <button
-                          type="button"
-                          className="admin-location-pill"
-                          onClick={() => openEditLocation(u)}
-                          title="Click to edit or sync this user's location"
-                        >
-                          <span className="admin-location-icon">📍</span>
-                          <span className="admin-location-pill-text">
-                            {u.location || 'Set Location'}
-                          </span>
-                          <span className="admin-location-edit-icon">✏️</span>
-                        </button>
-                      </td>
-                      <td>
-                        <span className={`admin-role-badge ${u.role === 'Admin' ? 'admin' : 'member'}`}>
-                          {u.role || 'Member'}
+                    <div key={inc.docId} className="urgent-incident-card">
+                      <div className="incident-card-top">
+                        <span className={`priority-badge ${prio.class}`}>
+                          {prio.label} Priority
                         </span>
-                      </td>
-                      <td>
-                        <span className={`admin-status-badge ${isHold ? 'badge-hold' : 'badge-active'}`}>
-                          {isHold ? '⏸ On Hold' : '● Active'}
+                        <span className="incident-time">
+                          {formatRequestDate(inc.createdAt)}
                         </span>
-                      </td>
-                      <td>
-                        {online ? (
-                          <span className="admin-presence-badge online" title="Currently active on ReliefTrack">
-                            <span className="presence-pulse-dot" />
-                            Online
-                          </span>
-                        ) : (
-                          <span className="admin-presence-badge offline" title={`Last active: ${formatLastSeen(u)}`}>
-                            <span className="presence-offline-dot" />
-                            {formatLastSeen(u)}
+                      </div>
+                      <div className="incident-loc">
+                        <MapPin size={15} className="text-bright-blue" />
+                        <strong>{inc.location || 'City of Naga'}</strong>
+                      </div>
+                      <p className="incident-desc">
+                        {inc.description || 'Emergency food packs and water required.'}
+                      </p>
+                      <div className="incident-meta-row">
+                        <span className="meta-beneficiary">
+                          Requester: {inc.requesterName || inc.createdByName || 'Community'}
+                        </span>
+                        {inc.familyMembers > 0 && (
+                          <span className="meta-members">
+                            <Users size={12} /> {inc.familyMembers} pax
                           </span>
                         )}
-                      </td>
-                      <td className="admin-user-date">
-                        {formatUserDate(u.createdAt)}
-                      </td>
-                      <td>
-                        <div className="admin-actions-cell">
-                          {isCurrentUser ? (
-                            <span className="admin-you-badge">Current Admin</span>
-                          ) : (
-                            <>
-                              {/* Toggle Role */}
-                              <button
-                                type="button"
-                                className="admin-role-btn"
-                                onClick={() => toggleRole(u)}
-                                title={`Change role to ${u.role === 'Admin' ? 'Member' : 'Admin'}`}
-                              >
-                                Make {u.role === 'Admin' ? 'Member' : 'Admin'}
-                              </button>
-
-                              {/* Hold / Unhold Button */}
-                              <button
-                                type="button"
-                                className={`admin-action-btn-status ${isHold ? 'btn-unhold' : 'btn-hold'}`}
-                                onClick={() => promptHoldToggle(u)}
-                                title={isHold ? 'Release account hold' : 'Place account on hold'}
-                              >
-                                {isHold ? '▶ Unhold' : '⏸ Hold'}
-                              </button>
-
-                              {/* Delete Button */}
-                              <button
-                                type="button"
-                                className="admin-action-btn-delete"
-                                onClick={() => promptDelete(u)}
-                                title="Delete user account"
-                              >
-                                🗑 Delete
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
+                      </div>
+                      <div className="incident-card-actions">
+                        <button
+                          type="button"
+                          className="btn-action-small"
+                          onClick={() => setSelectedRequest(inc)}
+                        >
+                          View Details
+                        </button>
+                        {inc.status === 'pending' && (
+                          <button
+                            type="button"
+                            className="btn-primary-small"
+                            onClick={() =>
+                              setConfirmModal({
+                                action: 'approve',
+                                requestId: inc.requestId,
+                                docId: inc.docId,
+                                targetStatus: 'in-progress',
+                              })
+                            }
+                          >
+                            Dispatch Aid
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   )
                 })}
-              </tbody>
-            </table>
-          )}
-        </div>
-      </div>
-
-      {/* Add User Modal */}
-      {isAddUserOpen && (
-        <div className="admin-modal-overlay" onClick={() => !isAddingUser && setIsAddUserOpen(false)}>
-          <div className="admin-modal-dialog" onClick={(e) => e.stopPropagation()}>
-            <div className="admin-modal-header primary">
-              <span className="admin-modal-icon">👤</span>
-              <h4>Add User Account</h4>
+              </div>
             </div>
-            <form onSubmit={handleAddUserSubmit}>
-              <div className="admin-modal-body">
-                <p style={{ margin: '0 0 16px', fontSize: '13px', color: 'rgba(255,255,255,0.7)' }}>
-                  Register or track an account in the ReliefTrack User Management dashboard.
-                </p>
-                <div className="admin-form-group">
-                  <label className="admin-form-label">Email Address *</label>
-                  <input
-                    type="email"
-                    required
-                    className="admin-form-input"
-                    placeholder="user@example.com"
-                    value={newUserData.email}
-                    onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
-                  />
-                </div>
-                <div className="admin-form-group">
-                  <label className="admin-form-label">Full Name</label>
+          )}
+
+          {/* Relief Request Management Table Section */}
+          <div className="admin-requests-section">
+            <div className="requests-section-header">
+              <div className="requests-header-left">
+                <h3 className="section-title">Relief Request Management</h3>
+                <span className="section-subtitle">
+                  Review incoming requests, verify barangay locations, and dispatch aid
+                </span>
+              </div>
+
+              {/* Search & Filter Toolbar */}
+              <div className="requests-toolbar">
+                <div className="toolbar-search-box">
+                  <Search size={16} className="search-icon" />
                   <input
                     type="text"
-                    className="admin-form-input"
-                    placeholder="e.g. Maria Santos"
-                    value={newUserData.name}
-                    onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })}
+                    value={requestSearch}
+                    onChange={(e) => setRequestSearch(e.target.value)}
+                    placeholder="Search by ID, name, barangay..."
                   />
+                  {requestSearch && (
+                    <button
+                      type="button"
+                      className="search-clear-btn"
+                      onClick={() => setRequestSearch('')}
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
                 </div>
-                <div className="admin-form-group">
-                  <label className="admin-form-label">Location</label>
-                  <input
-                    type="text"
-                    className="admin-form-input"
-                    placeholder="e.g. Naga, Camarines Sur"
-                    value={newUserData.location}
-                    onChange={(e) => setNewUserData({ ...newUserData, location: e.target.value })}
-                  />
-                </div>
-                <div className="admin-form-group">
-                  <label className="admin-form-label">Role</label>
-                  <select
-                    className="admin-form-input"
-                    value={newUserData.role}
-                    onChange={(e) => setNewUserData({ ...newUserData, role: e.target.value })}
-                  >
-                    <option value="Member">Member</option>
-                    <option value="Admin">Admin</option>
-                  </select>
-                </div>
-                <div className="admin-form-group">
-                  <label className="admin-form-label">Login Password (Optional)</label>
-                  <input
-                    type="password"
-                    className="admin-form-input"
-                    placeholder="Min. 6 characters (creates login credentials)"
-                    value={newUserData.password}
-                    onChange={(e) => setNewUserData({ ...newUserData, password: e.target.value })}
-                  />
-                  <small style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginTop: '4px', display: 'block' }}>
-                    Optional. If entered, creates credentials so the user can immediately sign in.
-                  </small>
+
+                <div className="toolbar-status-filter">
+                  {['All', 'Pending', 'In Progress', 'Completed'].map((st) => (
+                    <button
+                      key={st}
+                      type="button"
+                      className={`status-pill-btn ${requestStatusFilter === st ? 'active' : ''}`}
+                      onClick={() => setRequestStatusFilter(st)}
+                    >
+                      {st}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="admin-modal-actions">
+            </div>
+
+            <div className="admin-table-container">
+              {loading ? (
+                <div className="admin-loading-state">
+                  <div className="loading-spinner" />
+                  <span>Loading operations data...</span>
+                </div>
+              ) : filteredRequests.length > 0 ? (
+                <div className="table-responsive">
+                  <table className="admin-data-table">
+                    <thead>
+                      <tr>
+                        <th>Request ID</th>
+                        <th>Requester / Beneficiary</th>
+                        <th>Barangay Location</th>
+                        <th>Relief Assistance Needed</th>
+                        <th>Date</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th style={{ textAlign: 'right' }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredRequests.map((req) => {
+                        const prio = getRequestPriority(req)
+                        return (
+                          <tr key={req.docId}>
+                            <td className="font-mono font-medium text-navy">
+                              {req.requestId}
+                            </td>
+                            <td>
+                              <div className="table-user-cell">
+                                <span className="font-semibold text-navy">
+                                  {req.requesterName || req.createdByName || 'Beneficiary'}
+                                </span>
+                                {req.familyMembers > 0 && (
+                                  <span className="text-xs text-muted">
+                                    {req.familyMembers} household members
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td>
+                              <div className="table-loc-cell">
+                                <MapPin size={14} className="text-bright-blue" />
+                                <span>{req.location || 'City of Naga'}</span>
+                              </div>
+                            </td>
+                            <td>
+                              <span className="table-desc-text" title={req.description}>
+                                {req.description || 'General Relief Goods'}
+                              </span>
+                            </td>
+                            <td className="text-muted">
+                              {formatRequestDate(req.createdAt)}
+                            </td>
+                            <td>
+                              <span className={`priority-badge ${prio.class}`}>
+                                {prio.label}
+                              </span>
+                            </td>
+                            <td>
+                              <span className={`status-badge ${getStatusClass(req.status)}`}>
+                                {req.status === 'pending' && <Hourglass size={12} />}
+                                {req.status === 'in-progress' && <Clock size={12} />}
+                                {req.status === 'completed' && <CircleCheck size={12} />}
+                                <span>{getStatusLabel(req.status)}</span>
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'right' }}>
+                              <div className="table-actions-group">
+                                <button
+                                  type="button"
+                                  className="btn-table-icon"
+                                  onClick={() => setSelectedRequest(req)}
+                                  title="View Full Details"
+                                >
+                                  <Eye size={15} />
+                                </button>
+
+                                {req.status === 'pending' && (
+                                  <button
+                                    type="button"
+                                    className="btn-table-action approve"
+                                    onClick={() =>
+                                      setConfirmModal({
+                                        action: 'approve',
+                                        requestId: req.requestId,
+                                        docId: req.docId,
+                                        targetStatus: 'in-progress',
+                                      })
+                                    }
+                                    title="Approve & Dispatch"
+                                  >
+                                    Approve
+                                  </button>
+                                )}
+
+                                {req.status === 'in-progress' && (
+                                  <button
+                                    type="button"
+                                    className="btn-table-action complete"
+                                    onClick={() =>
+                                      setConfirmModal({
+                                        action: 'complete',
+                                        requestId: req.requestId,
+                                        docId: req.docId,
+                                        targetStatus: 'completed',
+                                      })
+                                    }
+                                    title="Mark Completed"
+                                  >
+                                    Complete
+                                  </button>
+                                )}
+
+                                <button
+                                  type="button"
+                                  className="btn-table-icon text-red"
+                                  onClick={() =>
+                                    setConfirmModal({
+                                      action: 'delete',
+                                      requestId: req.requestId,
+                                      docId: req.docId,
+                                    })
+                                  }
+                                  title="Delete Request"
+                                >
+                                  <Trash2 size={15} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="admin-empty-state">
+                  <Files size={40} className="text-muted" />
+                  <h4>No relief requests found</h4>
+                  <p>No matching requests with current filter criteria.</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Two-Column Operations Layout: Inventory Overview + Disaster Map */}
+          <div className="admin-grid-two-col">
+            {/* Inventory Overview */}
+            <div className="admin-panel inventory-snapshot-panel">
+              <div className="panel-header">
+                <div className="panel-title-group">
+                  <Package size={18} className="text-bright-blue" />
+                  <h4 className="panel-title">Relief Supplies & Inventory</h4>
+                </div>
                 <button
                   type="button"
-                  className="admin-modal-btn cancel"
-                  onClick={() => setIsAddUserOpen(false)}
-                  disabled={isAddingUser}
+                  className="btn-link-small"
+                  onClick={() => navigate('/inventory')}
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="admin-modal-btn confirm"
-                  disabled={isAddingUser}
-                >
-                  {isAddingUser ? 'Adding...' : 'Add Account'}
+                  Manage Full Inventory <ExternalLink size={14} />
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
 
-      {/* Delete Confirmation Modal */}
-      {deleteTarget && (
-        <div className="admin-modal-overlay" onClick={() => !isDeleting && setDeleteTarget(null)}>
-          <div className="admin-modal-dialog" onClick={(e) => e.stopPropagation()}>
-            <div className="admin-modal-header danger">
-              <span className="admin-modal-icon">🗑️</span>
-              <h4>Delete User Account</h4>
-            </div>
-            <div className="admin-modal-body">
-              <p>
-                Are you sure you want to permanently delete the account for{' '}
-                <strong>{deleteTarget.displayName || deleteTarget.email}</strong>?
-              </p>
-              <div className="admin-modal-warning-box">
-                <p>⚠️ <strong>Warning:</strong></p>
-                <p>
-                  This action cannot be undone. All profile data associated with{' '}
-                  <code>{deleteTarget.email}</code> will be removed from the system.
-                </p>
-              </div>
-            </div>
-            <div className="admin-modal-actions">
-              <button
-                type="button"
-                className="admin-modal-btn cancel"
-                onClick={() => setDeleteTarget(null)}
-                disabled={isDeleting}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="admin-modal-btn delete"
-                onClick={confirmDelete}
-                disabled={isDeleting}
-              >
-                {isDeleting ? 'Deleting...' : 'Yes, Delete Account'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Hold / Unhold Confirmation Modal */}
-      {holdTarget && (
-        <div className="admin-modal-overlay" onClick={() => !isHolding && setHoldTarget(null)}>
-          <div className="admin-modal-dialog" onClick={(e) => e.stopPropagation()}>
-            <div className={`admin-modal-header ${holdTarget.nextStatus === 'On Hold' ? 'warning' : 'primary'}`}>
-              <span className="admin-modal-icon">
-                {holdTarget.nextStatus === 'On Hold' ? '⏸️' : '▶️'}
-              </span>
-              <h4>
-                {holdTarget.nextStatus === 'On Hold' ? 'Place Account On Hold' : 'Release Account Hold'}
-              </h4>
-            </div>
-            <div className="admin-modal-body">
-              <p>
-                {holdTarget.nextStatus === 'On Hold'
-                  ? `Are you sure you want to put ${holdTarget.displayName || holdTarget.email} on hold?`
-                  : `Are you sure you want to reactivate the account for ${holdTarget.displayName || holdTarget.email}?`}
-              </p>
-              <div className={`admin-modal-info-box ${holdTarget.nextStatus === 'On Hold' ? 'hold' : 'active'}`}>
-                {holdTarget.nextStatus === 'On Hold' ? (
-                  <p>
-                    While on hold, the user will be restricted from accessing relief operations, creating requests, and logging in.
-                  </p>
+              <div className="inventory-snapshot-body">
+                {inventory.length > 0 ? (
+                  <div className="inventory-snapshot-list">
+                    {inventory.slice(0, 5).map((item) => {
+                      const qty = Number(item.quantity) || 0
+                      const isLow = qty < 20 && qty >= 5
+                      const isCritical = qty < 5
+                      return (
+                        <div key={item.docId} className="inventory-snapshot-item">
+                          <div className="item-meta">
+                            <span className="item-name">{item.name}</span>
+                            <span className="item-category">{item.category} • {item.storageLocation || 'Naga Warehouse'}</span>
+                          </div>
+                          <div className="item-stock-box">
+                            <span className="item-qty">
+                              {qty} {item.unit || 'units'}
+                            </span>
+                            <span
+                              className={`stock-badge ${
+                                isCritical ? 'critical' : isLow ? 'low' : 'sufficient'
+                              }`}
+                            >
+                              {isCritical ? 'Critical' : isLow ? 'Low Stock' : 'Sufficient'}
+                            </span>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
                 ) : (
-                  <p>
-                    Releasing the hold will restore normal access immediately for this user.
-                  </p>
+                  <div className="panel-empty-text">
+                    No inventory records found. Go to Inventory Management to register supplies.
+                  </div>
                 )}
               </div>
             </div>
-            <div className="admin-modal-actions">
+
+            {/* Operations Map Preview */}
+            <div className="admin-panel operations-map-panel">
+              <div className="panel-header">
+                <div className="panel-title-group">
+                  <Map size={18} className="text-navy" />
+                  <h4 className="panel-title">Disaster Operations Map Preview</h4>
+                </div>
+                <button
+                  type="button"
+                  className="btn-link-small"
+                  onClick={() => navigate('/map')}
+                >
+                  Open Operations Map <ExternalLink size={14} />
+                </button>
+              </div>
+
+              <div className="operations-map-wrap">
+                <MapContainer
+                  center={NAGA_CENTER}
+                  zoom={12}
+                  scrollWheelZoom={false}
+                  style={{ width: '100%', height: '240px', borderRadius: '8px' }}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+
+                  {/* Naga City Evacuation Centers */}
+                  {FALLBACK_SCHOOLS.slice(0, 8).map((school) => (
+                    <Marker
+                      key={school.name}
+                      position={[school.lat, school.lng]}
+                      icon={evacMarkerIcon}
+                    >
+                      <Popup>
+                        <strong>🏫 Evacuation Center</strong>
+                        <br />
+                        {school.name}
+                        <br />
+                        <small>{school.address}</small>
+                      </Popup>
+                    </Marker>
+                  ))}
+
+                  {/* Requests with coordinates */}
+                  {requests
+                    .filter((r) => r.lat != null && r.lng != null)
+                    .map((r) => (
+                      <Marker
+                        key={r.docId}
+                        position={[Number(r.lat), Number(r.lng)]}
+                        icon={requestMarkerIcon(r.status)}
+                      >
+                        <Popup>
+                          <strong>{r.requestId}</strong>
+                          <br />
+                          {r.requesterName || 'Beneficiary'}
+                          <br />
+                          Status: {getStatusLabel(r.status)}
+                        </Popup>
+                      </Marker>
+                    ))}
+                </MapContainer>
+
+                <div className="map-legend-row">
+                  <div className="legend-chip">
+                    <span className="dot dot-green" /> Evacuation Centers
+                  </div>
+                  <div className="legend-chip">
+                    <span className="dot dot-orange" /> Pending Requests
+                  </div>
+                  <div className="legend-chip">
+                    <span className="dot dot-blue" /> Dispatched / Active
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 2: USER MANAGEMENT & ACCOUNTS (PRESERVED 100%) */}
+      {activeTab === 'users' && (
+        <div className="admin-tab-content">
+          {/* User Management Stat Cards */}
+          <div className="admin-stats user-stats-grid">
+            <div className="admin-stat-card">
+              <div className="stat-card-top">
+                <Users size={20} className="text-navy" />
+              </div>
+              <div className="admin-stat-value">{loading ? '—' : userStats.total}</div>
+              <div className="admin-stat-label">Total Accounts</div>
+            </div>
+
+            <div className="admin-stat-card stat-online">
+              <div className="stat-card-top">
+                <span className="live-pulse" />
+              </div>
+              <div className="admin-stat-value text-online">
+                {loading ? '—' : userStats.online}
+              </div>
+              <div className="admin-stat-label">Online Now</div>
+            </div>
+
+            <div className="admin-stat-card">
+              <div className="stat-card-top">
+                <Hourglass size={20} className="text-orange" />
+              </div>
+              <div className="admin-stat-value text-orange">
+                {loading ? '—' : userStats.onHold}
+              </div>
+              <div className="admin-stat-label">On Hold</div>
+            </div>
+
+            <div className="admin-stat-card">
+              <div className="stat-card-top">
+                <ShieldCheck size={20} className="text-bright-blue" />
+              </div>
+              <div className="admin-stat-value text-bright-blue">
+                {loading ? '—' : userStats.admins}
+              </div>
+              <div className="admin-stat-label">Administrators</div>
+            </div>
+          </div>
+
+          {/* User Management Toolbar */}
+          <div className="admin-controls-card">
+            <div className="admin-search-wrap">
+              <Search size={16} className="search-icon" />
+              <input
+                type="text"
+                value={userSearch}
+                onChange={(e) => setUserSearch(e.target.value)}
+                placeholder="Search registered accounts by name, email, or barangay..."
+              />
+              {userSearch && (
+                <button
+                  type="button"
+                  className="search-clear-btn"
+                  onClick={() => setUserSearch('')}
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+
+            <div className="admin-filters-row">
+              <div className="admin-filter-item">
+                <span className="filter-label">Status:</span>
+                <select
+                  value={userStatusFilter}
+                  onChange={(e) => setUserStatusFilter(e.target.value)}
+                  className="admin-select"
+                >
+                  <option value="All">All Statuses</option>
+                  <option value="Online">Online Now</option>
+                  <option value="Offline">Offline</option>
+                  <option value="Active">Active</option>
+                  <option value="On Hold">On Hold</option>
+                </select>
+              </div>
+
+              <div className="admin-filter-item">
+                <span className="filter-label">Role:</span>
+                <select
+                  value={userRoleFilter}
+                  onChange={(e) => setUserRoleFilter(e.target.value)}
+                  className="admin-select"
+                >
+                  <option value="All">All Roles</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Member">Member</option>
+                </select>
+              </div>
+
+              <div className="admin-actions-group">
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={() => setIsAddUserOpen(true)}
+                >
+                  <UserPlus size={16} />
+                  <span>Add User</span>
+                </button>
+                <button
+                  type="button"
+                  className="btn-outline"
+                  onClick={handleManualSync}
+                  disabled={isSyncing}
+                >
+                  <RefreshCw size={15} className={isSyncing ? 'spinning' : ''} />
+                  <span>{isSyncing ? 'Syncing...' : 'Sync Auth'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Users Table */}
+          <div className="admin-table-container">
+            {filteredUsers.length > 0 ? (
+              <div className="table-responsive">
+                <table className="admin-data-table">
+                  <thead>
+                    <tr>
+                      <th>User Account</th>
+                      <th>Assigned Location</th>
+                      <th>System Role</th>
+                      <th>Account Status</th>
+                      <th style={{ textAlign: 'right' }}>Management Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredUsers.map((u) => {
+                      const online = isUserOnline(u)
+                      return (
+                        <tr key={u.docId}>
+                          <td>
+                            <div className="user-account-cell">
+                              <div
+                                className={`user-avatar ${
+                                  u.role === 'Admin' ? 'admin' : 'member'
+                                }`}
+                              >
+                                {(u.displayName || u.email || 'U').slice(0, 2).toUpperCase()}
+                              </div>
+                              <div className="user-text-meta">
+                                <span className="font-semibold text-navy">
+                                  {u.displayName || 'No Name'}
+                                </span>
+                                <span className="text-xs text-muted">{u.email}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="user-loc-cell">
+                              <MapPin size={14} className="text-bright-blue" />
+                              <span>{u.location || 'City of Naga, Cebu'}</span>
+                              <button
+                                type="button"
+                                className="btn-table-icon"
+                                onClick={() => {
+                                  setEditLocationTarget(u)
+                                  setEditLocationValue(u.location || '')
+                                }}
+                                title="Edit Location"
+                              >
+                                ✏️
+                              </button>
+                            </div>
+                          </td>
+                          <td>
+                            <span
+                              className={`role-badge ${
+                                u.role === 'Admin' ? 'admin' : 'member'
+                              }`}
+                            >
+                              {u.role === 'Admin' ? 'Administrator' : 'Member'}
+                            </span>
+                          </td>
+                          <td>
+                            <div className="user-status-cell">
+                              <span
+                                className={`online-indicator ${
+                                  online ? 'online' : 'offline'
+                                }`}
+                              />
+                              <span>{online ? 'Online' : 'Offline'}</span>
+                              {u.status === 'On Hold' && (
+                                <span className="badge-on-hold">On Hold</span>
+                              )}
+                            </div>
+                          </td>
+                          <td style={{ textAlign: 'right' }}>
+                            <div className="table-actions-group">
+                              <button
+                                type="button"
+                                className="btn-table-action"
+                                onClick={() => toggleRole(u)}
+                                title="Toggle Administrator / Member role"
+                              >
+                                Make {u.role === 'Admin' ? 'Member' : 'Admin'}
+                              </button>
+                              <button
+                                type="button"
+                                className={`btn-table-action ${
+                                  u.status === 'On Hold' ? 'reactivate' : 'hold'
+                                }`}
+                                onClick={() =>
+                                  setHoldTarget({
+                                    ...u,
+                                    nextStatus: u.status === 'On Hold' ? 'Active' : 'On Hold',
+                                  })
+                                }
+                              >
+                                {u.status === 'On Hold' ? 'Reactivate' : 'Hold'}
+                              </button>
+                              <button
+                                type="button"
+                                className="btn-table-icon text-red"
+                                onClick={() => setDeleteTarget(u)}
+                                title="Delete user account"
+                              >
+                                <Trash2 size={15} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="admin-empty-state">
+                <Users size={40} className="text-muted" />
+                <h4>No users found</h4>
+                <p>No matching user accounts with current filters.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Request Details Modal */}
+      {selectedRequest && (
+        <div className="modal-backdrop" onClick={() => setSelectedRequest(null)}>
+          <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <Files size={20} className="text-bright-blue" />
+                <h3>Relief Request: {selectedRequest.requestId}</h3>
+              </div>
               <button
                 type="button"
-                className="admin-modal-btn cancel"
-                onClick={() => setHoldTarget(null)}
-                disabled={isHolding}
+                className="modal-close-btn"
+                onClick={() => setSelectedRequest(null)}
+                aria-label="Close"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="detail-status-row">
+                <span className="detail-label">Status:</span>
+                <span className={`status-badge ${getStatusClass(selectedRequest.status)}`}>
+                  {getStatusLabel(selectedRequest.status)}
+                </span>
+                <span className="detail-date">
+                  Submitted: {formatRequestDate(selectedRequest.createdAt)}
+                </span>
+              </div>
+
+              <div className="detail-card">
+                <div className="detail-field">
+                  <span className="field-label">Requester Name</span>
+                  <div className="field-value">
+                    {selectedRequest.requesterName || selectedRequest.createdByName || 'Community Beneficiary'}
+                  </div>
+                </div>
+
+                <div className="detail-field">
+                  <span className="field-label">Household Size</span>
+                  <div className="field-value">
+                    {selectedRequest.familyMembers || 1} members
+                  </div>
+                </div>
+
+                <div className="detail-field full-width">
+                  <span className="field-label">Barangay / Address</span>
+                  <div className="field-value">
+                    <MapPin size={16} className="text-bright-blue" />
+                    <span>{selectedRequest.location || 'City of Naga, Cebu'}</span>
+                  </div>
+                </div>
+
+                <div className="detail-field full-width">
+                  <span className="field-label">Needs & Notes</span>
+                  <div className="field-value-box">
+                    {selectedRequest.description || 'General relief aid package required.'}
+                  </div>
+                </div>
+
+                {selectedRequest.categories && (
+                  <div className="detail-field full-width">
+                    <span className="field-label">Vulnerable Demographics</span>
+                    <div className="detail-tags-list">
+                      {selectedRequest.categories.pregnantWomen?.count > 0 && (
+                        <span className="category-pill">
+                          Pregnant Women: {selectedRequest.categories.pregnantWomen.count}
+                        </span>
+                      )}
+                      {selectedRequest.categories.elders?.count > 0 && (
+                        <span className="category-pill">
+                          Elders: {selectedRequest.categories.elders.count}
+                        </span>
+                      )}
+                      {selectedRequest.categories.pwd?.count > 0 && (
+                        <span className="category-pill">
+                          PWD: {selectedRequest.categories.pwd.count}
+                        </span>
+                      )}
+                      {selectedRequest.categories.childrenBelow7?.count > 0 && (
+                        <span className="category-pill">
+                          Children & Infants: {selectedRequest.categories.childrenBelow7.count}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn-outline"
+                onClick={() => setSelectedRequest(null)}
+              >
+                Close
+              </button>
+              {selectedRequest.status === 'pending' && (
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={() => {
+                    setConfirmModal({
+                      action: 'approve',
+                      requestId: selectedRequest.requestId,
+                      docId: selectedRequest.docId,
+                      targetStatus: 'in-progress',
+                    })
+                    setSelectedRequest(null)
+                  }}
+                >
+                  Approve & Dispatch
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal for Approve / Complete / Delete */}
+      {confirmModal && (
+        <div className="modal-backdrop" onClick={() => setConfirmModal(null)}>
+          <div className="modal-container modal-confirm" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <AlertTriangle
+                  size={20}
+                  className={confirmModal.action === 'delete' ? 'text-red' : 'text-bright-blue'}
+                />
+                <h3>
+                  {confirmModal.action === 'delete'
+                    ? 'Delete Relief Request'
+                    : confirmModal.action === 'approve'
+                    ? 'Approve Relief Request'
+                    : 'Mark Request as Completed'}
+                </h3>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setConfirmModal(null)}
+                aria-label="Close"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <p>
+                Are you sure you want to {confirmModal.action}{' '}
+                <strong>{confirmModal.requestId}</strong>?
+                {confirmModal.action === 'approve' &&
+                  ' This will transition the request to In-Progress and dispatch relief operations.'}
+                {confirmModal.action === 'complete' &&
+                  ' This confirms all requested supplies have been successfully delivered to the beneficiary.'}
+                {confirmModal.action === 'delete' &&
+                  ' This action will permanently remove the relief request record.'}
+              </p>
+            </div>
+
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn-outline"
+                onClick={() => setConfirmModal(null)}
+                disabled={actionLoading}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className={`admin-modal-btn ${holdTarget.nextStatus === 'On Hold' ? 'hold' : 'confirm'}`}
-                onClick={confirmHoldToggle}
-                disabled={isHolding}
+                className={confirmModal.action === 'delete' ? 'btn-danger' : 'btn-primary'}
+                onClick={handleConfirmStatusChange}
+                disabled={actionLoading}
               >
-                {isHolding
-                  ? 'Updating...'
-                  : holdTarget.nextStatus === 'On Hold'
-                  ? 'Confirm Hold'
-                  : 'Reactivate Account'}
+                {actionLoading ? 'Processing...' : 'Confirm Action'}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Edit User Location Modal */}
-      {editLocationTarget && (
-        <div className="admin-modal-overlay" onClick={() => !isSavingLocation && setEditLocationTarget(null)}>
-          <div className="admin-modal-dialog" onClick={(e) => e.stopPropagation()}>
-            <div className="admin-modal-header primary">
-              <span className="admin-modal-icon">📍</span>
-              <h4>Sync User Location</h4>
+      {/* Add User Modal */}
+      {isAddUserOpen && (
+        <div className="modal-backdrop" onClick={() => setIsAddUserOpen(false)}>
+          <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <UserPlus size={20} className="text-bright-blue" />
+                <h3>Create New User Account</h3>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setIsAddUserOpen(false)}
+                aria-label="Close"
+              >
+                <X size={20} />
+              </button>
             </div>
-            <form onSubmit={handleSaveLocation}>
-              <div className="admin-modal-body">
-                <p style={{ margin: '0 0 14px', fontSize: '13px', color: 'rgba(255,255,255,0.7)' }}>
-                  Updating location for <strong>{editLocationTarget.displayName || editLocationTarget.email}</strong>.
-                </p>
 
-                <div className="admin-form-group">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                    <label className="admin-form-label" style={{ margin: 0 }}>Location / Address</label>
-                    <button
-                      type="button"
-                      className="admin-quick-loc-btn"
-                      onClick={handleDetectForTarget}
-                      disabled={isDetectingLoc}
-                      title="Detect current device coordinates and fill address"
-                    >
-                      {isDetectingLoc ? '📍 Detecting...' : '📍 Detect Device Location'}
-                    </button>
-                  </div>
+            <form onSubmit={handleAddUserSubmit}>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label>Full Name</label>
                   <input
                     type="text"
                     required
-                    className="admin-form-input"
-                    placeholder="e.g. Brgy. Central Poblacion, City of Naga, Cebu"
-                    value={editLocationValue}
-                    onChange={(e) => setEditLocationValue(e.target.value)}
+                    value={newUserData.name}
+                    onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })}
+                    placeholder="e.g. Maria Santos"
                   />
                 </div>
-
-                <div className="admin-form-group">
-                  <label className="admin-form-label" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)' }}>
-                    Quick Select Naga City Barangay:
-                  </label>
-                  <div className="admin-barangay-chips">
-                    {NAGA_BARANGAYS.map((b) => (
-                      <button
-                        key={b}
-                        type="button"
-                        className={`admin-barangay-chip ${editLocationValue === b ? 'selected' : ''}`}
-                        onClick={() => setEditLocationValue(b)}
-                      >
-                        {b.replace(', City of Naga, Cebu', '')}
-                      </button>
-                    ))}
-                  </div>
+                <div className="form-group">
+                  <label>Email Address</label>
+                  <input
+                    type="email"
+                    required
+                    value={newUserData.email}
+                    onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
+                    placeholder="e.g. maria@relieftrack.com"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Password (optional for quick profile)</label>
+                  <input
+                    type="password"
+                    value={newUserData.password}
+                    onChange={(e) => setNewUserData({ ...newUserData, password: e.target.value })}
+                    placeholder="Min. 6 characters"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Assigned Barangay / Location</label>
+                  <input
+                    type="text"
+                    value={newUserData.location}
+                    onChange={(e) => setNewUserData({ ...newUserData, location: e.target.value })}
+                    placeholder="e.g. Brgy. Tinaan, City of Naga, Cebu"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Role</label>
+                  <select
+                    value={newUserData.role}
+                    onChange={(e) => setNewUserData({ ...newUserData, role: e.target.value })}
+                  >
+                    <option value="Member">Community Member</option>
+                    <option value="Admin">Administrator</option>
+                  </select>
                 </div>
               </div>
-              <div className="admin-modal-actions">
+
+              <div className="modal-footer">
                 <button
                   type="button"
-                  className="admin-modal-btn cancel"
-                  onClick={() => setEditLocationTarget(null)}
-                  disabled={isSavingLocation}
+                  className="btn-outline"
+                  onClick={() => setIsAddUserOpen(false)}
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="admin-modal-btn confirm"
-                  disabled={isSavingLocation}
-                >
-                  {isSavingLocation ? 'Saving...' : 'Save & Sync Location'}
+                <button type="submit" className="btn-primary" disabled={isAddingUser}>
+                  {isAddingUser ? 'Creating...' : 'Create Account'}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Location Modal */}
+      {editLocationTarget && (
+        <div className="modal-backdrop" onClick={() => setEditLocationTarget(null)}>
+          <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <MapPin size={20} className="text-bright-blue" />
+                <h3>Update User Location</h3>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setEditLocationTarget(null)}
+                aria-label="Close"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveLocation}>
+              <div className="modal-body">
+                <p className="text-sm text-muted">
+                  Updating assigned location for{' '}
+                  <strong>{editLocationTarget.displayName || editLocationTarget.email}</strong>.
+                </p>
+                <div className="form-group">
+                  <label>Location / Barangay</label>
+                  <input
+                    type="text"
+                    required
+                    value={editLocationValue}
+                    onChange={(e) => setEditLocationValue(e.target.value)}
+                    placeholder="e.g. Brgy. Inoburan, City of Naga, Cebu"
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="btn-outline-small"
+                  onClick={handleDetectForTarget}
+                  disabled={isDetectingLoc}
+                >
+                  <MapPin size={14} />
+                  <span>{isDetectingLoc ? 'Detecting GPS...' : 'Detect Device Location'}</span>
+                </button>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn-outline"
+                  onClick={() => setEditLocationTarget(null)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn-primary" disabled={isSavingLocation}>
+                  {isSavingLocation ? 'Saving...' : 'Save Location'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Hold / Reactivate Modal */}
+      {holdTarget && (
+        <div className="modal-backdrop" onClick={() => setHoldTarget(null)}>
+          <div className="modal-container modal-confirm" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>
+                {holdTarget.nextStatus === 'On Hold'
+                  ? 'Place Account On Hold'
+                  : 'Reactivate Account'}
+              </h3>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setHoldTarget(null)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p>
+                Are you sure you want to change status to{' '}
+                <strong>{holdTarget.nextStatus}</strong> for user{' '}
+                <strong>{holdTarget.displayName || holdTarget.email}</strong>?
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn-outline" onClick={() => setHoldTarget(null)}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={holdTarget.nextStatus === 'On Hold' ? 'btn-danger' : 'btn-primary'}
+                onClick={confirmHoldToggle}
+                disabled={isHolding}
+              >
+                {isHolding ? 'Updating...' : `Confirm ${holdTarget.nextStatus}`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete User Modal */}
+      {deleteTarget && (
+        <div className="modal-backdrop" onClick={() => setDeleteTarget(null)}>
+          <div className="modal-container modal-confirm" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Confirm Delete Account</h3>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setDeleteTarget(null)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p>
+                Are you sure you want to remove the account for{' '}
+                <strong>{deleteTarget.displayName || deleteTarget.email}</strong>? This action cannot be undone.
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn-outline" onClick={() => setDeleteTarget(null)}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-danger"
+                onClick={confirmDelete}
+                disabled={isDeleting}
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Account'}
+              </button>
+            </div>
           </div>
         </div>
       )}
