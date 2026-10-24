@@ -8,15 +8,26 @@ import DashboardLayout from '../components/DashboardLayout'
 import LocationAutocomplete from '../components/LocationAutocomplete'
 import TrustedDevicesSection from '../components/TrustedDevicesSection'
 import '../styles/Settings.css'
+import {
+  CircleUserRound,
+  Lock,
+  LogOut,
+  Save,
+  KeyRound,
+  AlertCircle,
+  CheckCircle2,
+  Mail,
+  MapPin,
+  ShieldAlert,
+} from 'lucide-react'
 
 function getInitials(name) {
-  if (!name) return '?'
-  return name
-    .split(' ')
-    .map((part) => part[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase()
+  if (!name) return 'RT'
+  const parts = name.trim().split(' ').filter(Boolean)
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase()
+  }
+  return name.slice(0, 2).toUpperCase()
 }
 
 export default function Settings() {
@@ -122,8 +133,8 @@ export default function Settings() {
     <DashboardLayout title="Settings" userLabel={displayNameFallback} userEmail={email}>
       <div className="settings-header">
         <div className="settings-header-text">
-          <h2>Settings</h2>
-          <p>Manage your account and profile preferences.</p>
+          <h2>Settings & Preferences</h2>
+          <p>Manage your ReliefTrack account credentials, profile details, and active sessions.</p>
         </div>
         <button
           type="button"
@@ -132,31 +143,61 @@ export default function Settings() {
           disabled={signingOut}
           title="Sign out of ReliefTrack"
         >
-          {signingOut ? 'Signing out...' : 'Sign out'}
+          <LogOut size={16} />
+          <span>{signingOut ? 'Signing out...' : 'Sign out'}</span>
         </button>
       </div>
 
-      {error && <div className="requests-error">{error}</div>}
-      {success && <div className="settings-success">{success}</div>}
+      {error && (
+        <div className="settings-alert alert-error">
+          <AlertCircle size={18} />
+          <span>{error}</span>
+        </div>
+      )}
+      {success && (
+        <div className="settings-alert alert-success">
+          <CheckCircle2 size={18} />
+          <span>{success}</span>
+        </div>
+      )}
 
       <div className="settings-grid">
+        {/* Profile Information Card */}
         <div className="settings-card">
           <div className="settings-card-header">
-            <span className="settings-card-icon">👤</span>
+            <div className="settings-card-icon-wrap icon-navy">
+              <CircleUserRound size={20} />
+            </div>
             <h3>Profile Information</h3>
           </div>
+
           <div className="settings-profile-preview">
-            <div className="dashboard-avatar">{getInitials(displayNameFallback)}</div>
-            <div>
+            <div className="settings-avatar-wrap">
+              <div className="settings-avatar">{getInitials(displayNameFallback)}</div>
+            </div>
+            <div className="settings-profile-meta">
               <div className="settings-profile-name">{displayNameFallback}</div>
-              <div className="settings-profile-email">{email}</div>
-              <div className="settings-profile-role">{role}</div>
-              {userLocation && <div className="settings-profile-location">{userLocation}</div>}
+              <div className="settings-profile-email">
+                <Mail size={13} />
+                <span>{email}</span>
+              </div>
+              <div className="settings-profile-badges">
+                <span className={`role-pill ${role === 'Admin' ? 'pill-admin' : 'pill-member'}`}>
+                  {role}
+                </span>
+                {userLocation && (
+                  <span className="location-pill">
+                    <MapPin size={12} />
+                    <span>{userLocation}</span>
+                  </span>
+                )}
+              </div>
             </div>
           </div>
+
           <form onSubmit={handleProfileUpdate} className="settings-form">
             <div className="requests-form-field">
-              <label htmlFor="settings-name">Display name</label>
+              <label htmlFor="settings-name">Display Name</label>
               <input
                 id="settings-name"
                 type="text"
@@ -167,16 +208,17 @@ export default function Settings() {
               />
             </div>
             <div className="requests-form-field">
-              <label htmlFor="settings-email">Email</label>
+              <label htmlFor="settings-email">Email Address</label>
               <input
                 id="settings-email"
                 type="email"
                 value={email}
                 disabled
               />
+              <span className="field-hint">Email is linked to your authentication provider and cannot be changed here.</span>
             </div>
             <div className="requests-form-field">
-              <label htmlFor="settings-location">Location</label>
+              <label htmlFor="settings-location">Assigned Location / Barangay</label>
               <LocationAutocomplete
                 id="settings-location"
                 value={location}
@@ -185,20 +227,24 @@ export default function Settings() {
                 placeholder="e.g. Barangay Mabolo, Naga City"
               />
             </div>
-            <button type="submit" className="requests-btn-primary" disabled={saving}>
-              {saving ? 'Saving...' : 'Save changes'}
+            <button type="submit" className="settings-btn-primary" disabled={saving}>
+              <Save size={16} />
+              <span>{saving ? 'Saving changes...' : 'Save Profile Changes'}</span>
             </button>
           </form>
         </div>
 
+        {/* Change Password Card */}
         <div className="settings-card">
           <div className="settings-card-header">
-            <span className="settings-card-icon">🔒</span>
+            <div className="settings-card-icon-wrap icon-navy">
+              <Lock size={20} />
+            </div>
             <h3>Change Password</h3>
           </div>
           <form onSubmit={handlePasswordChange} className="settings-form">
             <div className="requests-form-field">
-              <label htmlFor="settings-current-pw">Current password</label>
+              <label htmlFor="settings-current-pw">Current Password</label>
               <input
                 id="settings-current-pw"
                 type="password"
@@ -209,7 +255,7 @@ export default function Settings() {
               />
             </div>
             <div className="requests-form-field">
-              <label htmlFor="settings-new-pw">New password</label>
+              <label htmlFor="settings-new-pw">New Password</label>
               <input
                 id="settings-new-pw"
                 type="password"
@@ -220,7 +266,7 @@ export default function Settings() {
               />
             </div>
             <div className="requests-form-field">
-              <label htmlFor="settings-confirm-pw">Confirm new password</label>
+              <label htmlFor="settings-confirm-pw">Confirm New Password</label>
               <input
                 id="settings-confirm-pw"
                 type="password"
@@ -230,40 +276,53 @@ export default function Settings() {
                 disabled={saving}
               />
             </div>
-            <button type="submit" className="requests-btn-primary" disabled={saving}>
-              {saving ? 'Updating...' : 'Update password'}
+            <button type="submit" className="settings-btn-primary" disabled={saving}>
+              <KeyRound size={16} />
+              <span>{saving ? 'Updating password...' : 'Update Password'}</span>
             </button>
           </form>
         </div>
       </div>
 
-      <div className="settings-grid" style={{ marginTop: 20 }}>
+      <div className="settings-grid" style={{ marginTop: 24 }}>
         <TrustedDevicesSection />
+
+        {/* Account Session Card */}
         <div className="settings-card">
           <div className="settings-card-header">
-            <span className="settings-card-icon">🚪</span>
+            <div className="settings-card-icon-wrap icon-red">
+              <ShieldAlert size={20} />
+            </div>
             <h3>Account Session</h3>
           </div>
           <p className="settings-devices-hint">
-            You are signed in as <strong>{email}</strong>. Logging out will end your active session on this device.
+            You are currently signed in as <strong>{email}</strong>. Logging out ends your active session and prevents unauthorized access.
           </p>
           <div className="settings-session-box">
-            <div className="settings-profile-preview" style={{ marginBottom: 16, borderBottom: 'none', paddingBottom: 0 }}>
-              <div className="dashboard-avatar">{getInitials(displayNameFallback)}</div>
-              <div>
+            <div className="settings-profile-preview compact">
+              <div className="settings-avatar-wrap">
+                <div className="settings-avatar">{getInitials(displayNameFallback)}</div>
+              </div>
+              <div className="settings-profile-meta">
                 <div className="settings-profile-name">{displayNameFallback}</div>
-                <div className="settings-profile-email">{email}</div>
-                <div className="settings-profile-role">{role}</div>
+                <div className="settings-profile-email">
+                  <Mail size={13} />
+                  <span>{email}</span>
+                </div>
+                <span className={`role-pill ${role === 'Admin' ? 'pill-admin' : 'pill-member'}`}>
+                  {role}
+                </span>
               </div>
             </div>
-            <div>
+            <div className="settings-session-actions">
               <button
                 type="button"
                 className="settings-signout-btn"
                 onClick={handleSignOut}
                 disabled={signingOut}
               >
-                {signingOut ? 'Signing out...' : 'Sign out of ReliefTrack'}
+                <LogOut size={16} />
+                <span>{signingOut ? 'Signing out...' : 'Sign out of ReliefTrack'}</span>
               </button>
             </div>
           </div>

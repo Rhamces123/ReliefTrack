@@ -2,6 +2,23 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { listDevices, removeDevice, getDeviceId } from '../firebase/devices'
 import { formatRelativeTime } from '../utils/formatTime'
+import { Monitor, Smartphone, Laptop, Trash2, Loader2, AlertCircle } from 'lucide-react'
+
+function getDeviceIcon(os = '', browser = '') {
+  const str = `${os} ${browser}`.toLowerCase()
+  if (
+    str.includes('android') ||
+    str.includes('ios') ||
+    str.includes('iphone') ||
+    str.includes('mobile')
+  ) {
+    return <Smartphone size={18} />
+  }
+  if (str.includes('mac') || str.includes('laptop')) {
+    return <Laptop size={18} />
+  }
+  return <Monitor size={18} />
+}
 
 export default function TrustedDevicesSection() {
   const { user } = useAuth()
@@ -49,10 +66,15 @@ export default function TrustedDevicesSection() {
     return (
       <div className="settings-card">
         <div className="settings-card-header">
-          <span className="settings-card-icon">🖥️</span>
+          <div className="settings-card-icon-wrap icon-navy">
+            <Monitor size={20} />
+          </div>
           <h3>Trusted Devices</h3>
         </div>
-        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13 }}>Loading devices…</p>
+        <p className="settings-loading-text">
+          <Loader2 size={16} className="spin-icon" />
+          <span>Loading devices…</span>
+        </p>
       </div>
     )
   }
@@ -60,17 +82,24 @@ export default function TrustedDevicesSection() {
   return (
     <div className="settings-card">
       <div className="settings-card-header">
-        <span className="settings-card-icon">🖥️</span>
+        <div className="settings-card-icon-wrap icon-navy">
+          <Monitor size={20} />
+        </div>
         <h3>Trusted Devices</h3>
       </div>
       <p className="settings-devices-hint">
-        These are the browsers and devices that can access your account without a security check.
+        These are the browsers and devices that can access your account without repeated verification.
       </p>
 
-      {error && <div className="settings-devices-error">{error}</div>}
+      {error && (
+        <div className="settings-devices-error">
+          <AlertCircle size={16} />
+          <span>{error}</span>
+        </div>
+      )}
 
       {devices.length === 0 ? (
-        <p className="settings-devices-empty">No trusted devices yet.</p>
+        <p className="settings-devices-empty">No trusted devices registered yet.</p>
       ) : (
         <div className="settings-devices-list">
           {devices.map((device) => {
@@ -81,22 +110,29 @@ export default function TrustedDevicesSection() {
                 : 'Recently'
             return (
               <div className="settings-device-row" key={device.id}>
-                <div className="settings-device-icon">🖥️</div>
+                <div className="settings-device-icon-box">
+                  {getDeviceIcon(device.operatingSystem, device.browser)}
+                </div>
                 <div className="settings-device-info">
                   <div className="settings-device-name">
-                    {device.browser} • {device.operatingSystem}
+                    <span>{device.browser || 'Browser'} on {device.operatingSystem || 'Device'}</span>
                     {isCurrent && <span className="settings-device-current">This device</span>}
                   </div>
                   <div className="settings-device-meta">
-                    {device.isTrusted ? 'Trusted' : 'Not trusted'} • Last active: {lastActive}
+                    <span className="status-tag">{device.isTrusted ? 'Trusted' : 'Unverified'}</span>
+                    <span className="separator">•</span>
+                    <span>Last active: {lastActive}</span>
                   </div>
                 </div>
                 <button
+                  type="button"
                   className="settings-device-remove"
                   onClick={() => handleRemove(device.id)}
                   disabled={removing === device.id}
+                  title="Remove trusted device"
                 >
-                  {removing === device.id ? 'Removing…' : 'Remove'}
+                  <Trash2 size={13} />
+                  <span>{removing === device.id ? 'Removing…' : 'Remove'}</span>
                 </button>
               </div>
             )

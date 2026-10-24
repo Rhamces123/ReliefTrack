@@ -1786,3 +1786,33 @@ body.dashboard-active {
     display: none;
   }
 }
+
+/* =========================================================
+   DASHBOARD FORM & ACCESSIBILITY SAFEGUARDS
+   ========================================================= */
+body.dashboard-active .requests-form-field label {
+  color: var(--rt-dark-navy, #14243A);
+  font-weight: 600;
+}
+
+body.dashboard-active .requests-form-field input,
+body.dashboard-active .requests-form-field textarea,
+body.dashboard-active .location-autocomplete-input {
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  color: #14243A;
+}
+
+body.dashboard-active .requests-form-field input:focus,
+body.dashboard-active .requests-form-field textarea:focus,
+body.dashboard-active .location-autocomplete-input:focus {
+  border-color: #1674D1;
+  box-shadow: 0 0 0 3px rgba(22, 116, 209, 0.15);
+}
+
+body.dashboard-active .requests-form-field input::placeholder,
+body.dashboard-active .requests-form-field textarea::placeholder,
+body.dashboard-active .location-autocomplete-input::placeholder {
+  color: #94A3B8;
+}
+
