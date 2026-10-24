@@ -1,11 +1,29 @@
+/* =========================================================
+   MAP VIEW - RELIEFTRACK DISASTER RESPONSE THEME
+   - Navy Blue:   #123B66 (Headings, primary accents)
+   - Bright Blue: #1674D1 (Active buttons, links)
+   - Green:       #39A935 (Safe status, completed)
+   - Light Blue:  #F2F7FC (Page background)
+   - White:       #FFFFFF (Cards, panels, search, buttons)
+   - Orange:      #F59E0B (Warnings, all schools)
+   - Red:         #DC2626 (Pending, critical)
+   - Dark Navy:   #14243A (Main text, labels)
+   ========================================================= */
+
 .mapview-container {
   display: flex;
   flex-direction: column;
   height: 100%;
-  gap: 12px;
+  gap: 16px;
 }
 
+/* Header & Controls Toolbar */
 .mapview-header {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  box-shadow: 0 2px 8px rgba(18, 59, 102, 0.05);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -13,236 +31,334 @@
   gap: 12px;
 }
 
+/* Map Metrics & Stats */
 .mapview-stats {
   display: flex;
-  gap: 20px;
-  font-size: 14px;
-  color: #ccc;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 13px;
+  color: #4A5568;
+  font-weight: 500;
 }
 
 .mapview-stats strong {
-  color: #fff;
+  color: #123B66;
+  font-weight: 700;
+  font-size: 14px;
 }
 
 .mapview-geocoding {
-  color: #facc15;
-  font-style: italic;
+  color: #D97706;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
+/* Legend Row */
 .mapview-legend {
   display: flex;
-  gap: 16px;
-  font-size: 13px;
-  color: #aaa;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 12px;
+  color: #14243A;
+  font-weight: 500;
+}
+
+.mapview-legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .legend-dot {
   display: inline-block;
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  margin-right: 4px;
+  flex-shrink: 0;
 }
 
-.legend-dot.pending { background: #ef4444; }
-.legend-dot.inprogress { background: #22c55e; }
-.legend-dot.completed { background: #3b82f6; }
-.legend-dot.evac { background: #8b5cf6; }
-.legend-dot.all-schools { background: #f97316; }
+.legend-dot.pending {
+  background: #DC2626;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+}
 
-.mapview-loading {
-  flex: 1;
+.legend-dot.inprogress {
+  background: #39A935;
+  box-shadow: 0 0 0 2px rgba(57, 169, 53, 0.2);
+}
+
+.legend-dot.completed {
+  background: #1674D1;
+  box-shadow: 0 0 0 2px rgba(22, 116, 209, 0.2);
+}
+
+.legend-dot.evac {
+  background: #8B5CF6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.legend-dot.all-schools {
+  background: #F59E0B;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+/* Search Box - Clean Crisp White (NO BLACK BOX) */
+.mapview-search {
+  position: relative;
+  width: 250px;
+}
+
+.mapview-search-box {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #888;
-  font-size: 16px;
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 0 10px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
+.mapview-search-box:focus-within {
+  border-color: #1674D1;
+  box-shadow: 0 0 0 3px rgba(22, 116, 209, 0.15);
+}
+
+.mapview-search-icon {
+  color: #64748B;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.mapview-search-input {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  background: transparent;
+  color: #14243A;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+}
+
+.mapview-search-input::placeholder {
+  color: #94A3B8;
+}
+
+.mapview-search-error {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  font-size: 12px;
+  color: #DC2626;
+  background: #FEE2E2;
+  border: 1px solid #FECACA;
+  padding: 6px 10px;
+  border-radius: 6px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.mapview-searching {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  font-size: 12px;
+  color: #1674D1;
+  background: #EBF5FF;
+  border: 1px solid #BFDBFE;
+  padding: 6px 10px;
+  border-radius: 6px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.mapview-search-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(18, 59, 102, 0.12);
+}
+
+.mapview-search-item {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: #14243A;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.mapview-search-item:hover {
+  background: #F1F5F9;
+  color: #123B66;
+}
+
+/* Action Toggle Buttons - Clean White with Bright Blue Active (NO BLACK BOX) */
+.mapview-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  color: #14243A;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(18, 59, 102, 0.04);
+}
+
+.mapview-toggle:hover {
+  background: #F8FAFC;
+  border-color: #94A3B8;
+  color: #123B66;
+}
+
+.mapview-toggle.active {
+  background: #1674D1;
+  border-color: #1674D1;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(22, 116, 209, 0.25);
+}
+
+/* Map Container Wrap */
 .mapview-map-wrap {
   flex: 1;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #2a2a3a;
-  min-height: 400px;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 2px 8px rgba(18, 59, 102, 0.06);
+  min-height: 520px;
+  position: relative;
+  z-index: 1 !important;
+  isolation: isolate;
+  background: #FFFFFF;
 }
 
 .mapview-map {
   width: 100%;
   height: 100%;
-  min-height: 400px;
+  min-height: 520px;
+}
+
+.mapview-map-wrap .leaflet-container {
+  position: relative;
+  z-index: 1 !important;
+  isolation: isolate;
 }
 
 .mapview-sv-active .leaflet-container {
   cursor: crosshair !important;
 }
 
+.mapview-loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748B;
+  font-size: 15px;
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+  min-height: 400px;
+}
+
+/* Map Leaflet Popups */
+.mapview-popup {
+  padding: 4px 2px;
+}
+
 .mapview-popup h4 {
   margin: 0 0 4px;
   font-size: 15px;
+  font-weight: 700;
+  color: #123B66;
 }
 
 .mapview-popup-location {
   font-size: 12px;
-  color: #666;
+  color: #64748B;
   margin: 0 0 6px;
+  line-height: 1.4;
 }
 
 .mapview-popup p {
-  margin: 2px 0;
+  margin: 3px 0;
   font-size: 13px;
+  color: #14243A;
 }
 
 .mapview-popup-desc {
   font-style: italic;
-  color: #555;
+  color: #4A5568;
   margin-top: 4px;
-}
-
-.mapview-streetview {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 4px 12px;
-  background: #1a73e8;
-  color: #fff;
-  border-radius: 6px;
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.mapview-streetview:hover {
-  background: #1557b0;
+  background: #F8FAFC;
+  padding: 6px 8px;
+  border-radius: 4px;
 }
 
 .mapview-popup-actions {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-top: 8px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #EDF2F7;
 }
 
-.mapview-search {
-  position: relative;
-  width: 240px;
-}
-
-.mapview-search-input {
-  width: 100%;
+.mapview-streetview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid #3a3a4e;
-  background: #1e1e2e;
-  color: #ddd;
-  font-size: 13px;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.mapview-search-input::placeholder { color: #666; }
-
-.mapview-search-input:focus {
-  border-color: #1a73e8;
-}
-
-.mapview-search-error {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin-top: 4px;
-  font-size: 12px;
-  color: #f87171;
-  background: rgba(0,0,0,0.8);
-  padding: 4px 8px;
+  background: #1674D1;
+  color: #FFFFFF;
   border-radius: 6px;
-  z-index: 1000;
-}
-
-.mapview-searching {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin-top: 4px;
+  text-decoration: none;
   font-size: 12px;
-  color: #facc15;
-  background: rgba(0,0,0,0.8);
-  padding: 4px 8px;
-  border-radius: 6px;
-  z-index: 1000;
+  font-weight: 600;
+  transition: background-color 0.15s ease;
 }
 
-.mapview-search-list {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin: 4px 0 0;
-  padding: 0;
-  list-style: none;
-  background: #1e1e2e;
-  border: 1px solid #3a3a4e;
-  border-radius: 8px;
-  max-height: 220px;
-  overflow-y: auto;
-  z-index: 1000;
+.mapview-streetview:hover {
+  background: #125fb0;
 }
 
-.mapview-search-item {
-  display: block;
-  width: 100%;
-  padding: 8px 12px;
-  background: none;
-  border: none;
-  color: #ccc;
-  font-size: 12px;
-  text-align: left;
-  cursor: pointer;
-}
-
-.mapview-search-item:hover {
-  background: #2a2a3e;
-}
-
-.mapview-toggle.active {
-  background: #1a73e8;
-  border-color: #1a73e8;
-  color: #fff;
-}
-
-.mapview-toggle {
-  background: #1e1e2e;
-  border: 1px solid #3a3a4e;
-  color: #ccc;
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: background 0.2s;
-}
-
-.mapview-toggle:hover {
-  background: #2a2a3e;
-}
-
-/* Evacuation center legend */
-
-/* Popup actions */
-@media (max-width: 768px) {
+/* Responsive adjustments */
+@media (max-width: 900px) {
   .mapview-header {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
   }
 
   .mapview-stats {
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 13px;
-  }
-
-  .mapview-legend {
-    order: -1;
+    gap: 10px;
   }
 
   .mapview-search {
@@ -251,15 +367,11 @@
 
   .mapview-toggle {
     font-size: 12px;
-    padding: 5px 10px;
+    padding: 7px 12px;
   }
 
-  .mapview-map-wrap {
-    min-height: 300px;
-    border-radius: 8px;
-  }
-
+  .mapview-map-wrap,
   .mapview-map {
-    min-height: 300px;
+    min-height: 400px;
   }
 }

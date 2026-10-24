@@ -4,13 +4,6 @@ import { MapContainer, TileLayer, Marker, Popup, Rectangle, GeoJSON, useMap } fr
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useAuth } from '../context/AuthContext'
-
-function reverseGeocode(lat, lng) {
-  const params = new URLSearchParams({ lat: lat.toFixed(5), lon: lng.toFixed(5), format: 'json' })
-  return fetch(`https://nominatim.openstreetmap.org/reverse?${params}`, {
-    headers: { 'User-Agent': 'ReliefTrack/1.0' },
-  }).then((r) => r.json()).then((d) => d.display_name || 'Unknown location')
-}
 import { getUserProfile } from '../firebase/users'
 import { subscribeReliefRequests, updateReliefRequestCoordinates } from '../firebase/requests'
 import { searchPhilippinesPlaces, searchPlaces } from '../utils/philippinesPlaces'
@@ -19,6 +12,22 @@ import nagaGeoJSON from '../utils/nagaBoundary'
 
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/MapView.css'
+import {
+  Search,
+  Building2,
+  Navigation,
+  Layers,
+  Eye,
+  School,
+  ExternalLink,
+} from 'lucide-react'
+
+function reverseGeocode(lat, lng) {
+  const params = new URLSearchParams({ lat: lat.toFixed(5), lon: lng.toFixed(5), format: 'json' })
+  return fetch(`https://nominatim.openstreetmap.org/reverse?${params}`, {
+    headers: { 'User-Agent': 'ReliefTrack/1.0' },
+  }).then((r) => r.json()).then((d) => d.display_name || 'Unknown location')
+}
 
 delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({
@@ -28,7 +37,7 @@ L.Icon.Default.mergeOptions({
 })
 
 function markerIcon(status) {
-  const color = status === 'completed' ? '#3b82f6' : status === 'in-progress' ? '#22c55e' : '#ef4444'
+  const color = status === 'completed' ? '#1674D1' : status === 'in-progress' ? '#39A935' : '#DC2626'
   return L.divIcon({
     className: '',
     html: `<div style="
@@ -36,7 +45,7 @@ function markerIcon(status) {
       background: ${color};
       border: 3px solid #fff;
       border-radius: 50%;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      box-shadow: 0 2px 8px rgba(18,59,102,0.35);
     "></div>`,
     iconSize: [28, 28],
     iconAnchor: [14, 14],
@@ -49,25 +58,39 @@ const NAGA_CENTER = [10.2085, 123.7591]
 
 const geoIcon = L.divIcon({
   className: '',
-  html: '<div style="width:24px;height:24px;background:#1a73e8;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.4);"><div style="width:10px;height:10px;background:#fff;border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)"></div></div>',
+  html: '<div style="width:24px;height:24px;background:#1674D1;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(18,59,102,0.35);"><div style="width:10px;height:10px;background:#fff;border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)"></div></div>',
   iconSize: [24, 24],
   iconAnchor: [12, 12],
 })
 
 const evacIcon = L.divIcon({
   className: '',
-  html: '<div style="width:30px;height:30px;background:#8b5cf6;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700">🏫</div>',
-  iconSize: [30, 30],
-  iconAnchor: [15, 15],
-  popupAnchor: [0, -16],
+  html: `<div style="width:32px;height:32px;background:#8B5CF6;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(18,59,102,0.3);display:flex;align-items:center;justify-content:center;color:#fff;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M18 5v17"/><path d="m4 6 8-4 8 4"/><path d="M6 5v17"/><circle cx="12" cy="9" r="2"/></svg>
+  </div>`,
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+  popupAnchor: [0, -18],
 })
 
 const allSchoolsIcon = L.divIcon({
   className: '',
-  html: '<div style="width:30px;height:30px;background:#f97316;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700">🏫</div>',
-  iconSize: [30, 30],
-  iconAnchor: [15, 15],
-  popupAnchor: [0, -16],
+  html: `<div style="width:32px;height:32px;background:#F59E0B;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(18,59,102,0.3);display:flex;align-items:center;justify-content:center;color:#fff;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M18 5v17"/><path d="m4 6 8-4 8 4"/><path d="M6 5v17"/><circle cx="12" cy="9" r="2"/></svg>
+  </div>`,
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+  popupAnchor: [0, -18],
+})
+
+const searchPinIcon = L.divIcon({
+  className: '',
+  html: `<div style="width:32px;height:32px;background:#1674D1;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(18,59,102,0.35);display:flex;align-items:center;justify-content:center;color:#fff;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+  </div>`,
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+  popupAnchor: [0, -18],
 })
 
 function BindBounds() {
@@ -159,16 +182,6 @@ function MapClick({ streetViewRef, onStreetViewDone }) {
   return null
 }
 
-function FitRoute({ routeCoords }) {
-  const map = useMap()
-  useEffect(() => {
-    if (!routeCoords || routeCoords.length < 2) return
-    const bounds = L.latLngBounds(routeCoords)
-    map.fitBounds(bounds, { padding: [60, 60] })
-  }, [routeCoords, map])
-  return null
-}
-
 function FitEvac({ evacCenters, trigger }) {
   const map = useMap()
   useEffect(() => {
@@ -191,9 +204,14 @@ export default function MapView() {
   const [streetViewActive, setStreetViewActive] = useState(false)
   const streetViewRef = useRef(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [flyTarget, setFlyTarget] = useState(null)
-  const [focusedDocId, setFocusedDocId] = useState(null)
-  const [hasInitialFocus, setHasInitialFocus] = useState(false)
+  const [flyTarget, setFlyTarget] = useState(() => {
+    if (routeLocation.state?.focusLat && routeLocation.state?.focusLng) {
+      return { lat: Number(routeLocation.state.focusLat), lng: Number(routeLocation.state.focusLng) }
+    }
+    return null
+  })
+  const [focusedDocId] = useState(() => routeLocation.state?.focusRequestId || null)
+  const [hasInitialFocus] = useState(() => Boolean(routeLocation.state?.focusLat && routeLocation.state?.focusLng))
   const [searchBounds, setSearchBounds] = useState(null)
   const [locateTrigger, setLocateTrigger] = useState(0)
   const [geoPosition, setGeoPosition] = useState(null)
@@ -211,19 +229,6 @@ export default function MapView() {
   const searchWrapRef = useRef(null)
   const geocodingRef = useRef(new Set())
   const savedCoordsRef = useRef(new Set())
-
-  useEffect(() => {
-    if (routeLocation.state?.focusLat && routeLocation.state?.focusLng) {
-      const lat = Number(routeLocation.state.focusLat)
-      const lng = Number(routeLocation.state.focusLng)
-      setFlyTarget({ lat, lng })
-      if (routeLocation.state.focusRequestId) {
-        setFocusedDocId(routeLocation.state.focusRequestId)
-      }
-      setHasInitialFocus(true)
-    }
-  }, [routeLocation.state])
-
 
   useEffect(() => {
     if (!user?.uid) return
@@ -277,15 +282,13 @@ export default function MapView() {
   }, [])
 
   useEffect(() => {
-    if (!showEvac) {
-      setEvacCenters([])
-      setEvacError('')
-      return
-    }
+    if (!showEvac) return
     const ref = geoPosition || searchResult || { lat: NAGA_CENTER[0], lng: NAGA_CENTER[1] }
     let cancelled = false
+    /* eslint-disable react-hooks/set-state-in-effect */
     setEvacLoading(true)
     setEvacError('')
+    /* eslint-enable react-hooks/set-state-in-effect */
     findNearbySchools(ref.lat, ref.lng, 5000)
       .then((schools) => {
         if (cancelled) return
@@ -304,14 +307,12 @@ export default function MapView() {
   }, [showEvac, geoPosition, searchResult])
 
   useEffect(() => {
-    if (!showAllSchools) {
-      setAllSchools([])
-      setAllSchoolsError('')
-      return
-    }
+    if (!showAllSchools) return
     let cancelled = false
+    /* eslint-disable react-hooks/set-state-in-effect */
     setAllSchoolsLoading(true)
     setAllSchoolsError('')
+    /* eslint-enable react-hooks/set-state-in-effect */
     findAllSchoolsInNaga()
       .then((schools) => {
         if (cancelled) return
@@ -361,6 +362,7 @@ export default function MapView() {
             {allSchoolsLoading && <span className="mapview-geocoding">Loading all schools...</span>}
             {allSchoolsError && <span className="mapview-search-error">{allSchoolsError}</span>}
           </div>
+
           <div className="mapview-legend">
             <span><span className="legend-dot pending" /> Not Yet Assessed</span>
             <span><span className="legend-dot inprogress" /> Not Yet Received Relief</span>
@@ -368,64 +370,94 @@ export default function MapView() {
             {showEvac && <span><span className="legend-dot evac" /> Evacuation Center</span>}
             {isAdmin && showAllSchools && <span><span className="legend-dot all-schools" /> All Schools (Admin)</span>}
           </div>
+
           <div className="mapview-search" ref={searchWrapRef}>
-            <input
-              className="mapview-search-input"
-              type="text"
-              placeholder="Search location (press Enter)..."
-               value={searchQuery}
-               onChange={(e) => {
-                 setSearchQuery(e.target.value)
-                 if (!e.target.value.trim()) {
-                   setFlyTarget(null)
-                   setSearchBounds(null)
-                   setSearchResult(null)
-                   setSearchError('')
-                 }
-               }}
-              onKeyDown={async (e) => {
-                if (e.key === 'Enter') {
-                  const q = searchQuery.trim()
-                  if (q.length < 2) return
-                  setSearchError('')
-                  setSearchResult(null)
-                  setSearching(true)
-                  try {
-                    const places = await searchPlaces(q)
-                    if (places.length > 0) {
-                      const p = places[0]
-                      setFlyTarget({ lat: Number(p.lat), lng: Number(p.lon), bbox: p.bbox })
-                      setSearchBounds(p.bbox ? [[Number(p.bbox.south), Number(p.bbox.west)], [Number(p.bbox.north), Number(p.bbox.east)]] : null)
-                      setSearchResult({ lat: Number(p.lat), lng: Number(p.lon), name: p.displayName })
-                    } else {
-                      setSearchError('No results found. Try a different name.')
-                    }
-                  } catch {
-                    setSearchError('Search failed. Please try again.')
-                  } finally {
-                    setSearching(false)
+            <div className="mapview-search-box">
+              <Search size={15} className="mapview-search-icon" />
+              <input
+                className="mapview-search-input"
+                type="text"
+                placeholder="Search location (press Enter)..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value)
+                  if (!e.target.value.trim()) {
+                    setFlyTarget(null)
+                    setSearchBounds(null)
+                    setSearchResult(null)
+                    setSearchError('')
                   }
-                }
-              }}
-            />
+                }}
+                onKeyDown={async (e) => {
+                  if (e.key === 'Enter') {
+                    const q = searchQuery.trim()
+                    if (q.length < 2) return
+                    setSearchError('')
+                    setSearchResult(null)
+                    setSearching(true)
+                    try {
+                      const places = await searchPlaces(q)
+                      if (places.length > 0) {
+                        const p = places[0]
+                        setFlyTarget({ lat: Number(p.lat), lng: Number(p.lon), bbox: p.bbox })
+                        setSearchBounds(p.bbox ? [[Number(p.bbox.south), Number(p.bbox.west)], [Number(p.bbox.north), Number(p.bbox.east)]] : null)
+                        setSearchResult({ lat: Number(p.lat), lng: Number(p.lon), name: p.displayName })
+                      } else {
+                        setSearchError('No results found. Try a different name.')
+                      }
+                    } catch {
+                      setSearchError('Search failed. Please try again.')
+                    } finally {
+                      setSearching(false)
+                    }
+                  }
+                }}
+              />
+            </div>
             {searchError && <div className="mapview-search-error">{searchError}</div>}
             {searching && <div className="mapview-searching">Searching...</div>}
           </div>
-          <button className={`mapview-toggle ${showEvac ? 'active' : ''}`} onClick={() => setShowEvac((s) => !s)}>
-            {showEvac ? '🏫 Hide Evac' : '🏫 Evac Centers'}
+
+          <button
+            type="button"
+            className={`mapview-toggle ${showEvac ? 'active' : ''}`}
+            onClick={() => setShowEvac((s) => !s)}
+          >
+            <Building2 size={15} />
+            <span>{showEvac ? 'Hide Evac Centers' : 'Evac Centers'}</span>
           </button>
+
           {isAdmin && (
-            <button className={`mapview-toggle ${showAllSchools ? 'active' : ''}`} onClick={() => setShowAllSchools((s) => !s)}>
-              {showAllSchools ? '🏫 Hide All Schools' : '🏫 All Schools (Admin)'}
+            <button
+              type="button"
+              className={`mapview-toggle ${showAllSchools ? 'active' : ''}`}
+              onClick={() => setShowAllSchools((s) => !s)}
+            >
+              <School size={15} />
+              <span>{showAllSchools ? 'Hide Schools' : 'All Schools (Admin)'}</span>
             </button>
           )}
-          <button className="mapview-toggle" onClick={() => setLocateTrigger((t) => t + 1)}>
-            📍 My Location
-          </button>
-          <button className="mapview-toggle" onClick={() => setSatellite((s) => !s)}>
-            {satellite ? '🗺️ Street' : '🛰️ Satellite'}
-          </button>
+
           <button
+            type="button"
+            className="mapview-toggle"
+            onClick={() => setLocateTrigger((t) => t + 1)}
+          >
+            <Navigation size={15} />
+            <span>My Location</span>
+          </button>
+
+          <button
+            type="button"
+            className="mapview-toggle"
+            onClick={() => setSatellite((s) => !s)}
+          >
+            <Layers size={15} />
+            <span>{satellite ? 'Street Map' : 'Satellite View'}</span>
+          </button>
+
+          <button
+            type="button"
             className={`mapview-toggle ${streetViewActive ? 'active' : ''}`}
             onClick={() => {
               const next = !streetViewActive
@@ -433,15 +465,22 @@ export default function MapView() {
               streetViewRef.current = next
             }}
           >
-            🏙️ Street View
+            <Eye size={15} />
+            <span>{streetViewActive ? 'Exit Street View' : 'Street View'}</span>
           </button>
         </div>
 
         {loading ? (
-          <div className="mapview-loading">Loading map...</div>
+          <div className="mapview-loading">Loading disaster operations map...</div>
         ) : (
           <div className={`mapview-map-wrap${streetViewActive ? ' mapview-sv-active' : ''}`}>
-            <MapContainer center={NAGA_CENTER} zoom={13} className="mapview-map" scrollWheelZoom={true}>
+            <MapContainer
+              center={NAGA_CENTER}
+              zoom={13}
+              className="mapview-map"
+              scrollWheelZoom={true}
+              style={{ zIndex: 1 }}
+            >
               {satellite ? (
                 <>
                   <TileLayer
@@ -489,9 +528,9 @@ export default function MapView() {
                   >
                     <Popup>
                       <div className="mapview-popup">
-                        <h4>{m.requesterName || 'Unknown'}</h4>
+                        <h4>{m.requesterName || 'Community Member'}</h4>
                         <p className="mapview-popup-location">{m.location}</p>
-                        <p>Status: <strong style={{ color: m.status === 'completed' ? '#3b82f6' : m.status === 'in-progress' ? '#22c55e' : '#ef4444' }}>{m.status === 'completed' ? 'Already Received' : m.status === 'in-progress' ? 'Not Yet Received' : 'Not Yet Assessed'}</strong></p>
+                        <p>Status: <strong style={{ color: m.status === 'completed' ? '#1674D1' : m.status === 'in-progress' ? '#39A935' : '#DC2626' }}>{m.status === 'completed' ? 'Already Received' : m.status === 'in-progress' ? 'Not Yet Received' : 'Not Yet Assessed'}</strong></p>
                         {m.familyMembers > 0 && <p>Family Members: {m.familyMembers}</p>}
                         {totalAffected(m.categories) > 0 && <p>Affected: {totalAffected(m.categories)}</p>}
                         {m.description && <p className="mapview-popup-desc">{m.description}</p>}
@@ -502,7 +541,8 @@ export default function MapView() {
                             rel="noopener noreferrer"
                             className="mapview-streetview"
                           >
-                            🏙️ Street View
+                            <ExternalLink size={12} />
+                            <span>Open Street View</span>
                           </a>
                         </div>
                       </div>
@@ -534,7 +574,7 @@ export default function MapView() {
                       {routeLocation.state.focusLocation && (
                         <p className="mapview-popup-location">{routeLocation.state.focusLocation}</p>
                       )}
-                      <p>Status: <strong style={{ color: '#ef4444' }}>Not Yet Assessed</strong></p>
+                      <p>Status: <strong style={{ color: '#DC2626' }}>Not Yet Assessed</strong></p>
                       <div className="mapview-popup-actions">
                         <a
                           href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${routeLocation.state.focusLat},${routeLocation.state.focusLng}`}
@@ -542,7 +582,8 @@ export default function MapView() {
                           rel="noopener noreferrer"
                           className="mapview-streetview"
                         >
-                          🏙️ Street View
+                          <ExternalLink size={12} />
+                          <span>Open Street View</span>
                         </a>
                       </div>
                     </div>
@@ -553,8 +594,9 @@ export default function MapView() {
               <GeoJSON
                 key="naga-boundary"
                 data={nagaGeoJSON}
-                style={() => ({ color: '#10b981', weight: 2, fillColor: '#10b981', fillOpacity: 0.04 })}
+                style={() => ({ color: '#39A935', weight: 2, fillColor: '#39A935', fillOpacity: 0.05 })}
               />
+
               {showEvac && evacCenters.map((c) => (
                 <Marker
                   key={`${c.name}-${c.lat}-${c.lng}`}
@@ -563,7 +605,7 @@ export default function MapView() {
                 >
                   <Popup>
                     <div className="mapview-popup">
-                      <h4>🏫 {c.name}</h4>
+                      <h4>{c.name}</h4>
                       {c.address && <p className="mapview-popup-location">{c.address}</p>}
                       <p>Distance: <strong>{c.distKm.toFixed(2)} km</strong></p>
                       <p><em>Designated Evacuation Center</em></p>
@@ -571,6 +613,7 @@ export default function MapView() {
                   </Popup>
                 </Marker>
               ))}
+
               {isAdmin && showAllSchools && allSchools.map((s) => (
                 <Marker
                   key={`${s.name}-${s.lat}-${s.lng}`}
@@ -579,25 +622,28 @@ export default function MapView() {
                 >
                   <Popup>
                     <div className="mapview-popup">
-                      <h4>🏫 {s.name}</h4>
+                      <h4>{s.name}</h4>
                       {s.address && <p className="mapview-popup-location">{s.address}</p>}
-                      <p><em>All Schools (Admin View)</em></p>
+                      <p><em>School Facility (Admin View)</em></p>
                     </div>
                   </Popup>
                 </Marker>
               ))}
+
               {geoPosition && (
                 <Marker position={[geoPosition.lat, geoPosition.lng]} icon={geoIcon}>
                   <Popup><div className="mapview-popup"><h4>Your Location</h4><p>{geoPosition.lat.toFixed(5)}, {geoPosition.lng.toFixed(5)}</p></div></Popup>
                 </Marker>
               )}
+
               {searchResult && (
-                <Marker position={[searchResult.lat, searchResult.lng]} icon={L.divIcon({ className: '', html: '<div style="width:32px;height:32px;background:#1a73e8;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 10px rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;font-size:14px">🔍</div>', iconSize: [32, 32], iconAnchor: [16, 16] })}>
+                <Marker position={[searchResult.lat, searchResult.lng]} icon={searchPinIcon}>
                   <Popup><div className="mapview-popup"><h4>Search result</h4><p>{searchResult.name}</p></div></Popup>
                 </Marker>
               )}
+
               {searchBounds && (
-                <Rectangle bounds={searchBounds} pathOptions={{ color: '#1a73e8', weight: 3, fill: false }} />
+                <Rectangle bounds={searchBounds} pathOptions={{ color: '#1674D1', weight: 3, fill: false }} />
               )}
             </MapContainer>
           </div>
