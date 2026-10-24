@@ -8,7 +8,6 @@ import {
   updateReliefRequestStatus,
   deleteReliefRequest,
   REQUEST_STATUSES,
-  CATEGORY_LABELS,
 } from '../firebase/requests'
 import DashboardLayout from '../components/DashboardLayout'
 import LocationAutocomplete from '../components/LocationAutocomplete'
@@ -19,6 +18,24 @@ import {
   getStatusClass,
 } from '../utils/requestHelpers'
 import '../styles/Requests.css'
+import {
+  Plus,
+  ClipboardList,
+  Users,
+  UsersRound,
+  Home,
+  Hourglass,
+  Search,
+  CheckCircle2,
+  XCircle,
+  X,
+  MapPin,
+  Trash2,
+  Loader2,
+  HeartPulse,
+  Baby,
+  Accessibility,
+} from 'lucide-react'
 
 const STATUS_FILTERS = [
   { id: 'all', label: 'All' },
@@ -27,11 +44,11 @@ const STATUS_FILTERS = [
   { id: 'completed', label: 'Completed' },
 ]
 
-const CATEGORY_ICONS = {
-  pregnantWomen: '🤰',
-  elders: '👴',
-  pwd: '♿',
-  childrenBelow7: '👶',
+const CATEGORY_META = {
+  pregnantWomen: { label: 'Pregnant Women', icon: HeartPulse },
+  elders: { label: 'Elderly / Seniors', icon: Users },
+  pwd: { label: 'PWD', icon: Accessibility },
+  childrenBelow7: { label: 'Children ≤ 7', icon: Baby },
 }
 
 const EMPTY_FORM = {
@@ -66,7 +83,7 @@ export default function Requests() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [search, setSearch] = useState('')
-  const [showForm, setShowForm] = useState(false)
+  const [showForm, setShowForm] = useState(() => Boolean(location.state?.openForm))
   const [form, setForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [updatingId, setUpdatingId] = useState(null)
@@ -125,8 +142,6 @@ export default function Requests() {
 
   useEffect(() => {
     if (location.state?.openForm) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setShowForm(true)
       window.history.replaceState({}, document.title)
     }
   }, [location.state?.openForm])
@@ -210,11 +225,12 @@ export default function Requests() {
     <DashboardLayout title="Requests" userLabel={displayName} userEmail={email}>
       <div className="requests-header">
         <div className="requests-header-text">
-          <h2>Relief requests</h2>
-          <p>Create and manage aid requests across barangays.</p>
+          <h2>Relief Requests</h2>
+          <p>Create, manage, and monitor community relief aid requests across City of Naga.</p>
         </div>
         <button type="button" className="requests-btn-primary" onClick={openForm}>
-          + New Request
+          <Plus size={18} />
+          <span>New Relief Request</span>
         </button>
       </div>
 
@@ -223,38 +239,48 @@ export default function Requests() {
       {!loading && !error && (
         <div className="requests-summary">
           <div className="requests-summary-card">
-            <span className="requests-summary-icon">📋</span>
-            <div>
+            <div className="requests-summary-icon-wrap icon-navy">
+              <ClipboardList size={22} />
+            </div>
+            <div className="requests-summary-content">
               <div className="requests-summary-value">{stats.total}</div>
               <div className="requests-summary-label">Total Requests</div>
             </div>
           </div>
           <div className="requests-summary-card">
-            <span className="requests-summary-icon">👥</span>
-            <div>
+            <div className="requests-summary-icon-wrap icon-blue">
+              <Users size={22} />
+            </div>
+            <div className="requests-summary-content">
               <div className="requests-summary-value">{stats.totalPeople}</div>
-              <div className="requests-summary-label">Affected Individuals</div>
+              <div className="requests-summary-label">Affected People</div>
             </div>
           </div>
           <div className="requests-summary-card">
-            <span className="requests-summary-icon">👪</span>
-            <div>
+            <div className="requests-summary-icon-wrap icon-navy">
+              <UsersRound size={22} />
+            </div>
+            <div className="requests-summary-content">
               <div className="requests-summary-value">{stats.totalFamilies}</div>
               <div className="requests-summary-label">Family Members</div>
             </div>
           </div>
           <div className="requests-summary-card">
-            <span className="requests-summary-icon">🏠</span>
-            <div>
+            <div className="requests-summary-icon-wrap icon-green">
+              <Home size={22} />
+            </div>
+            <div className="requests-summary-content">
               <div className="requests-summary-value">{stats.withEvac}</div>
               <div className="requests-summary-label">In Evacuation Centers</div>
             </div>
           </div>
           <div className="requests-summary-card pending">
-            <span className="requests-summary-icon">⏳</span>
-            <div>
+            <div className="requests-summary-icon-wrap icon-orange">
+              <Hourglass size={22} />
+            </div>
+            <div className="requests-summary-content">
               <div className="requests-summary-value">{stats.pending}</div>
-              <div className="requests-summary-label">Pending</div>
+              <div className="requests-summary-label">Pending Action</div>
             </div>
           </div>
         </div>
@@ -273,19 +299,25 @@ export default function Requests() {
             </button>
           ))}
           <span className="requests-filter-divider" />
-          {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-            <button
-              key={key}
-              type="button"
-              className={`requests-filter-tab cat ${categoryFilter === key ? 'active' : ''}`}
-              onClick={() => setCategoryFilter(categoryFilter === key ? 'all' : key)}
-            >
-              {CATEGORY_ICONS[key]} {label}
-            </button>
-          ))}
+          {Object.entries(CATEGORY_META).map(([key, meta]) => {
+            const Icon = meta.icon
+            return (
+              <button
+                key={key}
+                type="button"
+                className={`requests-filter-tab cat ${categoryFilter === key ? 'active' : ''}`}
+                onClick={() => setCategoryFilter(categoryFilter === key ? 'all' : key)}
+              >
+                <Icon size={14} />
+                <span>{meta.label}</span>
+              </button>
+            )
+          })}
         </div>
         <div className="requests-search-wrap">
-          <span className="requests-search-icon">🔍</span>
+          <span className="requests-search-icon">
+            <Search size={16} />
+          </span>
           <input
             type="text"
             className="requests-search-input"
@@ -298,16 +330,16 @@ export default function Requests() {
 
       <div className="dashboard-activity">
         {loading && !error ? (
-          <p className="requests-loading">Loading requests...</p>
+          <p className="requests-loading">Loading relief requests...</p>
         ) : error ? (
           <p className="dashboard-empty">
-            Unable to load requests. Check Firestore rules and try again.
+            Unable to load requests. Check Firestore permissions and try again.
           </p>
         ) : filtered.length === 0 ? (
           <p className="dashboard-empty">
             {requests.length === 0
-              ? 'No relief requests yet. Create your first request.'
-              : 'No requests match your filters.'}
+              ? 'No relief requests recorded yet. Click "New Relief Request" to create one.'
+              : 'No requests match your current filters.'}
           </p>
         ) : (
           <table className="dashboard-table">
@@ -317,7 +349,7 @@ export default function Requests() {
                 <th>Name</th>
                 <th>Location</th>
                 <th>Family</th>
-                <th>Evac</th>
+                <th>Evac Center</th>
                 <th>Status</th>
                 <th>Date</th>
                 <th>Actions</th>
@@ -334,7 +366,19 @@ export default function Requests() {
                   <td><span className="requests-name-cell">{row.requesterName || '—'}</span></td>
                   <td className="requests-loc-cell">{row.location}</td>
                   <td>{row.familyMembers || '—'}</td>
-                  <td>{row.hasEvacuationCenter ? '✅' : '❌'}</td>
+                  <td>
+                    {row.hasEvacuationCenter ? (
+                      <span className="evac-badge active">
+                        <CheckCircle2 size={13} />
+                        <span>Yes</span>
+                      </span>
+                    ) : (
+                      <span className="evac-badge inactive">
+                        <XCircle size={13} />
+                        <span>No</span>
+                      </span>
+                    )}
+                  </td>
                   <td>
                     <span className={`dashboard-status ${getStatusClass(row.status)}`}>
                       {getStatusLabel(row.status)}
@@ -348,6 +392,7 @@ export default function Requests() {
                         value={row.status}
                         disabled={updatingId === row.docId}
                         onChange={(e) => handleStatusChange(row.docId, e.target.value)}
+                        aria-label="Update request status"
                       >
                         {REQUEST_STATUSES.map((s) => (
                           <option key={s} value={s}>{getStatusLabel(s)}</option>
@@ -361,8 +406,10 @@ export default function Requests() {
                       className="requests-delete-btn"
                       disabled={updatingId === row.docId}
                       onClick={() => handleDelete(row.docId)}
+                      title="Delete request"
                     >
-                      Delete
+                      <Trash2 size={12} />
+                      <span>Delete</span>
                     </button>
                   </td>
                 </tr>
@@ -376,8 +423,15 @@ export default function Requests() {
         <div className="requests-overlay" onClick={() => setDetailRequest(null)}>
           <aside className="requests-detail-panel" onClick={(e) => e.stopPropagation()}>
             <div className="requests-detail-header">
-              <h3>{detailRequest.requesterName || 'Unnamed'}</h3>
-              <button type="button" className="requests-detail-close" onClick={() => setDetailRequest(null)}>✕</button>
+              <h3>{detailRequest.requesterName || 'Relief Request Details'}</h3>
+              <button
+                type="button"
+                className="requests-detail-close"
+                onClick={() => setDetailRequest(null)}
+                aria-label="Close request details"
+              >
+                <X size={16} />
+              </button>
             </div>
             <div className="requests-detail-body">
               <div className="requests-detail-section">
@@ -395,7 +449,9 @@ export default function Requests() {
                 </div>
                 <div className="requests-detail-row">
                   <span className="requests-detail-label">Evacuation Center</span>
-                  <span className="requests-detail-value">{detailRequest.hasEvacuationCenter ? 'Yes ✅' : 'No ❌'}</span>
+                  <span className="requests-detail-value">
+                    {detailRequest.hasEvacuationCenter ? 'Yes (Evacuated)' : 'No (Home / Unverified)'}
+                  </span>
                 </div>
                 <div className="requests-detail-row">
                   <span className="requests-detail-label">Status</span>
@@ -416,13 +472,17 @@ export default function Requests() {
               {detailRequest.categories && Object.keys(detailRequest.categories).length > 0 && (
                 <div className="requests-detail-section">
                   <div className="requests-detail-section-title">Affected Groups & Needs</div>
-                  {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
+                  {Object.entries(CATEGORY_META).map(([key, meta]) => {
                     const cat = detailRequest.categories[key]
                     if (!cat || (!cat.count && !cat.needs)) return null
+                    const Icon = meta.icon
                     return (
                       <div key={key} className="requests-detail-category">
                         <div className="requests-detail-category-header">
-                          <span>{CATEGORY_ICONS[key]} {label}</span>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <Icon size={14} />
+                            <span>{meta.label}</span>
+                          </span>
                           {cat.count > 0 && <span className="requests-detail-count">×{cat.count}</span>}
                         </div>
                         {cat.needs && <div className="requests-detail-needs">{cat.needs}</div>}
@@ -462,6 +522,7 @@ export default function Requests() {
                   value={detailRequest.status}
                   disabled={updatingId === detailRequest.docId}
                   onChange={(e) => handleStatusChange(detailRequest.docId, e.target.value)}
+                  aria-label="Change request status"
                 >
                   {REQUEST_STATUSES.map((s) => (
                     <option key={s} value={s}>{getStatusLabel(s)}</option>
@@ -477,8 +538,10 @@ export default function Requests() {
                 className="requests-delete-btn"
                 disabled={updatingId === detailRequest.docId}
                 onClick={() => handleDelete(detailRequest.docId)}
+                title="Delete this request"
               >
-                Delete
+                <Trash2 size={12} />
+                <span>Delete</span>
               </button>
             </div>
           </aside>
@@ -489,13 +552,13 @@ export default function Requests() {
         <div className="requests-modal-overlay" onClick={() => !saving && setShowForm(false)}>
           <div className="requests-modal requests-modal-wide" onClick={(e) => e.stopPropagation()}>
             <div className="requests-modal-header">
-              <h3>📝 New Relief Request</h3>
-              <p>Enter the details of the affected family or individual.</p>
+              <h3>New Relief Request</h3>
+              <p>Enter the details of the affected family or individual in your community.</p>
             </div>
             <form onSubmit={handleCreate}>
               <div className="requests-form-grid">
                 <div className="requests-form-field">
-                  <label htmlFor="rr-name">👤 Name of person / family</label>
+                  <label htmlFor="rr-name">Name of Person / Family Representative</label>
                   <input
                     id="rr-name"
                     type="text"
@@ -506,7 +569,7 @@ export default function Requests() {
                   />
                 </div>
                 <div className="requests-form-field">
-                  <label htmlFor="rr-family">👪 Number of family members</label>
+                  <label htmlFor="rr-family">Number of Family Members</label>
                   <input
                     id="rr-family"
                     type="number"
@@ -518,7 +581,7 @@ export default function Requests() {
                   />
                 </div>
                 <div className="requests-form-field">
-                  <label htmlFor="rr-location">📍 Location</label>
+                  <label htmlFor="rr-location">Location / Address</label>
                   <div className="requests-location-row">
                     <LocationAutocomplete
                       id="rr-location"
@@ -528,15 +591,21 @@ export default function Requests() {
                       disabled={saving}
                       placeholder="e.g. Barangay Mabolo, Naga City"
                     />
-                    <button type="button" className="requests-locate-btn" onClick={detectLocation} disabled={saving || locating} title="Use my current location">
-                      {locating ? '⌛' : '📍'}
+                    <button
+                      type="button"
+                      className="requests-locate-btn"
+                      onClick={detectLocation}
+                      disabled={saving || locating}
+                      title="Use my current GPS location"
+                    >
+                      {locating ? <Loader2 size={16} className="spin-icon" /> : <MapPin size={16} />}
                     </button>
                   </div>
                 </div>
               </div>
 
               <div className="requests-form-field">
-                <label>🏠 Has evacuation center in barangay?</label>
+                <label>Evacuation Center in Barangay?</label>
                 <div className="requests-radio-group">
                   <label className="requests-radio">
                     <input
@@ -546,7 +615,7 @@ export default function Requests() {
                       onChange={() => setForm((f) => ({ ...f, hasEvacuationCenter: true }))}
                       disabled={saving}
                     />
-                    Yes
+                    <span>Yes, inside evacuation center</span>
                   </label>
                   <label className="requests-radio">
                     <input
@@ -556,68 +625,72 @@ export default function Requests() {
                       onChange={() => setForm((f) => ({ ...f, hasEvacuationCenter: false }))}
                       disabled={saving}
                     />
-                    No
+                    <span>No, at home or other location</span>
                   </label>
                 </div>
               </div>
 
-              <div className="requests-section-label">👥 Affected groups — how many & what they need</div>
+              <div className="requests-section-label">Affected Vulnerable Groups & Specific Needs</div>
               <div className="requests-category-grid">
-                {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-                  <div key={key} className={`requests-category-card ${key}`}>
-                    <div className="requests-category-card-header">
-                      {CATEGORY_ICONS[key]} {label}
-                    </div>
-                    <div className="requests-category-card-fields">
-                      <div className="requests-form-field compact">
-                        <label htmlFor={`fc-${key}`}>Count</label>
-                        <input
-                          id={`fc-${key}`}
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          value={form.categories[key].count}
-                          onChange={(e) =>
-                            setForm((f) => ({
-                              ...f,
-                              categories: {
-                                ...f.categories,
-                                [key]: { ...f.categories[key], count: e.target.value },
-                              },
-                            }))
-                          }
-                          disabled={saving}
-                        />
+                {Object.entries(CATEGORY_META).map(([key, meta]) => {
+                  const Icon = meta.icon
+                  return (
+                    <div key={key} className={`requests-category-card ${key}`}>
+                      <div className="requests-category-card-header">
+                        <Icon size={16} />
+                        <span>{meta.label}</span>
                       </div>
-                      <div className="requests-form-field compact">
-                        <label htmlFor={`fn-${key}`}>Needs</label>
-                        <input
-                          id={`fn-${key}`}
-                          type="text"
-                          placeholder="food, water, medical..."
-                          value={form.categories[key].needs}
-                          onChange={(e) =>
-                            setForm((f) => ({
-                              ...f,
-                              categories: {
-                                ...f.categories,
-                                [key]: { ...f.categories[key], needs: e.target.value },
-                              },
-                            }))
-                          }
-                          disabled={saving}
-                        />
+                      <div className="requests-category-card-fields">
+                        <div className="requests-form-field compact">
+                          <label htmlFor={`fc-${key}`}>Count</label>
+                          <input
+                            id={`fc-${key}`}
+                            type="number"
+                            min="0"
+                            placeholder="0"
+                            value={form.categories[key].count}
+                            onChange={(e) =>
+                              setForm((f) => ({
+                                ...f,
+                                categories: {
+                                  ...f.categories,
+                                  [key]: { ...f.categories[key], count: e.target.value },
+                                },
+                              }))
+                            }
+                            disabled={saving}
+                          />
+                        </div>
+                        <div className="requests-form-field compact">
+                          <label htmlFor={`fn-${key}`}>Specific Needs</label>
+                          <input
+                            id={`fn-${key}`}
+                            type="text"
+                            placeholder="food, water, medicine, diapers..."
+                            value={form.categories[key].needs}
+                            onChange={(e) =>
+                              setForm((f) => ({
+                                ...f,
+                                categories: {
+                                  ...f.categories,
+                                  [key]: { ...f.categories[key], needs: e.target.value },
+                                },
+                              }))
+                            }
+                            disabled={saving}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
 
               <div className="requests-form-field">
-                <label htmlFor="rr-notes">📓 Additional notes (optional)</label>
+                <label htmlFor="rr-notes">Additional Situation Notes (Optional)</label>
                 <textarea
                   id="rr-notes"
-                  placeholder="Any other relevant information about the situation..."
+                  placeholder="Provide any additional emergency or relief details..."
                   value={form.description}
                   onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                   disabled={saving}
@@ -629,7 +702,8 @@ export default function Requests() {
                   Cancel
                 </button>
                 <button type="submit" className="requests-btn-primary" disabled={saving}>
-                  {saving ? 'Creating...' : 'Create request'}
+                  <Plus size={16} />
+                  <span>{saving ? 'Creating Request...' : 'Create Relief Request'}</span>
                 </button>
               </div>
             </form>
