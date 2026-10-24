@@ -544,7 +544,7 @@ export default function AdminDashboard() {
             </span>
           </div>
           <p className="admin-subtitle">
-            Coordinate emergency relief operations, approve requests, monitor active incidents, and manage resources across the City of Naga, Cebu.
+            Coordinate emergency relief operations, approve requests, monitor active relief efforts, and manage resources across the City of Naga, Cebu.
           </p>
         </div>
 
@@ -673,7 +673,7 @@ export default function AdminDashboard() {
               <div className="priority-section-header">
                 <div className="priority-header-title">
                   <AlertTriangle size={20} className="text-red" />
-                  <h3>Urgent Relief & High-Priority Incidents</h3>
+                  <h3>Urgent & High-Priority Relief Requests</h3>
                 </div>
                 <button
                   type="button"

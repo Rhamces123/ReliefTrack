@@ -183,8 +183,8 @@ export default function Home() {
       navigate('/requests', { state: { openForm: true } })
       return
     }
-    if (action === 'reportIncident') {
-      navigate('/requests', { state: { openForm: true, isIncident: true } })
+    if (action === 'emergencyRequest' || action === 'reportIncident') {
+      navigate('/requests', { state: { openForm: true, isUrgent: true } })
       return
     }
     if (action === 'viewMap') {
@@ -317,14 +317,14 @@ export default function Home() {
         <button
           type="button"
           className="quick-action-card action-emergency"
-          onClick={() => handleQuickAction('reportIncident')}
+          onClick={() => handleQuickAction('emergencyRequest')}
         >
           <div className="quick-action-icon bg-red">
             <Siren size={22} />
           </div>
           <div className="quick-action-meta">
-            <div className="quick-action-title">Report Disaster Incident</div>
-            <div className="quick-action-desc">Urgent flood, landslide, or evacuation report</div>
+            <div className="quick-action-title">Emergency Relief Request</div>
+            <div className="quick-action-desc">Immediate food, drinking water, medical aid, or urgent assistance</div>
           </div>
         </button>
 
