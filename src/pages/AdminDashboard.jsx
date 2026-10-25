@@ -23,6 +23,7 @@ import { getBrowserLocation } from '../utils/getBrowserLocation'
 import { FALLBACK_SCHOOLS } from '../utils/nearbyEvacCenters'
 import { formatRequestDate, getStatusLabel, getStatusClass } from '../utils/requestHelpers'
 import DashboardLayout from '../components/DashboardLayout'
+import PieChart from '../components/PieChart'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -267,6 +268,35 @@ export default function AdminDashboard() {
   const registeredBeneficiariesCount = families.length
   const totalSuppliesCount = inventory.reduce((acc, it) => acc + (Number(it.quantity) || 0), 0)
   const lowStockItemsCount = inventory.filter((it) => (Number(it.quantity) || 0) < 20).length
+
+  // Chart Data for Operations Analytics
+  const requestStatusChartData = useMemo(() => [
+    { label: 'Pending', value: pendingRequestsCount, color: '#F59E0B' },
+    { label: 'In Progress', value: activeOpsCount, color: '#1674D1' },
+    { label: 'Completed', value: completedOpsCount, color: '#39A935' },
+  ], [pendingRequestsCount, activeOpsCount, completedOpsCount])
+
+  const inventoryCategoryData = useMemo(() => {
+    const counts = {}
+    inventory.forEach((item) => {
+      const cat = item.category || 'other'
+      counts[cat] = (counts[cat] || 0) + 1
+    })
+    const CATEGORY_COLORS = {
+      food: '#1674D1',
+      water: '#0284C7',
+      medical: '#DC2626',
+      shelter: '#8B5CF6',
+      hygiene: '#14B8A6',
+      clothing: '#F59E0B',
+      other: '#64748B',
+    }
+    return Object.entries(counts).map(([cat, count]) => ({
+      label: cat.charAt(0).toUpperCase() + cat.slice(1),
+      value: count,
+      color: CATEGORY_COLORS[cat] || '#64748B',
+    }))
+  }, [inventory])
 
   // Filtered Requests for Table
   const filteredRequests = useMemo(() => {
@@ -937,6 +967,22 @@ export default function AdminDashboard() {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Operations Distribution & Analytics Pie Charts */}
+          <div className="admin-charts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', marginBottom: '28px' }}>
+            <PieChart
+              title="Requests by Status"
+              subtitle="Current status distribution of all submitted relief requests"
+              data={requestStatusChartData}
+              totalLabel="Requests"
+            />
+            <PieChart
+              title="Inventory by Category"
+              subtitle="Supply classification across available relief stock"
+              data={inventoryCategoryData}
+              totalLabel="Categories"
+            />
           </div>
 
           {/* Two-Column Operations Layout: Inventory Overview + Disaster Map */}

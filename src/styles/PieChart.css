@@ -1,0 +1,228 @@
+/* =========================================================
+   RELIEFTRACK PIE & DONUT CHART STYLES
+   - Modern, Senior-Readable, High-Contrast Design
+   - Navy/Bright Blue/Green/Amber/Red Theme Integration
+   ========================================================= */
+
+.rt-pie-card {
+  background: #ffffff;
+  border: 1px solid #c8ddf0;
+  border-radius: 14px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 10px rgba(18, 59, 102, 0.04);
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rt-pie-card:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 4px 16px rgba(18, 59, 102, 0.08);
+}
+
+.rt-pie-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  gap: 12px;
+}
+
+.rt-pie-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #123B66;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.rt-pie-subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin: 3px 0 0;
+}
+
+.rt-pie-total-badge {
+  background: #F2F7FC;
+  color: #1674D1;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid #D0E3F5;
+  white-space: nowrap;
+}
+
+.rt-pie-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+  min-height: 200px;
+}
+
+.rt-pie-svg-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rt-pie-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.06));
+}
+
+.rt-pie-slice {
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
+  transform-origin: 100px 100px;
+}
+
+.rt-pie-slice:hover,
+.rt-pie-slice.hovered {
+  transform: scale(1.04);
+  filter: brightness(1.08) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+.rt-pie-center-value {
+  font-size: 26px;
+  font-weight: 800;
+  fill: #14243A;
+  font-family: inherit;
+}
+
+.rt-pie-center-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  fill: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: inherit;
+}
+
+.rt-pie-center-percent {
+  font-size: 11px;
+  font-weight: 700;
+  fill: #1674D1;
+  font-family: inherit;
+}
+
+.rt-pie-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-width: 160px;
+}
+
+.rt-pie-legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.rt-pie-legend-item:hover,
+.rt-pie-legend-item.hovered {
+  background: #EEF6FF;
+  border-color: #BFDBFE;
+  transform: translateX(2px);
+}
+
+.rt-pie-legend-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.rt-pie-legend-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  flex: 1;
+}
+
+.rt-pie-legend-value {
+  font-size: 13px;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.rt-pie-legend-pct {
+  font-size: 11.5px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.rt-pie-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 16px;
+  text-align: center;
+  gap: 12px;
+}
+
+.rt-pie-empty-text {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 0;
+  font-weight: 500;
+}
+
+.rt-pie-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #E2E8F0;
+  border-top-color: #1674D1;
+  border-radius: 50%;
+  animation: rtPieSpin 0.8s linear infinite;
+}
+
+@keyframes rtPieSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dark Theme support */
+.dashboard.theme-dark .rt-pie-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.dashboard.theme-dark .rt-pie-title {
+  color: #FFFFFF;
+}
+
+.dashboard.theme-dark .rt-pie-center-value {
+  fill: #FFFFFF;
+}
+
+.dashboard.theme-dark .rt-pie-legend-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard.theme-dark .rt-pie-legend-label {
+  color: #E2E8F0;
+}
+
+.dashboard.theme-dark .rt-pie-legend-value {
+  color: #FFFFFF;
+}

@@ -5,6 +5,7 @@ import { getUserProfile } from '../firebase/users'
 import { subscribeReliefRequests } from '../firebase/requests'
 import DashboardLayout from '../components/DashboardLayout'
 import GenerateReportModal from '../components/GenerateReportModal'
+import PieChart from '../components/PieChart'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -476,6 +477,23 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Request Status Breakdown Pie Chart */}
+      {requests.length > 0 && (
+        <div style={{ marginBottom: '28px' }}>
+          <PieChart
+            title="My Requests Status Breakdown"
+            subtitle="Current status distribution of all your submitted relief requests"
+            data={[
+              { label: 'Pending', value: pendingCount, color: '#F59E0B' },
+              { label: 'In Progress', value: inProgressCount, color: '#1674D1' },
+              { label: 'Completed', value: completedCount, color: '#39A935' },
+              { label: 'Rejected', value: counts.rejected || 0, color: '#DC2626' },
+            ]}
+            totalLabel="Requests"
+          />
+        </div>
+      )}
 
       {/* My Recent Requests Section */}
       <div className="dashboard-recent-section">
