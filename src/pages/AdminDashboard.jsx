@@ -49,6 +49,8 @@ import {
   Trash2,
   Clock,
   ExternalLink,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
 
 const NAGA_CENTER = [10.2085, 123.7591]
@@ -124,9 +126,11 @@ export default function AdminDashboard() {
   )
   const [loading, setLoading] = useState(true)
 
-  // Filters for Operations
+  // Filters & Pagination for Operations
   const [requestSearch, setRequestSearch] = useState('')
   const [requestStatusFilter, setRequestStatusFilter] = useState('All')
+  const [requestPage, setRequestPage] = useState(1)
+  const REQUESTS_PER_PAGE = 5
 
   // Modals for Operations
   const [selectedRequest, setSelectedRequest] = useState(null)
@@ -318,6 +322,45 @@ export default function AdminDashboard() {
       return matchesSearch && matchesStatus
     })
   }, [dateFilteredRequests, requestSearch, requestStatusFilter])
+
+  // Reset page when filters change
+  useEffect(() => {
+    setRequestPage(1)
+  }, [requestSearch, requestStatusFilter, dateFilter])
+
+  // Pagination for Relief Request Management (5 items per page)
+  const totalRequestPages = Math.max(1, Math.ceil(filteredRequests.length / REQUESTS_PER_PAGE))
+  const safeRequestPage = Math.min(Math.max(1, requestPage), totalRequestPages)
+  const paginatedRequests = useMemo(() => {
+    const startIndex = (safeRequestPage - 1) * REQUESTS_PER_PAGE
+    return filteredRequests.slice(startIndex, startIndex + REQUESTS_PER_PAGE)
+  }, [filteredRequests, safeRequestPage])
+
+  const getPageNumbers = () => {
+    const pages = []
+    if (totalRequestPages <= 7) {
+      for (let i = 1; i <= totalRequestPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      if (safeRequestPage <= 4) {
+        pages.push(1, 2, 3, 4, 5, '...', totalRequestPages)
+      } else if (safeRequestPage >= totalRequestPages - 3) {
+        pages.push(
+          1,
+          '...',
+          totalRequestPages - 4,
+          totalRequestPages - 3,
+          totalRequestPages - 2,
+          totalRequestPages - 1,
+          totalRequestPages
+        )
+      } else {
+        pages.push(1, '...', safeRequestPage - 1, safeRequestPage, safeRequestPage + 1, '...', totalRequestPages)
+      }
+    }
+    return pages
+  }
 
   // Priority classification helper
   const getRequestPriority = (r) => {
@@ -829,7 +872,8 @@ export default function AdminDashboard() {
                   <span>Loading operations data...</span>
                 </div>
               ) : filteredRequests.length > 0 ? (
-                <div className="table-responsive">
+                <>
+                  <div className="table-responsive">
                   <table className="admin-data-table">
                     <thead>
                       <tr>
@@ -844,7 +888,7 @@ export default function AdminDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredRequests.map((req) => {
+                      {paginatedRequests.map((req) => {
                         const prio = getRequestPriority(req)
                         return (
                           <tr key={req.docId}>
@@ -959,7 +1003,60 @@ export default function AdminDashboard() {
                     </tbody>
                   </table>
                 </div>
-              ) : (
+
+                {/* Pagination Controls */}
+                <div className="admin-table-pagination">
+                  <div className="pagination-info">
+                    Showing <strong>{(safeRequestPage - 1) * REQUESTS_PER_PAGE + 1}</strong> to{' '}
+                    <strong>{Math.min(safeRequestPage * REQUESTS_PER_PAGE, filteredRequests.length)}</strong> of{' '}
+                    <strong>{filteredRequests.length}</strong> requests
+                  </div>
+
+                  <div className="pagination-controls">
+                    <button
+                      type="button"
+                      className="pagination-btn nav-btn"
+                      onClick={() => setRequestPage((p) => Math.max(1, p - 1))}
+                      disabled={safeRequestPage === 1}
+                      title="Previous Page"
+                    >
+                      <ChevronLeft size={15} />
+                      <span>Prev</span>
+                    </button>
+
+                    <div className="pagination-pages">
+                      {getPageNumbers().map((item, idx) =>
+                        item === '...' ? (
+                          <span key={`dots-${idx}`} className="pagination-ellipsis">
+                            …
+                          </span>
+                        ) : (
+                          <button
+                            key={`page-${item}`}
+                            type="button"
+                            className={`pagination-btn page-num ${safeRequestPage === item ? 'active' : ''}`}
+                            onClick={() => setRequestPage(item)}
+                          >
+                            {item}
+                          </button>
+                        )
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      className="pagination-btn nav-btn"
+                      onClick={() => setRequestPage((p) => Math.min(totalRequestPages, p + 1))}
+                      disabled={safeRequestPage === totalRequestPages}
+                      title="Next Page"
+                    >
+                      <span>Next</span>
+                      <ChevronRight size={15} />
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
                 <div className="admin-empty-state">
                   <Files size={40} className="text-muted" />
                   <h4>No relief requests found</h4>
