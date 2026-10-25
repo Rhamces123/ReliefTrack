@@ -183,10 +183,6 @@ export default function Home() {
       navigate('/requests', { state: { openForm: true } })
       return
     }
-    if (action === 'emergencyRequest' || action === 'reportIncident') {
-      navigate('/requests', { state: { openForm: true, isUrgent: true } })
-      return
-    }
     if (action === 'viewMap') {
       navigate('/map')
       return
@@ -311,20 +307,6 @@ export default function Home() {
           <div className="quick-action-meta">
             <div className="quick-action-title">Submit Relief Request</div>
             <div className="quick-action-desc">Request food packs, water, or medical aid</div>
-          </div>
-        </button>
-
-        <button
-          type="button"
-          className="quick-action-card action-emergency"
-          onClick={() => handleQuickAction('emergencyRequest')}
-        >
-          <div className="quick-action-icon bg-red">
-            <Siren size={22} />
-          </div>
-          <div className="quick-action-meta">
-            <div className="quick-action-title">Emergency Relief Request</div>
-            <div className="quick-action-desc">Immediate food, drinking water, medical aid, or urgent assistance</div>
           </div>
         </button>
 
