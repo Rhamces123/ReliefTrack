@@ -221,8 +221,6 @@ export default function Inventory() {
                 <th>Name</th>
                 <th>Category</th>
                 <th>Quantity</th>
-                <th>Unit</th>
-                <th>Storage</th>
                 <th>Updated</th>
                 <th>Actions</th>
               </tr>
@@ -242,8 +240,6 @@ export default function Inventory() {
                   <td className={isLowStock(row.quantity) ? 'inventory-qty-low' : ''}>
                     {row.quantity}
                   </td>
-                  <td>{row.unit || '—'}</td>
-                  <td>{row.storageLocation || '—'}</td>
                   <td>{formatInventoryDate(row.updatedAt || row.createdAt)}</td>
                   <td>
                     {isAdmin ? (
@@ -406,8 +402,6 @@ export default function Inventory() {
                           <th>Item ID</th>
                           <th>Name</th>
                           <th>Quantity</th>
-                          <th>Unit</th>
-                          <th>Location</th>
                           <th>Updated</th>
                         </tr>
                       </thead>
@@ -417,8 +411,6 @@ export default function Inventory() {
                             <td>{row.itemId}</td>
                             <td>{row.name}</td>
                             <td className={isLowStock(row.quantity) ? 'inventory-qty-low' : ''}>{row.quantity}</td>
-                            <td>{row.unit || '—'}</td>
-                            <td>{row.storageLocation || '—'}</td>
                             <td>{formatInventoryDate(row.updatedAt || row.createdAt)}</td>
                           </tr>
                         ))}
@@ -438,7 +430,6 @@ export default function Inventory() {
                         <th>Name</th>
                         <th>Category</th>
                         <th>Quantity</th>
-                        <th>Unit</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -448,7 +439,6 @@ export default function Inventory() {
                           <td>{row.name}</td>
                           <td>{getCategoryLabel(row.category)}</td>
                           <td className="inventory-qty-low">{row.quantity}</td>
-                          <td>{row.unit || '—'}</td>
                         </tr>
                       ))}
                     </tbody>
