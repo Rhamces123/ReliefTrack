@@ -30,7 +30,7 @@ const USER_NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/home' },
   { id: 'requests', label: 'My Relief Requests', icon: ClipboardList, path: '/requests' },
   { id: 'donations', label: 'Donations & Aid', icon: Gift, path: '/donations' },
-  { id: 'map', label: 'View Disaster Map', icon: Map, path: '/map' },
+  { id: 'map', label: 'Map', icon: Map, path: '/map' },
   { id: 'reports', label: 'Reports', icon: ChartNoAxesColumn, path: '/reports' },
   { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
 ]
@@ -42,7 +42,7 @@ const ADMIN_NAV_ITEMS = [
   { id: 'inventory', label: 'Inventory Management', icon: Package, path: '/inventory' },
   { id: 'beneficiaries', label: 'Beneficiaries', icon: Users, path: '/beneficiaries' },
   { id: 'donations', label: 'Donations', icon: Gift, path: '/donations' },
-  { id: 'map', label: 'Disaster Map', icon: Map, path: '/map' },
+  { id: 'map', label: 'Map', icon: Map, path: '/map' },
   { id: 'reports', label: 'Reports & Analytics', icon: ChartNoAxesColumn, path: '/reports' },
   { id: 'autosuggest', label: 'Auto Suggest AI', icon: Sparkles, path: '/admin/auto-suggest' },
   { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },

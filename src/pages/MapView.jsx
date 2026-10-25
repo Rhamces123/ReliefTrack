@@ -350,7 +350,7 @@ export default function MapView() {
   const isAdmin = profile?.role === 'Admin'
 
   return (
-    <DashboardLayout title="Map View" userLabel={displayName} userEmail={email}>
+    <DashboardLayout title="Map" userLabel={displayName} userEmail={email}>
       <div className="mapview-container">
         <div className="mapview-header">
           <div className="mapview-stats">
