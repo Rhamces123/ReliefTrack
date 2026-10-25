@@ -621,11 +621,11 @@ export default function AdminDashboard() {
         <div className="admin-stat-card card-requests">
           <div className="stat-card-top">
             <div className="stat-icon-wrap icon-navy">
-              <Files size={22} />
+              <Files size={20} />
             </div>
             <span className="stat-trend">Live</span>
           </div>
-          <div className="stat-value">{loading ? '—' : totalRequestsCount}</div>
+          <div className="stat-value">{loading ? '—' : totalRequestsCount.toLocaleString()}</div>
           <div className="stat-label">Total Relief Requests</div>
         </div>
 
@@ -633,11 +633,11 @@ export default function AdminDashboard() {
         <div className="admin-stat-card card-pending">
           <div className="stat-card-top">
             <div className="stat-icon-wrap icon-orange">
-              <Hourglass size={22} />
+              <Hourglass size={20} />
             </div>
-            <span className="stat-badge-orange">Needs Action</span>
+            <span className="stat-badge-orange">Pending</span>
           </div>
-          <div className="stat-value text-orange">{loading ? '—' : pendingRequestsCount}</div>
+          <div className="stat-value text-orange">{loading ? '—' : pendingRequestsCount.toLocaleString()}</div>
           <div className="stat-label">Pending Approvals</div>
         </div>
 
@@ -645,11 +645,11 @@ export default function AdminDashboard() {
         <div className="admin-stat-card card-operations">
           <div className="stat-card-top">
             <div className="stat-icon-wrap icon-blue">
-              <Siren size={22} />
+              <Siren size={20} />
             </div>
-            <span className="stat-badge-blue">In Dispatch</span>
+            <span className="stat-badge-blue">Active</span>
           </div>
-          <div className="stat-value text-bright-blue">{loading ? '—' : activeOpsCount}</div>
+          <div className="stat-value text-bright-blue">{loading ? '—' : activeOpsCount.toLocaleString()}</div>
           <div className="stat-label">Active Operations</div>
         </div>
 
@@ -657,11 +657,11 @@ export default function AdminDashboard() {
         <div className="admin-stat-card card-completed">
           <div className="stat-card-top">
             <div className="stat-icon-wrap icon-green">
-              <CircleCheck size={22} />
+              <CircleCheck size={20} />
             </div>
             <span className="stat-badge-green">Delivered</span>
           </div>
-          <div className="stat-value text-green">{loading ? '—' : completedOpsCount}</div>
+          <div className="stat-value text-green">{loading ? '—' : completedOpsCount.toLocaleString()}</div>
           <div className="stat-label">Completed Operations</div>
         </div>
 
@@ -669,11 +669,11 @@ export default function AdminDashboard() {
         <div className="admin-stat-card card-beneficiaries">
           <div className="stat-card-top">
             <div className="stat-icon-wrap icon-navy">
-              <Users size={22} />
+              <Users size={20} />
             </div>
             <span className="stat-badge-gray">Families</span>
           </div>
-          <div className="stat-value">{loading ? '—' : registeredBeneficiariesCount}</div>
+          <div className="stat-value">{loading ? '—' : registeredBeneficiariesCount.toLocaleString()}</div>
           <div className="stat-label">Registered Beneficiaries</div>
         </div>
 
@@ -681,15 +681,15 @@ export default function AdminDashboard() {
         <div className="admin-stat-card card-inventory">
           <div className="stat-card-top">
             <div className="stat-icon-wrap icon-blue">
-              <Package size={22} />
+              <Package size={20} />
             </div>
             {lowStockItemsCount > 0 ? (
-              <span className="stat-badge-orange">{lowStockItemsCount} Low Stock</span>
+              <span className="stat-badge-orange">Low Stock</span>
             ) : (
               <span className="stat-badge-green">Stocked</span>
             )}
           </div>
-          <div className="stat-value">{loading ? '—' : totalSuppliesCount}</div>
+          <div className="stat-value">{loading ? '—' : totalSuppliesCount.toLocaleString()}</div>
           <div className="stat-label">Available Relief Inventory</div>
         </div>
       </div>
