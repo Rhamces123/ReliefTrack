@@ -172,13 +172,37 @@ export default function Requests() {
   }, [requests])
 
   const openForm = () => {
+    setError('')
     setForm(EMPTY_FORM)
     setShowForm(true)
   }
 
   const handleCreate = async (e) => {
     e.preventDefault()
-    if (!form.location.trim()) return
+    if (!form.location.trim()) {
+      setError('Please provide a location / address.')
+      return
+    }
+
+    const familyCount = parseInt(form.familyMembers, 10)
+    const hasFamilyLimit = !isNaN(familyCount) && familyCount > 0
+    const totalVuln = totalAffected(form.categories)
+
+    if (hasFamilyLimit && totalVuln > familyCount) {
+      setError(`Total vulnerable count (${totalVuln}) cannot exceed total family members (${familyCount}).`)
+      return
+    }
+
+    if (hasFamilyLimit) {
+      for (const [key, meta] of Object.entries(CATEGORY_META)) {
+        const c = parseInt(form.categories[key]?.count, 10) || 0
+        if (c > familyCount) {
+          setError(`${meta.label} count (${c}) cannot exceed the number of family members (${familyCount}).`)
+          return
+        }
+      }
+    }
+
     setSaving(true)
     setError('')
     try {
@@ -220,6 +244,15 @@ export default function Requests() {
       setUpdatingId(null)
     }
   }
+
+  const modalFamilyCount = parseInt(form.familyMembers, 10)
+  const hasFamilyLimit = !isNaN(modalFamilyCount) && modalFamilyCount > 0
+  const totalVulnCount = totalAffected(form.categories)
+  const isTotalExceeded = hasFamilyLimit && totalVulnCount > modalFamilyCount
+  const hasAnyIndividualExceeded = hasFamilyLimit && Object.values(form.categories).some(
+    (c) => (parseInt(c.count, 10) || 0) > modalFamilyCount
+  )
+  const isFormExceeded = isTotalExceeded || hasAnyIndividualExceeded
 
   return (
     <DashboardLayout title="Requests" userLabel={displayName} userEmail={email}>
@@ -556,6 +589,7 @@ export default function Requests() {
               <p>Enter the details of the affected family or individual in your community.</p>
             </div>
             <form onSubmit={handleCreate}>
+              {error && <div className="requests-error" style={{ marginBottom: '16px' }}>{error}</div>}
               <div className="requests-form-grid">
                 <div className="requests-form-field">
                   <label htmlFor="rr-name">Name of Person / Family Representative</label>
@@ -630,10 +664,23 @@ export default function Requests() {
                 </div>
               </div>
 
-              <div className="requests-section-label">Affected Vulnerable Groups & Specific Needs</div>
+              <div className="requests-section-header-row">
+                <div className="requests-section-label">Affected Vulnerable Groups & Specific Needs</div>
+                {hasFamilyLimit && (
+                  <span className={`vuln-counter-badge ${isFormExceeded ? 'exceeded' : 'neutral'}`}>
+                    {isFormExceeded
+                      ? `⚠️ Exceeds limit (${totalVulnCount} / ${modalFamilyCount})`
+                      : `${totalVulnCount} / ${modalFamilyCount} allocated`}
+                  </span>
+                )}
+              </div>
+
               <div className="requests-category-grid">
                 {Object.entries(CATEGORY_META).map(([key, meta]) => {
                   const Icon = meta.icon
+                  const catCount = parseInt(form.categories[key]?.count, 10) || 0
+                  const isIndividualExceeded = hasFamilyLimit && catCount > modalFamilyCount
+                  const isCardExceeded = isIndividualExceeded || (isTotalExceeded && catCount > 0)
                   return (
                     <div key={key} className={`requests-category-card ${key}`}>
                       <div className="requests-category-card-header">
@@ -642,11 +689,20 @@ export default function Requests() {
                       </div>
                       <div className="requests-category-card-fields">
                         <div className="requests-form-field compact">
-                          <label htmlFor={`fc-${key}`}>Count</label>
+                          <label htmlFor={`fc-${key}`}>
+                            Count
+                            {hasFamilyLimit && (
+                              <span style={{ fontSize: '11px', color: isCardExceeded ? '#DC2626' : '#718096', marginLeft: '6px', fontWeight: 'normal' }}>
+                                (Max {modalFamilyCount})
+                              </span>
+                            )}
+                          </label>
                           <input
                             id={`fc-${key}`}
                             type="number"
                             min="0"
+                            max={hasFamilyLimit ? modalFamilyCount : undefined}
+                            className={isCardExceeded ? 'input-exceeded' : ''}
                             placeholder="0"
                             value={form.categories[key].count}
                             onChange={(e) =>
@@ -660,6 +716,16 @@ export default function Requests() {
                             }
                             disabled={saving}
                           />
+                          {isIndividualExceeded && (
+                            <span className="requests-count-error">
+                              Exceeds family limit of {modalFamilyCount}
+                            </span>
+                          )}
+                          {!isIndividualExceeded && isTotalExceeded && catCount > 0 && (
+                            <span className="requests-count-error">
+                              Total count ({totalVulnCount}) exceeds limit ({modalFamilyCount})
+                            </span>
+                          )}
                         </div>
                         <div className="requests-form-field compact">
                           <label htmlFor={`fn-${key}`}>Specific Needs</label>
@@ -701,7 +767,12 @@ export default function Requests() {
                 <button type="button" className="requests-btn-secondary" onClick={() => setShowForm(false)} disabled={saving}>
                   Cancel
                 </button>
-                <button type="submit" className="requests-btn-primary" disabled={saving}>
+                <button
+                  type="submit"
+                  className="requests-btn-primary"
+                  disabled={saving || isFormExceeded}
+                  title={isFormExceeded ? `Counts exceed family members limit (${modalFamilyCount})` : ''}
+                >
                   <Plus size={16} />
                   <span>{saving ? 'Creating Request...' : 'Create Relief Request'}</span>
                 </button>

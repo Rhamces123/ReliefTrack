@@ -816,6 +816,55 @@
   font-size: 13px;
 }
 
+.requests-form-field.compact input.input-exceeded {
+  border-color: #DC2626 !important;
+  color: #DC2626 !important;
+  background-color: #FEF2F2 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
+}
+
+.requests-count-error {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #DC2626;
+  margin-top: 4px;
+}
+
+.requests-section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #EDF2F7;
+}
+
+.requests-section-header-row .requests-section-label {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.vuln-counter-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.vuln-counter-badge.neutral {
+  background: #EFF6FF;
+  color: #1674D1;
+  border: 1px solid #BFDBFE;
+}
+
+.vuln-counter-badge.exceeded {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+}
+
 .requests-modal-actions {
   display: flex;
   gap: 10px;
