@@ -44,7 +44,7 @@ const ADMIN_NAV_ITEMS = [
   { id: 'donations', label: 'Donations', icon: Gift, path: '/donations' },
   { id: 'map', label: 'Map', icon: Map, path: '/map' },
   { id: 'reports', label: 'Reports & Analytics', icon: ChartNoAxesColumn, path: '/reports' },
-  { id: 'autosuggest', label: 'Auto Suggest AI', icon: Sparkles, path: '/admin/auto-suggest' },
+  { id: 'autosuggest', label: 'Auto Suggest', icon: Sparkles, path: '/admin/auto-suggest' },
   { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
 ]
 
