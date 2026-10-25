@@ -877,7 +877,6 @@ export default function AdminDashboard() {
                   <table className="admin-data-table">
                     <thead>
                       <tr>
-                        <th>Request ID</th>
                         <th>Requester / Beneficiary</th>
                         <th>Barangay Location</th>
                         <th>Relief Assistance Needed</th>
@@ -892,9 +891,6 @@ export default function AdminDashboard() {
                         const prio = getRequestPriority(req)
                         return (
                           <tr key={req.docId}>
-                            <td className="font-mono font-medium text-navy">
-                              {req.requestId}
-                            </td>
                             <td>
                               <div className="table-user-cell">
                                 <span className="font-semibold text-navy">
