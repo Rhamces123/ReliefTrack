@@ -892,16 +892,9 @@ export default function AdminDashboard() {
                         return (
                           <tr key={req.docId}>
                             <td>
-                              <div className="table-user-cell">
-                                <span className="font-semibold text-navy">
-                                  {req.requesterName || req.createdByName || 'Beneficiary'}
-                                </span>
-                                {req.familyMembers > 0 && (
-                                  <span className="text-xs text-muted">
-                                    {req.familyMembers} household members
-                                  </span>
-                                )}
-                              </div>
+                              <span className="font-semibold text-navy">
+                                {req.requesterName || req.createdByName || 'Beneficiary'}
+                              </span>
                             </td>
                             <td>
                               <div className="table-loc-cell" title={req.location || 'City of Naga'}>
