@@ -362,6 +362,32 @@ export default function AdminDashboard() {
     return pages
   }
 
+  // Handle page change while keeping viewport scroll position completely stable
+  const handlePageChange = useCallback((newPage, e) => {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      if (typeof e.currentTarget?.blur === 'function') {
+        e.currentTarget.blur()
+      }
+    }
+
+    const dashContent = document.querySelector('.dashboard-content')
+    const currentDashScroll = dashContent ? dashContent.scrollTop : 0
+    const currentWindowScroll = window.scrollY || window.pageYOffset || 0
+
+    setRequestPage(newPage)
+
+    requestAnimationFrame(() => {
+      if (dashContent && dashContent.scrollTop !== currentDashScroll) {
+        dashContent.scrollTop = currentDashScroll
+      }
+      if (window.scrollY !== currentWindowScroll) {
+        window.scrollTo({ top: currentWindowScroll, behavior: 'instant' })
+      }
+    })
+  }, [])
+
   // Priority classification helper
   const getRequestPriority = (r) => {
     let score = 0
@@ -1007,7 +1033,7 @@ export default function AdminDashboard() {
                     <button
                       type="button"
                       className="pagination-btn nav-btn"
-                      onClick={() => setRequestPage((p) => Math.max(1, p - 1))}
+                      onClick={(e) => handlePageChange(Math.max(1, safeRequestPage - 1), e)}
                       disabled={safeRequestPage === 1}
                       title="Previous Page"
                     >
@@ -1026,7 +1052,7 @@ export default function AdminDashboard() {
                             key={`page-${item}`}
                             type="button"
                             className={`pagination-btn page-num ${safeRequestPage === item ? 'active' : ''}`}
-                            onClick={() => setRequestPage(item)}
+                            onClick={(e) => handlePageChange(item, e)}
                           >
                             {item}
                           </button>
@@ -1037,7 +1063,7 @@ export default function AdminDashboard() {
                     <button
                       type="button"
                       className="pagination-btn nav-btn"
-                      onClick={() => setRequestPage((p) => Math.min(totalRequestPages, p + 1))}
+                      onClick={(e) => handlePageChange(Math.min(totalRequestPages, safeRequestPage + 1), e)}
                       disabled={safeRequestPage === totalRequestPages}
                       title="Next Page"
                     >

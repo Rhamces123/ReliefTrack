@@ -428,6 +428,12 @@
   box-shadow: 0 2px 8px rgba(18, 59, 102, 0.04);
   margin-bottom: 28px;
   overflow: hidden;
+  overflow-anchor: none;
+}
+
+.admin-requests-section .table-responsive {
+  min-height: 290px;
+  overflow-anchor: none;
 }
 
 .requests-section-header {
@@ -521,12 +527,14 @@
 /* Admin Data Table */
 .admin-table-container {
   width: 100%;
+  overflow-anchor: none;
 }
 
 .admin-data-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  overflow-anchor: none;
 }
 
 .admin-data-table th {
@@ -675,6 +683,7 @@
   border-top: 1px solid #EDF2F7;
   flex-wrap: wrap;
   gap: 12px;
+  overflow-anchor: none;
 }
 
 .pagination-info {
