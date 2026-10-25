@@ -24,11 +24,9 @@ export const CLASSIFICATIONS = [
 ]
 
 export const ECONOMIC_STATUSES = [
-  { id: 'financially-incapable', label: 'Financially Incapable', description: 'Struggles to meet even basic needs; requires urgent assistance.' },
   { id: 'lower-middle', label: 'Lower-Middle Class', description: 'Earning enough for basic needs plus a small extra buffer, often skilled workers or entry professionals.' },
   { id: 'middle', label: 'Middle Class', description: 'Earning stable mid-level incomes, able to afford regular comforts, housing, and education.' },
   { id: 'upper-middle', label: 'Upper-Middle Class', description: 'Earning high salaries as senior professionals or managers with strong financial security.' },
-  { id: 'wealthy', label: 'Wealthy', description: 'High net worth; financially independent with significant assets.' },
 ]
 
 function mapDoc(d) {

@@ -5,14 +5,12 @@ import { subscribeFamilies, ECONOMIC_STATUSES } from '../firebase/families'
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/PriorityIndividuals.css'
 
-const ECON_PRIORITY = { 'financially-incapable': 5, 'lower-middle': 4, middle: 3, 'upper-middle': 2, wealthy: 1 }
+const ECON_PRIORITY = { 'lower-middle': 3, middle: 2, 'upper-middle': 1 }
 
 const ECON_COLORS = {
-  'financially-incapable': '#ff7070',
-  'lower-middle': '#ffb833',
-  middle: '#6bbaff',
-  'upper-middle': '#7ddb7d',
-  wealthy: '#d4c44a',
+  'lower-middle': '#f59e0b',
+  middle: '#1674d1',
+  'upper-middle': '#39a935',
 }
 
 function getEconLabel(id) {
@@ -103,7 +101,7 @@ export default function PriorityIndividuals() {
       <div className="pri-header">
         <div className="pri-header-text">
           <h2>Priority Individuals per Barangay</h2>
-          <p>Ranked by economic status — Financially Incapable first.</p>
+          <p>Ranked by economic status — Lower-Middle Class first.</p>
         </div>
       </div>
 
