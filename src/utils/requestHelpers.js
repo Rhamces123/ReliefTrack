@@ -26,3 +26,15 @@ export function countByStatus(requests) {
     { pending: 0, 'in-progress': 0, completed: 0 }
   )
 }
+
+export function formatShortAddress(address) {
+  if (!address || typeof address !== 'string') return 'City of Naga'
+  const clean = address
+    .replace(/,?\s*\b(Central Visayas|Western Visayas|Eastern Visayas|Central Luzon|CALABARZON|MIMAROPA|Bicol Region|Ilocos Region|Cagayan Valley|Cordillera Administrative Region|Davao Region|SOCCSKSARGEN|Caraga|Bangsamoro|NCR|National Capital Region)\b/gi, '')
+    .replace(/,?\s*\b(Philippines|Pilipinas)\b/gi, '')
+    .replace(/,?\s*\b\d{4}\b/g, '')
+    .replace(/\s*,\s*,+/g, ',')
+    .replace(/,\s*$/, '')
+    .trim()
+  return clean || address
+}

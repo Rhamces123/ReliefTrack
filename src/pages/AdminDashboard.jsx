@@ -21,7 +21,7 @@ import { subscribeInventoryItems } from '../firebase/inventory'
 import { subscribeFamilies } from '../firebase/families'
 import { getBrowserLocation } from '../utils/getBrowserLocation'
 import { FALLBACK_SCHOOLS } from '../utils/nearbyEvacCenters'
-import { formatRequestDate, getStatusLabel, getStatusClass } from '../utils/requestHelpers'
+import { formatRequestDate, getStatusLabel, getStatusClass, formatShortAddress } from '../utils/requestHelpers'
 import DashboardLayout from '../components/DashboardLayout'
 import PieChart from '../components/PieChart'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
@@ -908,9 +908,11 @@ export default function AdminDashboard() {
                               </div>
                             </td>
                             <td>
-                              <div className="table-loc-cell">
-                                <MapPin size={14} className="text-bright-blue" />
-                                <span>{req.location || 'City of Naga'}</span>
+                              <div className="table-loc-cell" title={req.location || 'City of Naga'}>
+                                <MapPin size={14} className="text-bright-blue loc-icon" />
+                                <span className="table-loc-text">
+                                  {formatShortAddress(req.location)}
+                                </span>
                               </div>
                             </td>
                             <td>

@@ -558,6 +558,27 @@
   flex-direction: column;
 }
 
+.table-loc-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 220px;
+  vertical-align: middle;
+}
+
+.table-loc-cell .loc-icon {
+  flex-shrink: 0;
+}
+
+.table-loc-text {
+  max-width: 195px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  color: #2D3748;
+}
+
 .table-desc-text {
   max-width: 200px;
   white-space: nowrap;
