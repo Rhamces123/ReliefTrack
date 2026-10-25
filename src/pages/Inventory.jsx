@@ -333,32 +333,6 @@ export default function Inventory() {
                   />
                 </div>
               </div>
-              <div className="inventory-form-row">
-                <div className="requests-form-field">
-                  <label htmlFor="inv-unit">Unit</label>
-                  <input
-                    id="inv-unit"
-                    type="text"
-                    placeholder="e.g. boxes, kg"
-                    value={form.unit}
-                    onChange={(e) => setForm((f) => ({ ...f, unit: e.target.value }))}
-                    disabled={saving}
-                  />
-                </div>
-                <div className="requests-form-field">
-                  <label htmlFor="inv-storage">Storage location</label>
-                  <input
-                    id="inv-storage"
-                    type="text"
-                    placeholder="e.g. Warehouse A"
-                    value={form.storageLocation}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, storageLocation: e.target.value }))
-                    }
-                    disabled={saving}
-                  />
-                </div>
-              </div>
               <div className="requests-form-field">
                 <label htmlFor="inv-notes">Notes (optional)</label>
                 <textarea
