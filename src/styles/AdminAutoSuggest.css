@@ -1,128 +1,195 @@
+/* =========================================================
+   AUTO SUGGEST AI - RELIEFTRACK THEME
+   ========================================================= */
+
 .autosuggest-header {
   margin-bottom: 24px;
 }
 
 .autosuggest-header h2 {
   font-size: 22px;
-  font-weight: 500;
-  color: #fff;
+  font-weight: 700;
+  color: #123B66;
   margin: 0 0 6px;
 }
 
 .autosuggest-header p {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  color: #64748B;
   margin: 0;
+  line-height: 1.5;
 }
 
 .autosuggest-loading,
 .autosuggest-empty {
   text-align: center;
-  padding: 48px 0;
-  color: rgba(255, 255, 255, 0.4);
+  padding: 48px 20px;
+  color: #64748B;
   font-size: 14px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
 }
 
 .autosuggest-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .autosuggest-card {
-  background: rgba(255, 255, 255, 0.09);
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
-  padding: 20px 24px;
-  transition: border-color 0.2s;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 8px rgba(18, 59, 102, 0.04);
+  transition: all 0.2s ease;
+  border-left: 4px solid #CBD5E1;
 }
 
 .autosuggest-card.top-priority {
-  border-color: rgba(239, 68, 68, 0.5);
-  background: rgba(239, 68, 68, 0.08);
+  border-color: #FECACA;
+  border-left: 4px solid #DC2626;
+  background: #FFFAFA;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.08);
+}
+
+.autosuggest-card.high-priority {
+  border-color: #FDE68A;
+  border-left: 4px solid #D97706;
+  background: #FFFDF7;
 }
 
 .autosuggest-card-header {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #EDF2F7;
 }
 
 .autosuggest-rank {
   font-size: 18px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.25);
-  min-width: 32px;
+  font-weight: 800;
+  color: #123B66;
+  min-width: 36px;
+}
+
+.autosuggest-card.top-priority .autosuggest-rank {
+  color: #DC2626;
+}
+
+.autosuggest-card.high-priority .autosuggest-rank {
+  color: #D97706;
 }
 
 .autosuggest-card-title {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .autosuggest-card-title h3 {
   font-size: 17px;
-  font-weight: 600;
-  color: #fff;
+  font-weight: 700;
+  color: #123B66;
   margin: 0;
 }
 
 .autosuggest-urgency {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.autosuggest-urgency.urgent {
+  background: #FEE2E2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+}
+
+.autosuggest-urgency.high {
+  background: #FEF3C7;
+  color: #D97706;
+  border: 1px solid #FDE68A;
+}
+
+.autosuggest-urgency.normal {
+  background: #EBF7EB;
+  color: #15803D;
+  border: 1px solid #B4E2B2;
 }
 
 .autosuggest-score {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+  color: #4A5568;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  padding: 4px 10px;
+  border-radius: 20px;
   white-space: nowrap;
 }
 
 .autosuggest-card-stats {
   display: flex;
-  gap: 18px;
+  gap: 24px;
   flex-wrap: wrap;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .autosuggest-stat {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .autosuggest-stat .stat-label {
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
-  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.4px;
+  color: #64748B;
 }
 
 .autosuggest-stat .stat-value {
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+  color: #123B66;
 }
 
-.autosuggest-stat .stat-value.pending { color: #ef4444; }
-.autosuggest-stat .stat-value.inprogress { color: #22c55e; }
-.autosuggest-stat .stat-value.completed { color: #3b82f6; }
+.autosuggest-stat .stat-value.pending {
+  color: #DC2626;
+}
+
+.autosuggest-stat .stat-value.inprogress {
+  color: #1674D1;
+}
+
+.autosuggest-stat .stat-value.completed {
+  color: #15803D;
+}
 
 .autosuggest-needs {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .autosuggest-needs h4 {
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  font-weight: 700;
+  color: #123B66;
   margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .autosuggest-needs-grid {
@@ -132,44 +199,47 @@
 }
 
 .autosuggest-need-item {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
   padding: 10px 14px;
-  min-width: 140px;
+  min-width: 150px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .need-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  color: #123B66;
 }
 
 .need-count {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  font-weight: 600;
+  color: #DC2626;
 }
 
 .need-desc {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.35);
-  font-style: italic;
+  color: #64748B;
 }
 
 .autosuggest-action {
-  padding: 10px 14px;
-  background: rgba(120, 80, 255, 0.15);
-  border: 1px solid rgba(120, 80, 255, 0.3);
-  border-radius: 10px;
+  padding: 12px 16px;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  border-left: 4px solid #1674D1;
+  border-radius: 8px;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
+  color: #1E3A8A;
+  line-height: 1.5;
 }
 
 .autosuggest-action strong {
-  color: #c4b5fd;
+  color: #1674D1;
+  font-weight: 700;
 }
 
 @media (max-width: 768px) {
@@ -177,7 +247,7 @@
     flex-wrap: wrap;
   }
   .autosuggest-card-stats {
-    gap: 12px;
+    gap: 14px;
   }
   .autosuggest-needs-grid {
     flex-direction: column;

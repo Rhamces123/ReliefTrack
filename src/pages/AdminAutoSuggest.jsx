@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { getUserProfile } from '../firebase/users'
 import { subscribeReliefRequests, CATEGORY_LABELS } from '../firebase/requests'
+import { formatShortAddress } from '../utils/requestHelpers'
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/AdminAutoSuggest.css'
 
@@ -81,12 +82,12 @@ export default function AdminAutoSuggest() {
       ) : (
         <div className="autosuggest-list">
           {barangays.map((b, i) => (
-            <div key={b.name} className={`autosuggest-card ${i === 0 ? 'top-priority' : ''}`}>
+            <div key={b.name} className={`autosuggest-card ${i === 0 ? 'top-priority' : i < 3 ? 'high-priority' : ''}`}>
               <div className="autosuggest-card-header">
                 <span className="autosuggest-rank">#{i + 1}</span>
                 <div className="autosuggest-card-title">
-                  <h3>{b.name}</h3>
-                  <span className="autosuggest-urgency">
+                  <h3 title={b.name}>{formatShortAddress(b.name)}</h3>
+                  <span className={`autosuggest-urgency ${i === 0 ? 'urgent' : i < 3 ? 'high' : 'normal'}`}>
                     {i === 0 ? '🔴 Highest Priority' : i < 3 ? '🟡 High Priority' : '🟢 Monitor'}
                   </span>
                 </div>
@@ -120,7 +121,7 @@ export default function AdminAutoSuggest() {
 
               {b.pending > 0 && (
                 <div className="autosuggest-action">
-                  <strong>Suggested Action:</strong> Send relief goods to <strong>{b.name}</strong> — {b.pending} pending request{b.pending > 1 ? 's' : ''} need{b.pending === 1 ? 's' : ''} immediate attention.
+                  <strong>Suggested Action:</strong> Send relief goods to <strong>{formatShortAddress(b.name)}</strong> — {b.pending} pending request{b.pending > 1 ? 's' : ''} need{b.pending === 1 ? 's' : ''} immediate attention.
                 </div>
               )}
             </div>
