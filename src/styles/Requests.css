@@ -608,6 +608,234 @@
 }
 
 /* =========================================================
+   REQUEST MINI MAP IN DETAILS DRAWER
+   ========================================================= */
+.requests-detail-map-section {
+  margin-top: 20px;
+  margin-bottom: 22px;
+}
+
+.requests-minimap-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #EDF2F7;
+}
+
+.requests-minimap-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #1674D1;
+}
+
+.requests-minimap-view-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  color: #1674D1;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.requests-minimap-view-link:hover {
+  background: #EBF5FF;
+  color: #105bb0;
+}
+
+.requests-minimap-card {
+  position: relative;
+  width: 100%;
+  height: 210px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1.5px solid #E2E8F0;
+  box-shadow: 0 4px 14px rgba(18, 59, 102, 0.08);
+  cursor: pointer;
+  background: #F8FAFC;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.requests-minimap-card:hover {
+  border-color: #1674D1;
+  box-shadow: 0 8px 24px rgba(22, 116, 209, 0.18);
+  transform: translateY(-2px);
+}
+
+.requests-minimap {
+  width: 100% !important;
+  height: 210px !important;
+  border-radius: 10px;
+  z-index: 1;
+}
+
+.requests-minimap .leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 10px;
+  font-family: inherit;
+}
+
+.requests-minimap-loading-bar {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(18, 59, 102, 0.9);
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  z-index: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.requests-minimap-top-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  color: #1E293B;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 400;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.minimap-badge-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.requests-minimap-bottom-overlay {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  z-index: 400;
+  box-shadow: 0 4px 12px rgba(18, 59, 102, 0.12);
+}
+
+.requests-minimap-address {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.minimap-pin-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.minimap-address-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1E293B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.requests-minimap-click-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #EBF5FF;
+  color: #1674D1;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.requests-minimap-hover-curtain {
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 59, 102, 0.35);
+  backdrop-filter: blur(1.5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 450;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.requests-minimap-card:hover .requests-minimap-hover-curtain {
+  opacity: 1;
+}
+
+.minimap-hover-pill {
+  background: #FFFFFF;
+  color: #1674D1;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(4px);
+  transition: transform 0.2s ease;
+}
+
+.requests-minimap-card:hover .minimap-hover-pill {
+  transform: translateY(0);
+}
+
+@keyframes minimap-pulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.5;
+  }
+  70% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* =========================================================
    NEW REQUEST MODAL
    ========================================================= */
 .requests-modal-overlay {
