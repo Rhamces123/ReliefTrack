@@ -471,7 +471,7 @@ export default function MapView() {
         </div>
 
         {loading ? (
-          <div className="mapview-loading">Loading disaster operations map...</div>
+          <div className="mapview-loading">Loading relief operations map...</div>
         ) : (
           <div className={`mapview-map-wrap${streetViewActive ? ' mapview-sv-active' : ''}`}>
             <MapContainer

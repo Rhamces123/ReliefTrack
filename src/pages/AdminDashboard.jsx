@@ -1099,7 +1099,7 @@ export default function AdminDashboard() {
             />
           </div>
 
-          {/* Two-Column Operations Layout: Inventory Overview + Disaster Map */}
+          {/* Two-Column Operations Layout: Inventory Overview + Relief Operations Map */}
           <div className="admin-grid-two-col">
             {/* Inventory Overview */}
             <div className="admin-panel inventory-snapshot-panel">
@@ -1159,7 +1159,7 @@ export default function AdminDashboard() {
               <div className="panel-header">
                 <div className="panel-title-group">
                   <Map size={18} className="text-navy" />
-                  <h4 className="panel-title">Disaster Operations Map Preview</h4>
+                  <h4 className="panel-title">Relief Operations Map Preview</h4>
                 </div>
                 <button
                   type="button"

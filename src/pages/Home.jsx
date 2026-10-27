@@ -320,8 +320,8 @@ export default function Home() {
             <Map size={22} />
           </div>
           <div className="quick-action-meta">
-            <div className="quick-action-title">View Disaster Map</div>
-            <div className="quick-action-desc">Find active evacuation centers & zones</div>
+            <div className="quick-action-title">View Relief Map</div>
+            <div className="quick-action-desc">Find active distribution centers & aid hubs</div>
           </div>
         </button>
 
@@ -334,23 +334,23 @@ export default function Home() {
             <Bell size={22} />
           </div>
           <div className="quick-action-meta">
-            <div className="quick-action-title">Disaster Alerts</div>
-            <div className="quick-action-desc">Live advisories from Naga City CDRRMO</div>
+            <div className="quick-action-title">Relief Alerts</div>
+            <div className="quick-action-desc">Live relief operations updates across Naga City</div>
           </div>
         </button>
       </div>
 
-      {/* Two Column Grid: Disaster Alert Panel + Map Preview */}
+      {/* Two Column Grid: Relief Operations Advisory Panel + Map Preview */}
       <div className="dashboard-grid-two-col">
-        {/* Disaster Alert Panel */}
+        {/* Relief Advisory Panel */}
         <div className="dashboard-panel alert-panel">
           <div className="panel-header">
             <div className="panel-title-group">
               <Siren size={18} className="text-red" />
-              <h4 className="panel-title">City of Naga Disaster Advisory</h4>
+              <h4 className="panel-title">City of Naga Relief Operations Advisory</h4>
             </div>
             <span className="badge-advisory-live">
-              <span className="live-pulse" /> Active Advisory
+              <span className="live-pulse" /> Active Operations
             </span>
           </div>
 
@@ -360,7 +360,7 @@ export default function Home() {
                 <AlertTriangle size={20} className="text-orange" />
               </div>
               <div className="advisory-text">
-                <strong>Tropical Depression Monitoring:</strong> Naga City Disaster Risk Reduction & Management Office (CDRRMO) is currently monitoring continuous rainfall across coastal and upland barangays.
+                <strong>Relief Operations In Progress:</strong> City Government of Naga relief teams are actively coordinating supply allocations and dispatching emergency aid kits to priority barangays.
               </div>
             </div>
 
@@ -368,19 +368,19 @@ export default function Home() {
               <div className="guideline-item">
                 <ShieldCheck size={16} className="text-green" />
                 <span>
-                  <strong>Evacuation Centers Open:</strong> Naga Central Elementary School & Tuyan National High School are operational with staging relief kits.
+                  <strong>Distribution Centers Open:</strong> Naga Central Elementary School & Tuyan National High School are operational for food packs and clean water distribution.
                 </span>
               </div>
               <div className="guideline-item">
                 <Info size={16} className="text-bright-blue" />
                 <span>
-                  Residents along Tinaan and Inoburan riverbanks are advised to coordinate with their Barangay Disaster Council.
+                  Barangay coordinators in Tinaan and Inoburan are currently processing household relief supply requests.
                 </span>
               </div>
               <div className="guideline-item">
                 <Phone size={16} className="text-navy" />
                 <span>
-                  <strong>24/7 Naga Emergency Hotline:</strong> (032) 489-8988 / 0917-702-6242.
+                  <strong>24/7 Naga Relief Operations Hotline:</strong> (032) 489-8988 / 0917-702-6242.
                 </span>
               </div>
             </div>
@@ -391,7 +391,7 @@ export default function Home() {
                 className="btn-outline-small"
                 onClick={() => setShowAlertModal(true)}
               >
-                View Full Safety Instructions
+                View Relief Guidelines
               </button>
             </div>
           </div>
@@ -755,14 +755,14 @@ export default function Home() {
         </div>
       )}
 
-      {/* Disaster Alerts Modal */}
+      {/* Relief Operations Advisories Modal */}
       {showAlertModal && (
         <div className="modal-backdrop" onClick={() => setShowAlertModal(false)}>
           <div className="modal-container" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div className="modal-title-group">
                 <Siren size={20} className="text-red" />
-                <h3>City of Naga Emergency Advisories</h3>
+                <h3>City of Naga Relief Operations Advisories</h3>
               </div>
               <button
                 type="button"
@@ -778,34 +778,34 @@ export default function Home() {
               <div className="alert-modal-card critical">
                 <div className="alert-modal-title">
                   <AlertTriangle size={18} className="text-red" />
-                  <h4>Flood & Landslide Warning — City of Naga, Cebu</h4>
+                  <h4>Active Relief Distribution & Aid Dispatch — City of Naga, Cebu</h4>
                 </div>
                 <p>
-                  Continuous localized thunderstorms may cause flash floods and slope instability along mountain barangays (Cantao-an, Lutac, Uling) and riverine communities (Tinaan, Inoburan).
+                  Relief aid distribution is underway for affected families in priority barangays (Cantao-an, Lutac, Uling, Tinaan, and Inoburan). Relief packs include food supplies, potable water, and medical essentials.
                 </p>
                 <ul className="alert-checklist">
-                  <li>Keep battery-powered radios and emergency kits accessible.</li>
-                  <li>Heed preventive evacuation orders issued by your Barangay Disaster Committee.</li>
-                  <li>Avoid crossing swollen creeks and overflow bridges.</li>
+                  <li>Coordinate with your designated Barangay Relief Coordinator for household verification.</li>
+                  <li>Present a valid ID or household representative slip at your assigned distribution center.</li>
+                  <li>Report priority medical or infant formula needs directly via the ReliefTrack Request portal.</li>
                 </ul>
               </div>
 
               <div className="alert-modal-card info">
                 <div className="alert-modal-title">
                   <ShieldCheck size={18} className="text-bright-blue" />
-                  <h4>Emergency Operations Contacts</h4>
+                  <h4>Relief Operations Hotlines & Hubs</h4>
                 </div>
                 <div className="hotline-grid">
                   <div className="hotline-box">
-                    <span className="hotline-label">Naga City CDRRMO Hotline</span>
+                    <span className="hotline-label">Relief Operations Hotline</span>
                     <span className="hotline-num">(032) 489-8988 / 0917-702-6242</span>
                   </div>
                   <div className="hotline-box">
-                    <span className="hotline-label">Naga City Police Station</span>
+                    <span className="hotline-label">City Social Welfare & Dev (CSWD)</span>
                     <span className="hotline-num">(032) 272-4000</span>
                   </div>
                   <div className="hotline-box">
-                    <span className="hotline-label">Bureau of Fire Protection</span>
+                    <span className="hotline-label">Central Relief Staging Hub</span>
                     <span className="hotline-num">(032) 272-3333</span>
                   </div>
                 </div>
@@ -818,7 +818,7 @@ export default function Home() {
                 className="btn-primary"
                 onClick={() => setShowAlertModal(false)}
               >
-                Acknowledge & Close
+                Close Advisory
               </button>
             </div>
           </div>

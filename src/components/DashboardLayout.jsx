@@ -142,7 +142,7 @@ export default function DashboardLayout({
           <div className="dashboard-brand-text">
             <span className="brand-title">ReliefTrack</span>
             <span className="brand-subtitle">
-              {isAdmin ? 'Disaster Operations' : 'Community Relief Portal'}
+              {isAdmin ? 'Relief Operations' : 'Community Relief Portal'}
             </span>
           </div>
           <button
@@ -255,7 +255,7 @@ export default function DashboardLayout({
                 type="button"
                 className={`dashboard-icon-btn ${unreadNotifs > 0 ? 'has-unread' : ''}`}
                 onClick={() => setNotifOpen((prev) => !prev)}
-                title="Disaster alerts & notifications"
+                title="Relief alerts & updates"
                 aria-label="Notifications"
               >
                 <Bell size={20} />
@@ -267,7 +267,7 @@ export default function DashboardLayout({
                   <div className="notif-popover-header">
                     <div className="notif-popover-title">
                       <Siren size={18} className="text-red" />
-                      <span>Disaster Alerts & Updates</span>
+                      <span>Relief Alerts & Updates</span>
                     </div>
                     {unreadNotifs > 0 && (
                       <button
@@ -285,9 +285,9 @@ export default function DashboardLayout({
                         <TriangleAlert size={16} />
                       </div>
                       <div className="notif-item-content">
-                        <div className="notif-item-title">Flood Advisory - Inoburan & Tinaan</div>
+                        <div className="notif-item-title">Urgent Relief Aid Request - Inoburan & Tinaan</div>
                         <div className="notif-item-desc">
-                          River levels elevated due to continuous rainfall. Relief evacuation teams on standby.
+                          Emergency relief goods and clean water requested for affected families. Dispatch team preparing aid packages.
                         </div>
                         <div className="notif-item-time">15 mins ago</div>
                       </div>
@@ -297,9 +297,9 @@ export default function DashboardLayout({
                         <ShieldCheck size={16} />
                       </div>
                       <div className="notif-item-content">
-                        <div className="notif-item-title">Evacuation Centers Ready</div>
+                        <div className="notif-item-title">Relief Distribution Centers Active</div>
                         <div className="notif-item-desc">
-                          Naga Central Elementary and Tuyan National High School active with food packs & water.
+                          Naga Central Elementary and Tuyan distribution hubs active with food packs & essential supplies.
                         </div>
                         <div className="notif-item-time">1 hour ago</div>
                       </div>
@@ -311,7 +311,7 @@ export default function DashboardLayout({
                       className="notif-view-all"
                       onClick={() => setNotifOpen(false)}
                     >
-                      View Disaster Operations Map →
+                      View Relief Operations Map →
                     </NavLink>
                   </div>
                 </div>
