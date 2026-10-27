@@ -240,12 +240,62 @@
   gap: 16px;
 }
 
+.grm-sheet-logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
 .grm-sheet-logo {
-  width: 58px;
-  height: 58px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  object-fit: contain;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: #ffffff;
+  padding: 2px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.grm-logo-action-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.grm-logo-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.grm-logo-action-btn:hover {
+  background: #1674D1;
+  border-color: #1674D1;
+  color: #ffffff;
+}
+
+.grm-logo-action-btn.reset {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.grm-logo-action-btn.reset:hover {
+  background: #ef4444;
+  color: #ffffff;
 }
 
 .grm-sheet-title-text h4 {
@@ -514,173 +564,337 @@
 
 /* =========================================================
    PRINT-OPTIMIZED MEDIA QUERY (@media print)
-   Produces a clean, professional, black-and-white ink-friendly
-   document suitable for physical paper printing or Save as PDF.
+   Produces a clean, professional, official government
+   relief operations document. ONLY the printable sheet prints.
    ========================================================= */
 @media print {
-  /* Hide all dashboard chrome & modal overlays outside the sheet */
-  body, html {
-    background: #fff !important;
-    color: #000 !important;
-    font-size: 11pt !important;
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm;
   }
 
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 9.5pt !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* 1. HIDE ALL APPLICATION SHELL, SIDEBAR, TOPBAR, AND BACKGROUND DASHBOARD CONTENT */
+  body > *:not(#root),
   .dashboard-sidebar,
   .dashboard-topbar,
+  .dashboard-backdrop,
+  .dashboard-mobile-toggle,
   .dashboard-header-row,
   .dashboard-stats,
   .dashboard-actions,
   .dashboard-section-title,
   .dashboard-activity,
+  .reports-header,
+  .reports-stats,
+  .reports-stat-card,
+  .reports-grid,
+  .requests-header,
+  .requests-stats,
+  .requests-toolbar,
+  .requests-table-container,
+  .requests-pagination-wrap,
+  .requests-overlay,
+  .inventory-header,
+  .inventory-stats,
+  .inventory-grid,
+  .inventory-toolbar,
+  .admin-header,
+  .admin-stats-grid,
+  .admin-grid-two-col,
+  .admin-charts-grid,
+  .admin-panel,
+  .home-overview,
+  .dashboard-panel,
   .grm-header,
   .grm-toolbar,
-  .grm-overlay::before {
+  .grm-close-btn,
+  .grm-logo-action-wrap,
+  .grm-logo-action-btn,
+  .grm-overlay::before,
+  .dashboard-content > *:not(.grm-overlay) {
     display: none !important;
   }
 
-  .grm-overlay {
-    position: static !important;
-    background: none !important;
-    padding: 0 !important;
-    inset: auto !important;
-    display: block !important;
-    overflow: visible !important;
-  }
-
-  .grm-modal {
-    position: static !important;
-    background: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    max-width: 100% !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-
+  /* 2. UNWRAP MODAL CONTAINERS SO ONLY THE SHEET RENDERS AS A CLEAN DOCUMENT */
+  .dashboard,
+  .dashboard-main-wrap,
+  .dashboard-content,
+  .grm-overlay,
+  .grm-modal,
   .grm-body {
-    background: none !important;
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
     padding: 0 !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
     overflow: visible !important;
   }
 
+  /* 3. CLEAN PRINTABLE SHEET STYLING */
   .grm-sheet {
-    background: #fff !important;
-    color: #111 !important;
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
     border: none !important;
     box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    overflow: visible !important;
   }
 
+  /* 4. OFFICIAL LETTERHEAD HEADER */
   .grm-sheet-header {
-    border-bottom: 2px solid #333 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-bottom: 2px solid #0f172a !important;
     padding-bottom: 12px !important;
     margin-bottom: 16px !important;
   }
 
-  .grm-sheet-title-text h4 {
-    color: #555 !important;
+  .grm-sheet-brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
   }
 
-  .grm-sheet-title-text h2 {
-    color: #000 !important;
-    font-size: 16pt !important;
-  }
-
-  .grm-sheet-title-text h5 {
-    color: #333 !important;
-  }
-
-  .grm-sheet-meta {
-    color: #444 !important;
-  }
-
-  .grm-sheet-meta strong {
-    color: #000 !important;
+  .grm-sheet-logo-wrap {
+    display: block !important;
   }
 
   .grm-sheet-logo {
-    border: 1px solid #999 !important;
-    filter: grayscale(100%);
+    width: 70px !important;
+    height: 70px !important;
+    object-fit: contain !important;
+    border-radius: 50% !important;
+    border: none !important;
+    filter: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
   }
 
+  .grm-sheet-title-text h4 {
+    color: #475569 !important;
+    font-size: 8pt !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    margin: 0 0 2px !important;
+  }
+
+  .grm-sheet-title-text h2 {
+    color: #0f172a !important;
+    font-size: 15pt !important;
+    font-weight: 700 !important;
+    margin: 0 0 3px !important;
+  }
+
+  .grm-sheet-title-text h5 {
+    color: #1e3a8a !important;
+    font-size: 9pt !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+  }
+
+  .grm-sheet-meta {
+    text-align: right !important;
+    font-size: 8.5pt !important;
+    color: #334155 !important;
+    line-height: 1.5 !important;
+  }
+
+  .grm-sheet-meta strong {
+    color: #0f172a !important;
+  }
+
+  /* 5. SUMMARY KPI TILES */
   .grm-kpi-grid {
+    display: grid !important;
     grid-template-columns: repeat(4, 1fr) !important;
-    gap: 10px !important;
-    margin-bottom: 20px !important;
+    gap: 8px !important;
+    margin-bottom: 16px !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   .grm-kpi-card {
-    background: #f8f8f8 !important;
-    border: 1px solid #ccc !important;
-    color: #000 !important;
-    padding: 10px !important;
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    padding: 8px 10px !important;
+    color: #0f172a !important;
+  }
+
+  .grm-kpi-icon {
+    display: none !important;
   }
 
   .grm-kpi-value {
-    color: #000 !important;
-    font-size: 18pt !important;
+    color: #0f172a !important;
+    font-size: 13pt !important;
+    font-weight: 700 !important;
+    margin-bottom: 2px !important;
   }
 
   .grm-kpi-label {
-    color: #555 !important;
+    color: #475569 !important;
+    font-size: 7.5pt !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+  }
+
+  /* 6. REPORT SECTION AND DATA TABLES */
+  .grm-section {
+    margin-bottom: 18px !important;
+    page-break-inside: auto !important;
   }
 
   .grm-section-title {
-    color: #000 !important;
-    border-bottom: 1px solid #ddd !important;
+    color: #0f172a !important;
+    font-size: 10pt !important;
+    font-weight: 700 !important;
+    border-bottom: 1.5px solid #cbd5e1 !important;
     padding-bottom: 4px !important;
+    margin-bottom: 8px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  .grm-section-count {
+    font-size: 8pt !important;
+    color: #64748b !important;
+    font-weight: 500 !important;
   }
 
   .grm-table-wrap {
-    border: 1px solid #999 !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 4px !important;
     overflow: visible !important;
+    box-shadow: none !important;
   }
 
   .grm-table {
     width: 100% !important;
-    color: #000 !important;
-    font-size: 9.5pt !important;
+    border-collapse: collapse !important;
+    font-size: 8.5pt !important;
+    color: #1e293b !important;
+  }
+
+  .grm-table thead {
+    display: table-header-group !important;
   }
 
   .grm-table th {
-    background: #eaeaea !important;
-    color: #000 !important;
-    border-bottom: 1.5px solid #666 !important;
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    font-weight: 700 !important;
+    border-bottom: 1.5px solid #94a3b8 !important;
+    border-right: 1px solid #e2e8f0 !important;
     padding: 6px 8px !important;
+    text-align: left !important;
+    text-transform: uppercase !important;
+    font-size: 7.5pt !important;
+    letter-spacing: 0.3px !important;
+  }
+
+  .grm-table th:last-child {
+    border-right: none !important;
+  }
+
+  .grm-table tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   .grm-table td {
-    color: #111 !important;
-    border-bottom: 1px solid #ddd !important;
-    padding: 6px 8px !important;
+    color: #1e293b !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    border-right: 1px solid #f8fafc !important;
+    padding: 5px 8px !important;
+  }
+
+  .grm-table td:last-child {
+    border-right: none !important;
+  }
+
+  .grm-table tr:nth-child(even) td {
+    background: #f8fafc !important;
   }
 
   .grm-badge {
-    border: 1px solid #777 !important;
-    color: #000 !important;
-    background: transparent !important;
+    border: 1px solid #94a3b8 !important;
+    color: #0f172a !important;
+    background: #f8fafc !important;
+    font-size: 7.5pt !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    display: inline-block !important;
   }
 
+  /* 7. SIGNATURE BLOCKS */
   .grm-signatures {
-    border-top: 1.5px solid #444 !important;
-    margin-top: 30px !important;
-    padding-top: 20px !important;
+    border-top: 1.5px solid #0f172a !important;
+    margin-top: 24px !important;
+    padding-top: 14px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 20px !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .grm-sign-box {
+    flex: 1 !important;
+    text-align: center !important;
   }
 
   .grm-sign-label {
-    color: #555 !important;
+    font-size: 8pt !important;
+    color: #64748b !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    margin-bottom: 26px !important;
+    display: block !important;
   }
 
   .grm-sign-line {
-    border-bottom: 1px solid #000 !important;
+    border-bottom: 1px solid #0f172a !important;
+    width: 80% !important;
+    margin: 0 auto 6px !important;
   }
 
   .grm-sign-name {
-    color: #000 !important;
+    font-size: 9pt !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    display: block !important;
   }
 
   .grm-sign-title {
-    color: #444 !important;
+    font-size: 7.5pt !important;
+    color: #475569 !important;
+    display: block !important;
   }
 }

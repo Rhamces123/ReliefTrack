@@ -5,7 +5,8 @@ import { subscribeInventoryItems } from '../firebase/inventory'
 import { subscribeDonations } from '../firebase/donations'
 import { formatRequestDate, getStatusLabel, getStatusClass } from '../utils/requestHelpers'
 import { formatInventoryDate, getCategoryLabel, isLowStock, countLowStock } from '../utils/inventoryHelpers'
-import nagaLogo from '../assets/naga-logo.jpg'
+import nagaSeal from '../assets/naga-seal.png'
+import { Camera, RotateCcw } from 'lucide-react'
 import '../styles/GenerateReportModal.css'
 
 export default function GenerateReportModal({
@@ -25,6 +26,38 @@ export default function GenerateReportModal({
   const [fetchedItems, setFetchedItems] = useState([])
   const [fetchedDonations, setFetchedDonations] = useState([])
   const [reportTime] = useState(() => Date.now())
+  const [logoUrl, setLogoUrl] = useState(nagaSeal)
+
+  const handleLogoUpload = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file (PNG, JPG, SVG, WebP).')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setLogoUrl(event.target.result)
+      }
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handleResetLogo = () => {
+    setLogoUrl(nagaSeal)
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('grm-modal-open')
+    } else {
+      document.body.classList.remove('grm-modal-open')
+    }
+    return () => {
+      document.body.classList.remove('grm-modal-open')
+    }
+  }, [isOpen])
 
   const requests = initialRequests || fetchedRequests
   const items = initialItems || fetchedItems
@@ -494,10 +527,35 @@ export default function GenerateReportModal({
         {/* Modal Scrollable Report Document Body */}
         <div className="grm-body">
           <div className="grm-sheet">
-            {/* Naga City & CDRRMO Official Letterhead */}
+            {/* Naga City Official Letterhead */}
             <div className="grm-sheet-header">
               <div className="grm-sheet-brand">
-                <img src={nagaLogo} alt="Naga City Logo" className="grm-sheet-logo" />
+                <div className="grm-sheet-logo-wrap">
+                  <img src={logoUrl} alt="City of Naga Seal" className="grm-sheet-logo" />
+                  <div className="grm-logo-action-wrap">
+                    <label className="grm-logo-action-btn" title="Add / Change Logo Picture in Header">
+                      <Camera size={12} />
+                      <span>{logoUrl !== nagaSeal ? 'Change' : 'Add Logo'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoUpload}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+                    {logoUrl !== nagaSeal && (
+                      <button
+                        type="button"
+                        className="grm-logo-action-btn reset"
+                        onClick={handleResetLogo}
+                        title="Reset to official Naga City Seal"
+                      >
+                        <RotateCcw size={11} />
+                        <span>Reset</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
                 <div className="grm-sheet-title-text">
                   <h4>Republic of the Philippines • City Government of Naga</h4>
                   <h2>
@@ -506,7 +564,7 @@ export default function GenerateReportModal({
                     {reportType === 'inventory' && 'Inventory Stock & Supplies Manifest'}
                     {reportType === 'donations' && 'Donations & Partner Aid Report'}
                   </h2>
-                  <h5>City Disaster Risk Reduction and Management Office (CDRRMO)</h5>
+                  <h5>Relief Operations Center • City Social Welfare & Development (CSWDO)</h5>
                 </div>
               </div>
 
