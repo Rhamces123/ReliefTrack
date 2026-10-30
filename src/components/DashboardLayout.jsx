@@ -29,8 +29,6 @@ import {
 const USER_NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/home' },
   { id: 'requests', label: 'My Relief Requests', icon: ClipboardList, path: '/requests' },
-  { id: 'donations', label: 'Donations & Aid', icon: Gift, path: '/donations' },
-  { id: 'map', label: 'Map', icon: Map, path: '/map' },
   { id: 'reports', label: 'Reports', icon: ChartNoAxesColumn, path: '/reports' },
   { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
 ]
@@ -307,11 +305,11 @@ export default function DashboardLayout({
                   </div>
                   <div className="notif-popover-footer">
                     <NavLink
-                      to="/map"
+                      to={isAdmin ? '/map' : '/requests'}
                       className="notif-view-all"
                       onClick={() => setNotifOpen(false)}
                     >
-                      View Relief Operations Map →
+                      {isAdmin ? 'View Relief Operations Map →' : 'View My Relief Requests →'}
                     </NavLink>
                   </div>
                 </div>
