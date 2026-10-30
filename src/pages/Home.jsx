@@ -6,10 +6,6 @@ import { subscribeReliefRequests } from '../firebase/requests'
 import DashboardLayout from '../components/DashboardLayout'
 import GenerateReportModal from '../components/GenerateReportModal'
 import PieChart from '../components/PieChart'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
-import { FALLBACK_SCHOOLS } from '../utils/nearbyEvacCenters'
 import {
   formatRequestDate,
   getStatusLabel,
@@ -23,7 +19,6 @@ import {
   ShieldCheck,
   Plus,
   Siren,
-  Map,
   Bell,
   Eye,
   MapPin,
@@ -39,60 +34,6 @@ import {
   ClipboardList,
   Search,
 } from 'lucide-react'
-
-const NAGA_CENTER = [10.2085, 123.7591]
-
-// Custom Leaflet Icons using standard divs
-const evacMarkerIcon = L.divIcon({
-  className: 'custom-evac-marker',
-  html: `
-    <div style="
-      width: 26px; height: 26px;
-      background: #39A935;
-      border: 2.5px solid #ffffff;
-      border-radius: 50%;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: bold;
-      font-size: 13px;
-    ">
-      🏫
-    </div>
-  `,
-  iconSize: [26, 26],
-  iconAnchor: [13, 13],
-})
-
-const requestMarkerIcon = (status) => {
-  const color =
-    status === 'completed'
-      ? '#39A935'
-      : status === 'in-progress'
-      ? '#1674D1'
-      : '#F59E0B'
-  return L.divIcon({
-    className: 'custom-req-marker',
-    html: `
-      <div style="
-        width: 24px; height: 24px;
-        background: ${color};
-        border: 2px solid #ffffff;
-        border-radius: 50%;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      ">
-        <div style="width: 8px; height: 8px; background: #ffffff; border-radius: 50%;"></div>
-      </div>
-    `,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-  })
-}
 
 export default function Home() {
   const { user, userProfile } = useAuth()
@@ -174,18 +115,9 @@ export default function Home() {
 
   const recentRequests = filteredRequests.slice(0, 6)
 
-  // Requests with coordinates for map preview
-  const mapRequests = useMemo(() => {
-    return requests.filter((r) => r.lat != null && r.lng != null)
-  }, [requests])
-
   const handleQuickAction = (action) => {
     if (action === 'newRequest') {
       navigate('/requests', { state: { openForm: true } })
-      return
-    }
-    if (action === 'viewMap') {
-      navigate('/map')
       return
     }
     if (action === 'viewAlerts') {
@@ -314,14 +246,14 @@ export default function Home() {
         <button
           type="button"
           className="quick-action-card"
-          onClick={() => handleQuickAction('viewMap')}
+          onClick={() => navigate('/requests')}
         >
           <div className="quick-action-icon bg-navy">
-            <Map size={22} />
+            <ClipboardList size={22} />
           </div>
           <div className="quick-action-meta">
-            <div className="quick-action-title">View Relief Map</div>
-            <div className="quick-action-desc">Find active distribution centers & aid hubs</div>
+            <div className="quick-action-title">My Relief Requests</div>
+            <div className="quick-action-desc">View status and tracking of your aid requests</div>
           </div>
         </button>
 
@@ -340,140 +272,57 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Two Column Grid: Relief Operations Advisory Panel + Map Preview */}
-      <div className="dashboard-grid-two-col">
-        {/* Relief Advisory Panel */}
-        <div className="dashboard-panel alert-panel">
-          <div className="panel-header">
-            <div className="panel-title-group">
-              <Siren size={18} className="text-red" />
-              <h4 className="panel-title">City of Naga Relief Operations Advisory</h4>
-            </div>
-            <span className="badge-advisory-live">
-              <span className="live-pulse" /> Active Operations
-            </span>
+      {/* Relief Operations Advisory Panel */}
+      <div className="dashboard-panel alert-panel" style={{ marginBottom: '28px' }}>
+        <div className="panel-header">
+          <div className="panel-title-group">
+            <Siren size={18} className="text-red" />
+            <h4 className="panel-title">City of Naga Relief Operations Advisory</h4>
           </div>
-
-          <div className="advisory-body">
-            <div className="advisory-alert-box">
-              <div className="advisory-icon">
-                <AlertTriangle size={20} className="text-orange" />
-              </div>
-              <div className="advisory-text">
-                <strong>Relief Operations In Progress:</strong> City Government of Naga relief teams are actively coordinating supply allocations and dispatching emergency aid kits to priority barangays.
-              </div>
-            </div>
-
-            <div className="advisory-guidelines">
-              <div className="guideline-item">
-                <ShieldCheck size={16} className="text-green" />
-                <span>
-                  <strong>Distribution Centers Open:</strong> Naga Central Elementary School & Tuyan National High School are operational for food packs and clean water distribution.
-                </span>
-              </div>
-              <div className="guideline-item">
-                <Info size={16} className="text-bright-blue" />
-                <span>
-                  Barangay coordinators in Tinaan and Inoburan are currently processing household relief supply requests.
-                </span>
-              </div>
-              <div className="guideline-item">
-                <Phone size={16} className="text-navy" />
-                <span>
-                  <strong>24/7 Naga Relief Operations Hotline:</strong> (032) 489-8988 / 0917-702-6242.
-                </span>
-              </div>
-            </div>
-
-            <div className="advisory-footer-actions">
-              <button
-                type="button"
-                className="btn-outline-small"
-                onClick={() => setShowAlertModal(true)}
-              >
-                View Relief Guidelines
-              </button>
-            </div>
-          </div>
+          <span className="badge-advisory-live">
+            <span className="live-pulse" /> Active Operations
+          </span>
         </div>
 
-        {/* Map Preview */}
-        <div className="dashboard-panel map-preview-panel">
-          <div className="panel-header">
-            <div className="panel-title-group">
-              <Map size={18} className="text-bright-blue" />
-              <h4 className="panel-title">Naga City Operations Map</h4>
+        <div className="advisory-body">
+          <div className="advisory-alert-box">
+            <div className="advisory-icon">
+              <AlertTriangle size={20} className="text-orange" />
             </div>
-            <button
-              type="button"
-              className="btn-link-small"
-              onClick={() => navigate('/map')}
-            >
-              Open Full Map <ExternalLink size={14} />
-            </button>
+            <div className="advisory-text">
+              <strong>Relief Operations In Progress:</strong> City Government of Naga relief teams are actively coordinating supply allocations and dispatching emergency aid kits to priority barangays.
+            </div>
           </div>
 
-          <div className="map-preview-container">
-            <MapContainer
-              center={NAGA_CENTER}
-              zoom={12}
-              scrollWheelZoom={false}
-              style={{ width: '100%', height: '240px', borderRadius: '8px', zIndex: 1 }}
-            >
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-
-              {/* Naga City Evacuation Centers */}
-              {FALLBACK_SCHOOLS.slice(0, 6).map((school) => (
-                <Marker
-                  key={school.name}
-                  position={[school.lat, school.lng]}
-                  icon={evacMarkerIcon}
-                >
-                  <Popup>
-                    <strong>🏫 Evacuation Center</strong>
-                    <br />
-                    {school.name}
-                    <br />
-                    <small>{school.address}</small>
-                  </Popup>
-                </Marker>
-              ))}
-
-              {/* User's Requests on Map */}
-              {mapRequests.map((req) => (
-                <Marker
-                  key={req.docId}
-                  position={[Number(req.lat), Number(req.lng)]}
-                  icon={requestMarkerIcon(req.status)}
-                >
-                  <Popup>
-                    <strong>Request: {req.requestId}</strong>
-                    <br />
-                    Status: {getStatusLabel(req.status)}
-                    <br />
-                    {req.location}
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContainer>
-
-            <div className="map-preview-legend">
-              <div className="legend-item">
-                <span className="legend-dot dot-green" />
-                <span>Evacuation Center</span>
-              </div>
-              <div className="legend-item">
-                <span className="legend-dot dot-orange" />
-                <span>Pending Request</span>
-              </div>
-              <div className="legend-item">
-                <span className="legend-dot dot-blue" />
-                <span>In-Progress / Dispatched</span>
-              </div>
+          <div className="advisory-guidelines">
+            <div className="guideline-item">
+              <ShieldCheck size={16} className="text-green" />
+              <span>
+                <strong>Distribution Centers Open:</strong> Naga Central Elementary School & Tuyan National High School are operational for food packs and clean water distribution.
+              </span>
             </div>
+            <div className="guideline-item">
+              <Info size={16} className="text-bright-blue" />
+              <span>
+                Barangay coordinators in Tinaan and Inoburan are currently processing household relief supply requests.
+              </span>
+            </div>
+            <div className="guideline-item">
+              <Phone size={16} className="text-navy" />
+              <span>
+                <strong>24/7 Naga Relief Operations Hotline:</strong> (032) 489-8988 / 0917-702-6242.
+              </span>
+            </div>
+          </div>
+
+          <div className="advisory-footer-actions">
+            <button
+              type="button"
+              className="btn-outline-small"
+              onClick={() => setShowAlertModal(true)}
+            >
+              View Relief Guidelines
+            </button>
           </div>
         </div>
       </div>

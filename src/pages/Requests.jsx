@@ -532,21 +532,23 @@ export default function Requests() {
                 </div>
               )}
 
-              <RequestMiniMap
-                request={detailRequest}
-                onOpenMap={(target) => {
-                  navigate('/map', {
-                    state: {
-                      focusRequestId: target.docId,
-                      focusLat: target.lat,
-                      focusLng: target.lng,
-                      focusName: target.requesterName,
-                      focusLocation: target.location,
-                      status: target.status,
-                    },
-                  })
-                }}
-              />
+              {isAdmin && (
+                <RequestMiniMap
+                  request={detailRequest}
+                  onOpenMap={(target) => {
+                    navigate('/map', {
+                      state: {
+                        focusRequestId: target.docId,
+                        focusLat: target.lat,
+                        focusLng: target.lng,
+                        focusName: target.requesterName,
+                        focusLocation: target.location,
+                        status: target.status,
+                      },
+                    })
+                  }}
+                />
+              )}
             </div>
             <div className="requests-detail-footer">
               {isAdmin ? (

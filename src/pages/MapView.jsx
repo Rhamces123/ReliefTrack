@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { MapContainer, TileLayer, Marker, Popup, Rectangle, GeoJSON, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -195,6 +195,7 @@ function FitEvac({ evacCenters, trigger }) {
 export default function MapView() {
   const { user } = useAuth()
   const routeLocation = useLocation()
+  const navigate = useNavigate()
   const [profile, setProfile] = useState(null)
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
@@ -234,6 +235,17 @@ export default function MapView() {
     if (!user?.uid) return
     getUserProfile(user.uid).then(setProfile).catch(() => setProfile(null))
   }, [user?.uid])
+
+  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
+  const isAdmin =
+    (adminEmail && user?.email?.toLowerCase() === adminEmail.toLowerCase()) ||
+    profile?.role === 'Admin'
+
+  useEffect(() => {
+    if (profile && !isAdmin) {
+      navigate('/home', { replace: true })
+    }
+  }, [profile, isAdmin, navigate])
 
   useEffect(() => {
     const unsubscribe = subscribeReliefRequests(
@@ -347,7 +359,6 @@ export default function MapView() {
 
   const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
   const email = profile?.email || user?.email || ''
-  const isAdmin = profile?.role === 'Admin'
 
   return (
     <DashboardLayout title="Map" userLabel={displayName} userEmail={email}>
