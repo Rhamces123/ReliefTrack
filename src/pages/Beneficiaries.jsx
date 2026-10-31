@@ -216,6 +216,9 @@ export default function Beneficiaries() {
                         {getEconLabel(f.economicStatus)}
                       </span>
                     )}
+                    {f.is4PsBeneficiary && (
+                      <span className="benef-4ps-badge">4Ps Beneficiary</span>
+                    )}
                   </div>
                   <div className="benef-card-members">{f.members} member{f.members > 1 ? 's' : ''}</div>
                 </div>
@@ -232,6 +235,20 @@ export default function Beneficiaries() {
                     <span className="benef-label">Contact</span>
                     <span>{f.contactNumber || '—'}</span>
                   </div>
+                  {f.houseOwnership && (
+                    <div className="benef-card-row">
+                      <span className="benef-label">House Ownership</span>
+                      <span style={{ textTransform: 'capitalize' }}>{f.houseOwnership}</span>
+                    </div>
+                  )}
+                  {f.shelterDamage && f.shelterDamage !== 'none' && (
+                    <div className="benef-card-row">
+                      <span className="benef-label">Shelter Damage</span>
+                      <span className={`benef-damage-tag ${f.shelterDamage}`}>
+                        {f.shelterDamage === 'totally-damaged' ? 'Totally Damaged' : 'Partially Damaged'}
+                      </span>
+                    </div>
+                  )}
                   {f.notes && (
                     <div className="benef-card-row">
                       <span className="benef-label">Notes</span>

@@ -5,6 +5,7 @@ import {
   deleteDoc,
   doc,
   query,
+  where,
   orderBy,
   onSnapshot,
   serverTimestamp,
@@ -96,4 +97,69 @@ export async function getAllFamilies() {
   const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'))
   const snap = await getDocs(q)
   return snap.docs.map(mapDoc)
+}
+
+/**
+ * Automatically synchronizes / registers an affected family in the Beneficiaries
+ * Family Registry when a Relief Request is submitted.
+ */
+export async function syncFamilyFromRequest(fields, user) {
+  const normHead = (fields.requesterName || fields.headOfFamily || '').trim()
+  const nameParts = normHead.split(/\s+/)
+  const normFamily = (fields.familyName || (nameParts.length > 1 ? nameParts.slice(1).join(' ') : normHead) || 'Family').trim()
+  const normBrgy = (fields.barangay || '').trim()
+
+  // Derive primary vulnerability classification
+  let classification = 'none'
+  if (Number(fields.categories?.pwd?.count) > 0) classification = 'pwd'
+  else if (Number(fields.categories?.pregnantWomen?.count) > 0) classification = 'pregnant'
+  else if (Number(fields.categories?.elders?.count) > 0) classification = 'elderly'
+  else if (Number(fields.categories?.childrenBelow7?.count) > 0) classification = 'child'
+
+  let existingId = null
+  if (normBrgy && (normHead || normFamily)) {
+    try {
+      const q = query(collection(db, COLLECTION), where('barangay', '==', normBrgy))
+      const snap = await getDocs(q)
+      const found = snap.docs.find((d) => {
+        const data = d.data()
+        return (
+          (data.headOfFamily && data.headOfFamily.toLowerCase() === normHead.toLowerCase()) ||
+          (data.familyName && data.familyName.toLowerCase() === normFamily.toLowerCase())
+        )
+      })
+      if (found) existingId = found.id
+    } catch (err) {
+      console.warn('Family lookup error, creating new record:', err)
+    }
+  }
+
+  const payload = {
+    familyName: normFamily,
+    headOfFamily: normHead,
+    contactNumber: (fields.contactNumber || '').trim(),
+    barangay: normBrgy,
+    location: (fields.location || '').trim(),
+    members: Math.max(1, Number(fields.familyMembers || fields.members) || 1),
+    classification,
+    categories: fields.categories || {},
+    is4PsBeneficiary: !!fields.is4PsBeneficiary,
+    houseOwnership: fields.houseOwnership || 'owner',
+    shelterDamage: fields.shelterDamage || 'none',
+    latestRequestId: fields.requestId || '',
+    updatedAt: serverTimestamp(),
+  }
+
+  if (existingId) {
+    await updateDoc(doc(db, COLLECTION, existingId), payload)
+    return { docId: existingId, isNew: false }
+  } else {
+    payload.economicStatus = fields.economicStatus || 'not-set'
+    payload.notes = (fields.description || fields.notes || '').trim()
+    payload.createdBy = user.uid
+    payload.createdByName = user.displayName || user.email?.split('@')[0] || 'User'
+    payload.createdAt = serverTimestamp()
+    const ref = await addDoc(collection(db, COLLECTION), payload)
+    return { docId: ref.id, isNew: true }
+  }
 }

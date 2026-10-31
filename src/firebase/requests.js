@@ -11,6 +11,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore'
 import { db } from '../firebase.js'
+import { syncFamilyFromRequest } from './families.js'
 
 const COLLECTION = 'reliefRequests'
 
@@ -45,11 +46,35 @@ export const CATEGORY_LABELS = {
   childrenBelow7: 'Children 7 & Below',
 }
 
-export async function createReliefRequest({ location, description, requesterName, familyMembers, hasEvacuationCenter, categories, primaryNeed, assistiveDevice, lat, lng }, user) {
+export async function createReliefRequest(
+  {
+    location,
+    barangay,
+    contactNumber,
+    is4PsBeneficiary,
+    houseOwnership,
+    shelterDamage,
+    description,
+    requesterName,
+    familyMembers,
+    hasEvacuationCenter,
+    categories,
+    primaryNeed,
+    assistiveDevice,
+    lat,
+    lng,
+  },
+  user
+) {
   const requestId = generateRequestId()
   const data = {
     requestId,
-    location: location.trim(),
+    location: (location || '').trim(),
+    barangay: (barangay || '').trim(),
+    contactNumber: (contactNumber || '').trim(),
+    is4PsBeneficiary: !!is4PsBeneficiary,
+    houseOwnership: houseOwnership || 'owner',
+    shelterDamage: shelterDamage || 'none',
     lat: lat ?? null,
     lng: lng ?? null,
     description: (description || '').trim(),
@@ -75,6 +100,26 @@ export async function createReliefRequest({ location, description, requesterName
     }
   }
   const ref = await addDoc(collection(db, COLLECTION), data)
+  try {
+    await syncFamilyFromRequest(
+      {
+        requestId,
+        requesterName: data.requesterName,
+        contactNumber: data.contactNumber,
+        barangay: data.barangay,
+        location: data.location,
+        familyMembers: data.familyMembers,
+        categories: data.categories,
+        is4PsBeneficiary: data.is4PsBeneficiary,
+        houseOwnership: data.houseOwnership,
+        shelterDamage: data.shelterDamage,
+        description: data.description,
+      },
+      user
+    )
+  } catch (syncErr) {
+    console.error('Failed to auto-sync family to Beneficiaries:', syncErr)
+  }
   return { docId: ref.id, requestId }
 }
 

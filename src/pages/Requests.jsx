@@ -73,13 +73,67 @@ const ASSISTIVE_DEVICE_OPTIONS = [
   'Commode Chair',
 ]
 
+const NAGA_BARANGAYS_LIST = [
+  'Alpaco',
+  'Bairan',
+  'Balirong',
+  'Cabungahan',
+  'Cantao-an',
+  'Central Poblacion',
+  'Cogon',
+  'Colon',
+  'Inayagan',
+  'Inoburan',
+  'Langtad',
+  'Lutac',
+  'Mainit',
+  'Mayana',
+  'Naalad',
+  'North Poblacion',
+  'Pangdan',
+  'Patag',
+  'South Poblacion',
+  'Tagjaguimit',
+  'Tangke',
+  'Tinaan',
+  'Tuyan',
+  'Uling',
+]
+
+const HOUSE_OWNERSHIP_OPTIONS = [
+  { id: 'owner', label: 'Owner' },
+  { id: 'renter', label: 'Renter' },
+  { id: 'sharer', label: 'Sharer' },
+  { id: 'informal-settler', label: 'Informal Settler' },
+]
+
+const SHELTER_DAMAGE_OPTIONS = [
+  { id: 'none', label: 'Not Damaged / Intact' },
+  { id: 'partially-damaged', label: 'Partially Damaged' },
+  { id: 'totally-damaged', label: 'Totally Damaged' },
+]
+
+function detectBarangayFromText(text) {
+  if (!text) return ''
+  const t = text.toLowerCase()
+  for (const b of NAGA_BARANGAYS_LIST) {
+    if (t.includes(b.toLowerCase())) return b
+  }
+  return ''
+}
+
 const EMPTY_FORM = {
   requesterName: '',
+  contactNumber: '',
+  barangay: '',
   location: '',
   lat: null,
   lng: null,
   familyMembers: '',
   hasEvacuationCenter: false,
+  is4PsBeneficiary: false,
+  houseOwnership: 'owner',
+  shelterDamage: 'none',
   description: '',
   primaryNeed: '',
   assistiveDevice: '',
@@ -127,7 +181,12 @@ export default function Requests() {
             headers: { 'User-Agent': 'ReliefTrack/1.0' },
           })
           const data = await res.json()
-          if (data?.display_name) setForm((f) => ({ ...f, location: data.display_name }))
+          if (data?.display_name) {
+            setForm((f) => {
+              const detected = !f.barangay ? detectBarangayFromText(data.display_name) : ''
+              return { ...f, location: data.display_name, ...(detected ? { barangay: detected } : {}) }
+            })
+          }
         } catch {
           // ignore reverse geocoding lookup failure
         }
@@ -278,6 +337,14 @@ export default function Requests() {
 
   const handleCreate = async (e) => {
     e.preventDefault()
+    if (!form.requesterName.trim()) {
+      setError('Please provide the Head of Family / Requester Name.')
+      return
+    }
+    if (!form.barangay.trim()) {
+      setError('Please select or specify the Barangay.')
+      return
+    }
     if (!form.location.trim()) {
       setError('Please provide a location / address.')
       return
@@ -312,6 +379,11 @@ export default function Requests() {
       await createReliefRequest(
         {
           location: form.location,
+          barangay: form.barangay,
+          contactNumber: form.contactNumber,
+          is4PsBeneficiary: form.is4PsBeneficiary,
+          houseOwnership: form.houseOwnership,
+          shelterDamage: form.shelterDamage,
           description: form.description,
           requesterName: form.requesterName,
           familyMembers: form.familyMembers,
@@ -646,6 +718,36 @@ export default function Requests() {
                   <span className="requests-detail-label">Location</span>
                   <span className="requests-detail-value">{detailRequest.location}</span>
                 </div>
+                {detailRequest.barangay && (
+                  <div className="requests-detail-row">
+                    <span className="requests-detail-label">Barangay</span>
+                    <span className="requests-detail-value">{detailRequest.barangay}</span>
+                  </div>
+                )}
+                {detailRequest.contactNumber && (
+                  <div className="requests-detail-row">
+                    <span className="requests-detail-label">Contact</span>
+                    <span className="requests-detail-value">{detailRequest.contactNumber}</span>
+                  </div>
+                )}
+                <div className="requests-detail-row">
+                  <span className="requests-detail-label">4Ps Beneficiary</span>
+                  <span className="requests-detail-value">{detailRequest.is4PsBeneficiary ? 'Yes (4Ps Registered)' : 'No'}</span>
+                </div>
+                {detailRequest.houseOwnership && (
+                  <div className="requests-detail-row">
+                    <span className="requests-detail-label">House Ownership</span>
+                    <span className="requests-detail-value" style={{ textTransform: 'capitalize' }}>{detailRequest.houseOwnership}</span>
+                  </div>
+                )}
+                {detailRequest.shelterDamage && detailRequest.shelterDamage !== 'none' && (
+                  <div className="requests-detail-row">
+                    <span className="requests-detail-label">Shelter Damage</span>
+                    <span className="requests-detail-value" style={{ textTransform: 'capitalize' }}>
+                      {detailRequest.shelterDamage.replace('-', ' ')}
+                    </span>
+                  </div>
+                )}
                 <div className="requests-detail-row">
                   <span className="requests-detail-label">Most Needed</span>
                   <span className="requests-detail-value">{detailRequest.primaryNeed || '—'}</span>
@@ -770,9 +872,10 @@ export default function Requests() {
             </div>
             <form onSubmit={handleCreate}>
               {error && <div className="requests-error" style={{ marginBottom: '16px' }}>{error}</div>}
+              {/* Head of Family & Contact */}
               <div className="requests-form-grid">
                 <div className="requests-form-field">
-                  <label htmlFor="rr-name">Name of Person / Family Representative</label>
+                  <label htmlFor="rr-name">Head of Family / Requester Name</label>
                   <input
                     id="rr-name"
                     type="text"
@@ -780,7 +883,39 @@ export default function Requests() {
                     value={form.requesterName}
                     onChange={(e) => setForm((f) => ({ ...f, requesterName: e.target.value }))}
                     disabled={saving}
+                    required
                   />
+                </div>
+                <div className="requests-form-field">
+                  <label htmlFor="rr-contact">Contact Number</label>
+                  <input
+                    id="rr-contact"
+                    type="tel"
+                    placeholder="e.g. 0917-123-4567"
+                    value={form.contactNumber}
+                    onChange={(e) => setForm((f) => ({ ...f, contactNumber: e.target.value }))}
+                    disabled={saving}
+                  />
+                </div>
+              </div>
+
+              {/* Barangay & Family Members */}
+              <div className="requests-form-grid">
+                <div className="requests-form-field">
+                  <label htmlFor="rr-barangay">Barangay (City of Naga)</label>
+                  <select
+                    id="rr-barangay"
+                    className="requests-form-select"
+                    value={form.barangay}
+                    onChange={(e) => setForm((f) => ({ ...f, barangay: e.target.value }))}
+                    disabled={saving}
+                    required
+                  >
+                    <option value="" disabled>Select Barangay</option>
+                    {NAGA_BARANGAYS_LIST.map((b) => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
                 </div>
                 <div className="requests-form-field">
                   <label htmlFor="rr-family">Number of Family Members</label>
@@ -794,30 +929,38 @@ export default function Requests() {
                     disabled={saving}
                   />
                 </div>
-                <div className="requests-form-field">
-                  <label htmlFor="rr-location">Location / Address</label>
-                  <div className="requests-location-row">
-                    <LocationAutocomplete
-                      id="rr-location"
-                      value={form.location}
-                      onChange={(v) => setForm((f) => ({ ...f, location: v }))}
-                      onCoordChange={(c) => setForm((f) => ({ ...f, lat: c.lat, lng: c.lng }))}
-                      disabled={saving}
-                      placeholder="e.g. Barangay Mabolo, Naga City"
-                    />
-                    <button
-                      type="button"
-                      className="requests-locate-btn"
-                      onClick={detectLocation}
-                      disabled={saving || locating}
-                      title="Use my current GPS location"
-                    >
-                      {locating ? <Loader2 size={16} className="spin-icon" /> : <MapPin size={16} />}
-                    </button>
-                  </div>
+              </div>
+
+              {/* Location / Address */}
+              <div className="requests-form-field">
+                <label htmlFor="rr-location">Permanent / Evacuation Address</label>
+                <div className="requests-location-row">
+                  <LocationAutocomplete
+                    id="rr-location"
+                    value={form.location}
+                    onChange={(v) => {
+                      setForm((f) => {
+                        const detected = !f.barangay ? detectBarangayFromText(v) : ''
+                        return { ...f, location: v, ...(detected ? { barangay: detected } : {}) }
+                      })
+                    }}
+                    onCoordChange={(c) => setForm((f) => ({ ...f, lat: c.lat, lng: c.lng }))}
+                    disabled={saving}
+                    placeholder="e.g. House No., Sitio, Street, Naga City"
+                  />
+                  <button
+                    type="button"
+                    className="requests-locate-btn"
+                    onClick={detectLocation}
+                    disabled={saving || locating}
+                    title="Use my current GPS location"
+                  >
+                    {locating ? <Loader2 size={16} className="spin-icon" /> : <MapPin size={16} />}
+                  </button>
                 </div>
               </div>
 
+              {/* Most Needed & Assistive Device */}
               <div className="requests-form-grid">
                 <div className="requests-form-field">
                   <label htmlFor="rr-primary-need">Most Needed Relief Item</label>
@@ -852,29 +995,76 @@ export default function Requests() {
                 </div>
               </div>
 
-              <div className="requests-form-field">
-                <label>Evacuation Center in Barangay?</label>
-                <div className="requests-radio-group">
-                  <label className="requests-radio">
+              {/* Housing & Damage Classification */}
+              <div className="requests-form-grid">
+                <div className="requests-form-field">
+                  <label htmlFor="rr-ownership">House Ownership</label>
+                  <select
+                    id="rr-ownership"
+                    className="requests-form-select"
+                    value={form.houseOwnership}
+                    onChange={(e) => setForm((f) => ({ ...f, houseOwnership: e.target.value }))}
+                    disabled={saving}
+                  >
+                    {HOUSE_OWNERSHIP_OPTIONS.map((opt) => (
+                      <option key={opt.id} value={opt.id}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="requests-form-field">
+                  <label htmlFor="rr-damage">Shelter Damage Classification</label>
+                  <select
+                    id="rr-damage"
+                    className="requests-form-select"
+                    value={form.shelterDamage}
+                    onChange={(e) => setForm((f) => ({ ...f, shelterDamage: e.target.value }))}
+                    disabled={saving}
+                  >
+                    {SHELTER_DAMAGE_OPTIONS.map((opt) => (
+                      <option key={opt.id} value={opt.id}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* 4Ps Beneficiary & Evacuation Center */}
+              <div className="requests-form-grid" style={{ alignItems: 'center' }}>
+                <div className="requests-form-field">
+                  <label>Special Classification</label>
+                  <label className="requests-checkbox" style={{ marginTop: '8px' }}>
                     <input
-                      type="radio"
-                      name="form-evac"
-                      checked={form.hasEvacuationCenter === true}
-                      onChange={() => setForm((f) => ({ ...f, hasEvacuationCenter: true }))}
+                      type="checkbox"
+                      checked={form.is4PsBeneficiary}
+                      onChange={(e) => setForm((f) => ({ ...f, is4PsBeneficiary: e.target.checked }))}
                       disabled={saving}
                     />
-                    <span>Yes, inside evacuation center</span>
+                    <span>4Ps Beneficiary (Pantawid Pamilya)</span>
                   </label>
-                  <label className="requests-radio">
-                    <input
-                      type="radio"
-                      name="form-evac"
-                      checked={form.hasEvacuationCenter === false}
-                      onChange={() => setForm((f) => ({ ...f, hasEvacuationCenter: false }))}
-                      disabled={saving}
-                    />
-                    <span>No, at home or other location</span>
-                  </label>
+                </div>
+                <div className="requests-form-field">
+                  <label>Evacuation Center in Barangay?</label>
+                  <div className="requests-radio-group">
+                    <label className="requests-radio">
+                      <input
+                        type="radio"
+                        name="form-evac"
+                        checked={form.hasEvacuationCenter === true}
+                        onChange={() => setForm((f) => ({ ...f, hasEvacuationCenter: true }))}
+                        disabled={saving}
+                      />
+                      <span>Yes, inside center</span>
+                    </label>
+                    <label className="requests-radio">
+                      <input
+                        type="radio"
+                        name="form-evac"
+                        checked={form.hasEvacuationCenter === false}
+                        onChange={() => setForm((f) => ({ ...f, hasEvacuationCenter: false }))}
+                        disabled={saving}
+                      />
+                      <span>No, at home</span>
+                    </label>
+                  </div>
                 </div>
               </div>
 
