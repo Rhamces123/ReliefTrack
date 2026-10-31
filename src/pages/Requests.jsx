@@ -51,6 +51,26 @@ const CATEGORY_META = {
   childrenBelow7: { label: 'Children ≤ 7', icon: Baby },
 }
 
+const PRIMARY_NEED_OPTIONS = [
+  'Family Food Pack',
+  'Hygiene Kit',
+  'Kitchen Kit',
+  'Sleeping Kit',
+  'Drinking Water',
+  'Shelter Kit',
+]
+
+const ASSISTIVE_DEVICE_OPTIONS = [
+  'Wheelchair',
+  'Crutches',
+  'Walker',
+  'Walking Cane',
+  'White Cane (Visually Impaired)',
+  'Hearing Aid',
+  'Prosthetic Limb',
+  'Commode Chair',
+]
+
 const EMPTY_FORM = {
   requesterName: '',
   location: '',
@@ -59,11 +79,13 @@ const EMPTY_FORM = {
   familyMembers: '',
   hasEvacuationCenter: false,
   description: '',
+  primaryNeed: '',
+  assistiveDevice: '',
   categories: {
-    pregnantWomen: { count: '', needs: '' },
-    elders: { count: '', needs: '' },
-    pwd: { count: '', needs: '' },
-    childrenBelow7: { count: '', needs: '' },
+    pregnantWomen: { count: '' },
+    elders: { count: '' },
+    pwd: { count: '' },
+    childrenBelow7: { count: '' },
   },
 }
 
@@ -183,6 +205,10 @@ export default function Requests() {
       setError('Please provide a location / address.')
       return
     }
+    if (!form.primaryNeed) {
+      setError('Please choose the relief item the family needs most.')
+      return
+    }
 
     const familyCount = parseInt(form.familyMembers, 10)
     const hasFamilyLimit = !isNaN(familyCount) && familyCount > 0
@@ -207,7 +233,18 @@ export default function Requests() {
     setError('')
     try {
       await createReliefRequest(
-        { location: form.location, description: form.description, requesterName: form.requesterName, familyMembers: form.familyMembers, hasEvacuationCenter: form.hasEvacuationCenter, categories: form.categories, lat: form.lat, lng: form.lng },
+        {
+          location: form.location,
+          description: form.description,
+          requesterName: form.requesterName,
+          familyMembers: form.familyMembers,
+          hasEvacuationCenter: form.hasEvacuationCenter,
+          categories: form.categories,
+          primaryNeed: form.primaryNeed,
+          assistiveDevice: form.assistiveDevice,
+          lat: form.lat,
+          lng: form.lng,
+        },
         user
       )
       setForm(EMPTY_FORM)
@@ -477,6 +514,14 @@ export default function Requests() {
                   <span className="requests-detail-value">{detailRequest.location}</span>
                 </div>
                 <div className="requests-detail-row">
+                  <span className="requests-detail-label">Most Needed</span>
+                  <span className="requests-detail-value">{detailRequest.primaryNeed || '—'}</span>
+                </div>
+                <div className="requests-detail-row">
+                  <span className="requests-detail-label">PWD Assistive Device</span>
+                  <span className="requests-detail-value">{detailRequest.assistiveDevice || 'None'}</span>
+                </div>
+                <div className="requests-detail-row">
                   <span className="requests-detail-label">Family Members</span>
                   <span className="requests-detail-value">{detailRequest.familyMembers || '—'}</span>
                 </div>
@@ -504,7 +549,7 @@ export default function Requests() {
 
               {detailRequest.categories && Object.keys(detailRequest.categories).length > 0 && (
                 <div className="requests-detail-section">
-                  <div className="requests-detail-section-title">Affected Groups & Needs</div>
+                  <div className="requests-detail-section-title">Affected Vulnerable Groups</div>
                   {Object.entries(CATEGORY_META).map(([key, meta]) => {
                     const cat = detailRequest.categories[key]
                     if (!cat || (!cat.count && !cat.needs)) return null
@@ -640,6 +685,40 @@ export default function Requests() {
                 </div>
               </div>
 
+              <div className="requests-form-grid">
+                <div className="requests-form-field">
+                  <label htmlFor="rr-primary-need">Most Needed Relief Item</label>
+                  <select
+                    id="rr-primary-need"
+                    className="requests-form-select"
+                    value={form.primaryNeed}
+                    onChange={(e) => setForm((f) => ({ ...f, primaryNeed: e.target.value }))}
+                    disabled={saving}
+                    required
+                  >
+                    <option value="" disabled>Select what they need most</option>
+                    {PRIMARY_NEED_OPTIONS.map((opt) => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="requests-form-field">
+                  <label htmlFor="rr-assistive">PWD Assistive Device</label>
+                  <select
+                    id="rr-assistive"
+                    className="requests-form-select"
+                    value={form.assistiveDevice}
+                    onChange={(e) => setForm((f) => ({ ...f, assistiveDevice: e.target.value }))}
+                    disabled={saving}
+                  >
+                    <option value="">None / Not needed</option>
+                    {ASSISTIVE_DEVICE_OPTIONS.map((opt) => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               <div className="requests-form-field">
                 <label>Evacuation Center in Barangay?</label>
                 <div className="requests-radio-group">
@@ -667,7 +746,7 @@ export default function Requests() {
               </div>
 
               <div className="requests-section-header-row">
-                <div className="requests-section-label">Affected Vulnerable Groups & Specific Needs</div>
+                <div className="requests-section-label">Affected Vulnerable Groups</div>
                 {hasFamilyLimit && (
                   <span className={`vuln-counter-badge ${isFormExceeded ? 'exceeded' : 'neutral'}`}>
                     {isFormExceeded
@@ -728,25 +807,6 @@ export default function Requests() {
                               Total count ({totalVulnCount}) exceeds limit ({modalFamilyCount})
                             </span>
                           )}
-                        </div>
-                        <div className="requests-form-field compact">
-                          <label htmlFor={`fn-${key}`}>Specific Needs</label>
-                          <input
-                            id={`fn-${key}`}
-                            type="text"
-                            placeholder="food, water, medicine, diapers..."
-                            value={form.categories[key].needs}
-                            onChange={(e) =>
-                              setForm((f) => ({
-                                ...f,
-                                categories: {
-                                  ...f.categories,
-                                  [key]: { ...f.categories[key], needs: e.target.value },
-                                },
-                              }))
-                            }
-                            disabled={saving}
-                          />
                         </div>
                       </div>
                     </div>

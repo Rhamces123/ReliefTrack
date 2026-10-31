@@ -45,7 +45,7 @@ export const CATEGORY_LABELS = {
   childrenBelow7: 'Children 7 & Below',
 }
 
-export async function createReliefRequest({ location, description, requesterName, familyMembers, hasEvacuationCenter, categories, lat, lng }, user) {
+export async function createReliefRequest({ location, description, requesterName, familyMembers, hasEvacuationCenter, categories, primaryNeed, assistiveDevice, lat, lng }, user) {
   const requestId = generateRequestId()
   const data = {
     requestId,
@@ -56,6 +56,8 @@ export async function createReliefRequest({ location, description, requesterName
     requesterName: (requesterName || '').trim(),
     familyMembers: Math.max(0, Number(familyMembers) || 0),
     hasEvacuationCenter: !!hasEvacuationCenter,
+    primaryNeed: (primaryNeed || '').trim(),
+    assistiveDevice: (assistiveDevice || '').trim(),
     categories: {},
     status: 'pending',
     createdBy: user.uid,
