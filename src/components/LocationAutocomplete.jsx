@@ -9,13 +9,13 @@ const autocompleteOptions = {
   fields: ['formatted_address', 'name', 'geometry'],
 }
 
-function FallbackInput({ id, value, onChange, disabled, placeholder, hint }) {
+function FallbackInput({ id, value, onChange, disabled, placeholder, hint, className }) {
   return (
     <div className="location-autocomplete-wrap">
       <input
         id={id}
         type="text"
-        className="location-autocomplete-input"
+        className={`location-autocomplete-input ${className || ''}`}
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -35,6 +35,7 @@ function NominatimLocationInput({
   disabled,
   placeholder,
   hint,
+  className,
 }) {
   const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(false)
@@ -87,7 +88,7 @@ function NominatimLocationInput({
       <input
         id={id}
         type="text"
-        className="location-autocomplete-input"
+        className={`location-autocomplete-input ${className || ''}`}
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -129,6 +130,7 @@ function LocationAutocompleteGoogle({
   apiKey,
   useNominatimFallback,
   onAuthFailure,
+  className,
 }) {
   const autocompleteRef = useRef(null)
 
@@ -176,6 +178,7 @@ function LocationAutocompleteGoogle({
         onCoordChange={onCoordChange}
         disabled={disabled}
         placeholder={placeholder}
+        className={className}
         hint="Google Places unavailable — enable Places API & billing in Google Cloud Console."
       />
     )
@@ -190,6 +193,7 @@ function LocationAutocompleteGoogle({
         onCoordChange={onCoordChange}
         disabled={disabled}
         placeholder={placeholder}
+        className={className}
       />
     )
   }
@@ -202,6 +206,7 @@ function LocationAutocompleteGoogle({
         onChange={onChange}
         disabled={true}
         placeholder="Loading place suggestions..."
+        className={className}
       />
     )
   }
@@ -216,7 +221,7 @@ function LocationAutocompleteGoogle({
         <input
           id={id}
           type="text"
-          className="location-autocomplete-input"
+          className={`location-autocomplete-input ${className || ''}`}
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -236,6 +241,7 @@ export default function LocationAutocomplete({
   onCoordChange,
   disabled = false,
   placeholder = 'e.g. Barangay Mabolo, Naga City',
+  className = '',
 }) {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
   const [useNominatimFallback, setUseNominatimFallback] = useState(false)
@@ -253,6 +259,7 @@ export default function LocationAutocomplete({
         onCoordChange={onCoordChange}
         disabled={disabled}
         placeholder={placeholder}
+        className={className}
         hint="Set VITE_GOOGLE_MAPS_API_KEY in .env to enable Google Places."
       />
     )
@@ -266,6 +273,7 @@ export default function LocationAutocomplete({
       onCoordChange={onCoordChange}
       disabled={disabled}
       placeholder={placeholder}
+      className={className}
       apiKey={apiKey}
       useNominatimFallback={useNominatimFallback}
       onAuthFailure={handleAuthFailure}

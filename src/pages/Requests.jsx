@@ -164,6 +164,7 @@ export default function Requests() {
   const [search, setSearch] = useState('')
   const [showForm, setShowForm] = useState(() => Boolean(location.state?.openForm))
   const [form, setForm] = useState(EMPTY_FORM)
+  const [submitted, setSubmitted] = useState(false)
   const [saving, setSaving] = useState(false)
   const [updatingId, setUpdatingId] = useState(null)
   const [detailRequest, setDetailRequest] = useState(null)
@@ -332,6 +333,7 @@ export default function Requests() {
 
   const openForm = () => {
     setError('')
+    setSubmitted(false)
     setForm(EMPTY_FORM)
     setShowForm(true)
   }
@@ -350,21 +352,29 @@ export default function Requests() {
     })
   }
 
+  const activeNeeds = (form.primaryNeeds && form.primaryNeeds.length > 0)
+    ? form.primaryNeeds
+    : (form.primaryNeed ? [form.primaryNeed] : [])
+
+  const nameInvalid = submitted && !form.requesterName.trim()
+  const familyInvalid = submitted && (!form.familyMembers || Number(form.familyMembers) <= 0)
+  const contactInvalid = submitted && !form.contactNumber.trim()
+  const locationInvalid = submitted && !form.location.trim()
+  const needsInvalid = submitted && activeNeeds.length === 0
+
   const handleCreate = async (e) => {
     e.preventDefault()
-    if (!form.requesterName.trim()) {
-      setError('Please provide the Head of Family / Requester Name.')
-      return
-    }
-    if (!form.location.trim()) {
-      setError('Please provide a location / address.')
-      return
-    }
-    const activeNeeds = (form.primaryNeeds && form.primaryNeeds.length > 0)
-      ? form.primaryNeeds
-      : (form.primaryNeed ? [form.primaryNeed] : [])
-    if (activeNeeds.length === 0) {
-      setError('Please choose at least one relief item the family needs most.')
+    setSubmitted(true)
+
+    if (
+      !form.requesterName.trim() ||
+      !form.location.trim() ||
+      !form.familyMembers ||
+      Number(form.familyMembers) <= 0 ||
+      !form.contactNumber.trim() ||
+      activeNeeds.length === 0
+    ) {
+      setError('Please fill in the highlighted required fields.')
       return
     }
 
@@ -904,24 +914,31 @@ export default function Requests() {
                   <input
                     id="rr-name"
                     type="text"
+                    className={nameInvalid ? 'requests-field-invalid' : ''}
                     placeholder="e.g. Juan Dela Cruz"
                     value={form.requesterName}
                     onChange={(e) => setForm((f) => ({ ...f, requesterName: e.target.value }))}
                     disabled={saving}
-                    required
                   />
+                  {nameInvalid && (
+                    <span className="requests-field-error-text">Please enter the representative name</span>
+                  )}
                 </div>
                 <div className="requests-form-field">
                   <label htmlFor="rr-family">Number of Family Members</label>
                   <input
                     id="rr-family"
                     type="number"
-                    min="0"
+                    min="1"
+                    className={familyInvalid ? 'requests-field-invalid' : ''}
                     placeholder="e.g. 5"
                     value={form.familyMembers}
                     onChange={(e) => setForm((f) => ({ ...f, familyMembers: e.target.value }))}
                     disabled={saving}
                   />
+                  {familyInvalid && (
+                    <span className="requests-field-error-text">Please enter number of members</span>
+                  )}
                 </div>
               </div>
 
@@ -931,11 +948,15 @@ export default function Requests() {
                 <input
                   id="rr-contact"
                   type="tel"
+                  className={contactInvalid ? 'requests-field-invalid' : ''}
                   placeholder="e.g. 0917-123-4567"
                   value={form.contactNumber}
                   onChange={(e) => setForm((f) => ({ ...f, contactNumber: e.target.value }))}
                   disabled={saving}
                 />
+                {contactInvalid && (
+                  <span className="requests-field-error-text">Please provide a contact number</span>
+                )}
               </div>
 
               {/* Location / Address */}
@@ -948,6 +969,7 @@ export default function Requests() {
                     onChange={(v) => setForm((f) => ({ ...f, location: v }))}
                     onCoordChange={(c) => setForm((f) => ({ ...f, lat: c.lat, lng: c.lng }))}
                     disabled={saving}
+                    className={locationInvalid ? 'requests-field-invalid' : ''}
                     placeholder="e.g. Barangay Mabolo, Naga City"
                   />
                   <button
@@ -960,6 +982,9 @@ export default function Requests() {
                     {locating ? <Loader2 size={16} className="spin-icon" /> : <MapPin size={16} />}
                   </button>
                 </div>
+                {locationInvalid && (
+                  <span className="requests-field-error-text">Please enter the location / address</span>
+                )}
               </div>
 
               {/* Most Needed Relief Items (Multiple Choice) */}
@@ -970,7 +995,7 @@ export default function Requests() {
                     (Choose all that apply)
                   </span>
                 </label>
-                <div className="requests-needs-multiselect">
+                <div className={`requests-needs-multiselect ${needsInvalid ? 'requests-multiselect-invalid' : ''}`}>
                   {PRIMARY_NEED_OPTIONS.map((opt) => {
                     const isSelected = (form.primaryNeeds || []).includes(opt)
                     return (
@@ -987,6 +1012,9 @@ export default function Requests() {
                     )
                   })}
                 </div>
+                {needsInvalid && (
+                  <span className="requests-field-error-text">Please choose at least one relief item</span>
+                )}
               </div>
 
               {/* PWD Assistive Device */}
