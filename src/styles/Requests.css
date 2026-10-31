@@ -278,11 +278,14 @@
   box-shadow: 0 2px 8px rgba(18, 59, 102, 0.06);
   overflow: hidden;
   margin-bottom: 28px;
+  overflow-anchor: none;
 }
 
 .requests-table-wrapper {
   width: 100%;
   overflow-x: auto;
+  min-height: 365px;
+  overflow-anchor: none;
 }
 
 .dashboard-table {
@@ -302,6 +305,8 @@
   letter-spacing: 0.6px;
   border-bottom: 1px solid #EDF2F7;
   white-space: nowrap;
+  height: 45px;
+  box-sizing: border-box;
 }
 
 .dashboard-table td {
@@ -309,11 +314,15 @@
   border-bottom: 1px solid #EDF2F7;
   color: #14243A;
   vertical-align: middle;
+  height: 64px;
+  box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .requests-row-clickable {
   cursor: pointer;
   transition: background-color 0.12s ease;
+  height: 64px;
 }
 
 .requests-row-clickable:hover {
@@ -330,6 +339,12 @@
 .requests-name-cell {
   font-weight: 600;
   color: #123B66;
+  white-space: nowrap;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .requests-loc-cell {
@@ -445,6 +460,7 @@
   border-top: 1px solid #EDF2F7;
   flex-wrap: wrap;
   gap: 12px;
+  overflow-anchor: none;
 }
 
 .requests-table-pagination .pagination-info {

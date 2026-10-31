@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getUserProfile } from '../firebase/users'
@@ -228,7 +228,7 @@ export default function Requests() {
     return pages
   }
 
-  const handlePageChange = (newPage, e) => {
+  const handlePageChange = useCallback((newPage, e) => {
     if (e) {
       e.preventDefault()
       e.stopPropagation()
@@ -236,8 +236,30 @@ export default function Requests() {
         e.currentTarget.blur()
       }
     }
+
+    const dashContent = document.querySelector('.dashboard-content')
+    const currentDashScroll = dashContent ? dashContent.scrollTop : 0
+    const currentWindowScroll = window.scrollY || window.pageYOffset || 0
+
     setCurrentPage(newPage)
-  }
+
+    requestAnimationFrame(() => {
+      if (dashContent && dashContent.scrollTop !== currentDashScroll) {
+        dashContent.scrollTop = currentDashScroll
+      }
+      if ((window.scrollY || window.pageYOffset || 0) !== currentWindowScroll) {
+        window.scrollTo({ top: currentWindowScroll, behavior: 'instant' })
+      }
+      requestAnimationFrame(() => {
+        if (dashContent && dashContent.scrollTop !== currentDashScroll) {
+          dashContent.scrollTop = currentDashScroll
+        }
+        if ((window.scrollY || window.pageYOffset || 0) !== currentWindowScroll) {
+          window.scrollTo({ top: currentWindowScroll, behavior: 'instant' })
+        }
+      })
+    })
+  }, [])
 
   const stats = useMemo(() => {
     const total = requests.length
