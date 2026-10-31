@@ -231,6 +231,18 @@ export default function Beneficiaries() {
                     <span className="benef-label">Head of Family</span>
                     <span>{f.headOfFamily || '—'}</span>
                   </div>
+                  {(f.repAge || f.repSex) && (
+                    <div className="benef-card-row">
+                      <span className="benef-label">Age / Sex</span>
+                      <span>{[f.repAge ? `${f.repAge} yrs old` : '', f.repSex].filter(Boolean).join(' • ')}</span>
+                    </div>
+                  )}
+                  {f.repOccupation && (
+                    <div className="benef-card-row">
+                      <span className="benef-label">Occupation</span>
+                      <span>{f.repOccupation}</span>
+                    </div>
+                  )}
                   <div className="benef-card-row">
                     <span className="benef-label">Contact</span>
                     <span>{f.contactNumber || '—'}</span>

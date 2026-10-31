@@ -113,6 +113,14 @@ const SHELTER_DAMAGE_OPTIONS = [
   { id: 'totally-damaged', label: 'Totally Damaged' },
 ]
 
+const CIVIL_STATUS_OPTIONS = [
+  'Single',
+  'Married',
+  'Widowed',
+  'Separated',
+  'Live-in / Common-law',
+]
+
 function detectBarangayFromText(text) {
   if (!text) return ''
   const t = text.toLowerCase()
@@ -138,6 +146,12 @@ const EMPTY_FORM = {
   primaryNeed: '',
   primaryNeeds: [],
   assistiveDevice: '',
+  repBirthDate: '',
+  repAge: '',
+  repSex: '',
+  repCivilStatus: '',
+  repOccupation: '',
+  repMonthlyIncome: '',
   categories: {
     pregnantWomen: { count: '' },
     elders: { count: '' },
@@ -352,6 +366,27 @@ export default function Requests() {
     })
   }
 
+  const handleBirthDateChange = (dob) => {
+    setForm((f) => {
+      let calculatedAge = f.repAge
+      if (dob) {
+        const birth = new Date(dob)
+        if (!isNaN(birth.getTime())) {
+          const today = new Date()
+          let age = today.getFullYear() - birth.getFullYear()
+          const m = today.getMonth() - birth.getMonth()
+          if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+            age--
+          }
+          if (age >= 0 && age <= 130) {
+            calculatedAge = String(age)
+          }
+        }
+      }
+      return { ...f, repBirthDate: dob, repAge: calculatedAge }
+    })
+  }
+
   const activeNeeds = (form.primaryNeeds && form.primaryNeeds.length > 0)
     ? form.primaryNeeds
     : (form.primaryNeed ? [form.primaryNeed] : [])
@@ -416,6 +451,12 @@ export default function Requests() {
           primaryNeed: activeNeeds.join(', '),
           primaryNeeds: activeNeeds,
           assistiveDevice: form.assistiveDevice,
+          repBirthDate: form.repBirthDate,
+          repAge: form.repAge,
+          repSex: form.repSex,
+          repCivilStatus: form.repCivilStatus,
+          repOccupation: form.repOccupation,
+          repMonthlyIncome: form.repMonthlyIncome,
           lat: form.lat,
           lng: form.lng,
         },
@@ -817,6 +858,48 @@ export default function Requests() {
                 </div>
               </div>
 
+              {(detailRequest.repBirthDate || detailRequest.repAge || detailRequest.repSex || detailRequest.repCivilStatus || detailRequest.repOccupation || detailRequest.repMonthlyIncome) && (
+                <div className="requests-detail-section">
+                  <div className="requests-detail-section-title">Head of Family Demographics</div>
+                  {detailRequest.repBirthDate && (
+                    <div className="requests-detail-row">
+                      <span className="requests-detail-label">Date of Birth</span>
+                      <span className="requests-detail-value">{detailRequest.repBirthDate}</span>
+                    </div>
+                  )}
+                  {detailRequest.repAge && (
+                    <div className="requests-detail-row">
+                      <span className="requests-detail-label">Age</span>
+                      <span className="requests-detail-value">{detailRequest.repAge} yrs old</span>
+                    </div>
+                  )}
+                  {detailRequest.repSex && (
+                    <div className="requests-detail-row">
+                      <span className="requests-detail-label">Sex</span>
+                      <span className="requests-detail-value">{detailRequest.repSex}</span>
+                    </div>
+                  )}
+                  {detailRequest.repCivilStatus && (
+                    <div className="requests-detail-row">
+                      <span className="requests-detail-label">Civil Status</span>
+                      <span className="requests-detail-value">{detailRequest.repCivilStatus}</span>
+                    </div>
+                  )}
+                  {detailRequest.repOccupation && (
+                    <div className="requests-detail-row">
+                      <span className="requests-detail-label">Occupation</span>
+                      <span className="requests-detail-value">{detailRequest.repOccupation}</span>
+                    </div>
+                  )}
+                  {detailRequest.repMonthlyIncome && (
+                    <div className="requests-detail-row">
+                      <span className="requests-detail-label">Monthly Net Income</span>
+                      <span className="requests-detail-value">{detailRequest.repMonthlyIncome}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {detailRequest.categories && Object.keys(detailRequest.categories).length > 0 && (
                 <div className="requests-detail-section">
                   <div className="requests-detail-section-title">Affected Vulnerable Groups</div>
@@ -942,7 +1025,91 @@ export default function Requests() {
                 </div>
               </div>
 
-              {/* Contact Number */}
+              {/* Representative Demographic Details */}
+              <div className="requests-subform-section">
+                <div className="requests-subform-title">
+                  <span>Representative Details (Head of Family)</span>
+                </div>
+                <div className="requests-form-grid-3">
+                  <div className="requests-form-field">
+                    <label htmlFor="rr-dob">Date of Birth</label>
+                    <input
+                      id="rr-dob"
+                      type="date"
+                      value={form.repBirthDate}
+                      onChange={(e) => handleBirthDateChange(e.target.value)}
+                      disabled={saving}
+                    />
+                  </div>
+                  <div className="requests-form-field">
+                    <label htmlFor="rr-age">Age</label>
+                    <input
+                      id="rr-age"
+                      type="number"
+                      min="0"
+                      max="130"
+                      placeholder="e.g. 42"
+                      value={form.repAge}
+                      onChange={(e) => setForm((f) => ({ ...f, repAge: e.target.value }))}
+                      disabled={saving}
+                    />
+                  </div>
+                  <div className="requests-form-field">
+                    <label htmlFor="rr-sex">Sex</label>
+                    <select
+                      id="rr-sex"
+                      className="requests-form-select"
+                      value={form.repSex}
+                      onChange={(e) => setForm((f) => ({ ...f, repSex: e.target.value }))}
+                      disabled={saving}
+                    >
+                      <option value="">Select Sex</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="requests-form-grid-3">
+                  <div className="requests-form-field">
+                    <label htmlFor="rr-civil-status">Civil Status</label>
+                    <select
+                      id="rr-civil-status"
+                      className="requests-form-select"
+                      value={form.repCivilStatus}
+                      onChange={(e) => setForm((f) => ({ ...f, repCivilStatus: e.target.value }))}
+                      disabled={saving}
+                    >
+                      <option value="">Select Civil Status</option>
+                      {CIVIL_STATUS_OPTIONS.map((st) => (
+                        <option key={st} value={st}>{st}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="requests-form-field">
+                    <label htmlFor="rr-occupation">Occupation</label>
+                    <input
+                      id="rr-occupation"
+                      type="text"
+                      placeholder="e.g. Fisherman, Farmer"
+                      value={form.repOccupation}
+                      onChange={(e) => setForm((f) => ({ ...f, repOccupation: e.target.value }))}
+                      disabled={saving}
+                    />
+                  </div>
+                  <div className="requests-form-field">
+                    <label htmlFor="rr-income">Monthly Family Net Income</label>
+                    <input
+                      id="rr-income"
+                      type="text"
+                      placeholder="e.g. ₱5,000"
+                      value={form.repMonthlyIncome}
+                      onChange={(e) => setForm((f) => ({ ...f, repMonthlyIncome: e.target.value }))}
+                      disabled={saving}
+                    />
+                  </div>
+                </div>
+              </div>
               <div className="requests-form-field">
                 <label htmlFor="rr-contact">Contact Number</label>
                 <input

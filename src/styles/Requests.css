@@ -1006,6 +1006,32 @@
   gap: 14px;
 }
 
+.requests-form-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.requests-subform-section {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 14px 16px 4px 16px;
+  margin-bottom: 16px;
+}
+
+.requests-subform-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #123B66;
+}
+
 .requests-form-field {
   margin-bottom: 16px;
 }
@@ -1381,7 +1407,8 @@
   .requests-summary {
     grid-template-columns: repeat(2, 1fr);
   }
-  .requests-form-grid {
+  .requests-form-grid,
+  .requests-form-grid-3 {
     grid-template-columns: 1fr;
   }
   .requests-category-grid {

@@ -146,6 +146,12 @@ export async function syncFamilyFromRequest(fields, user) {
     is4PsBeneficiary: !!fields.is4PsBeneficiary,
     houseOwnership: fields.houseOwnership || 'owner',
     shelterDamage: fields.shelterDamage || 'none',
+    repBirthDate: (fields.repBirthDate || '').trim(),
+    repAge: fields.repAge ? (Number(fields.repAge) || fields.repAge) : '',
+    repSex: (fields.repSex || '').trim(),
+    repCivilStatus: (fields.repCivilStatus || '').trim(),
+    repOccupation: (fields.repOccupation || '').trim(),
+    repMonthlyIncome: (fields.repMonthlyIncome || '').trim(),
     latestRequestId: fields.requestId || '',
     updatedAt: serverTimestamp(),
   }
