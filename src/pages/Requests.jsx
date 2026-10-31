@@ -341,10 +341,6 @@ export default function Requests() {
       setError('Please provide the Head of Family / Requester Name.')
       return
     }
-    if (!form.barangay.trim()) {
-      setError('Please select or specify the Barangay.')
-      return
-    }
     if (!form.location.trim()) {
       setError('Please provide a location / address.')
       return
@@ -379,7 +375,7 @@ export default function Requests() {
       await createReliefRequest(
         {
           location: form.location,
-          barangay: form.barangay,
+          barangay: detectBarangayFromText(form.location),
           contactNumber: form.contactNumber,
           is4PsBeneficiary: form.is4PsBeneficiary,
           houseOwnership: form.houseOwnership,
@@ -872,10 +868,10 @@ export default function Requests() {
             </div>
             <form onSubmit={handleCreate}>
               {error && <div className="requests-error" style={{ marginBottom: '16px' }}>{error}</div>}
-              {/* Head of Family & Contact */}
+              {/* Head of Family & Family Members */}
               <div className="requests-form-grid">
                 <div className="requests-form-field">
-                  <label htmlFor="rr-name">Head of Family / Requester Name</label>
+                  <label htmlFor="rr-name">Name of Person / Family Representative</label>
                   <input
                     id="rr-name"
                     type="text"
@@ -885,37 +881,6 @@ export default function Requests() {
                     disabled={saving}
                     required
                   />
-                </div>
-                <div className="requests-form-field">
-                  <label htmlFor="rr-contact">Contact Number</label>
-                  <input
-                    id="rr-contact"
-                    type="tel"
-                    placeholder="e.g. 0917-123-4567"
-                    value={form.contactNumber}
-                    onChange={(e) => setForm((f) => ({ ...f, contactNumber: e.target.value }))}
-                    disabled={saving}
-                  />
-                </div>
-              </div>
-
-              {/* Barangay & Family Members */}
-              <div className="requests-form-grid">
-                <div className="requests-form-field">
-                  <label htmlFor="rr-barangay">Barangay (City of Naga)</label>
-                  <select
-                    id="rr-barangay"
-                    className="requests-form-select"
-                    value={form.barangay}
-                    onChange={(e) => setForm((f) => ({ ...f, barangay: e.target.value }))}
-                    disabled={saving}
-                    required
-                  >
-                    <option value="" disabled>Select Barangay</option>
-                    {NAGA_BARANGAYS_LIST.map((b) => (
-                      <option key={b} value={b}>{b}</option>
-                    ))}
-                  </select>
                 </div>
                 <div className="requests-form-field">
                   <label htmlFor="rr-family">Number of Family Members</label>
@@ -931,22 +896,30 @@ export default function Requests() {
                 </div>
               </div>
 
+              {/* Contact Number */}
+              <div className="requests-form-field">
+                <label htmlFor="rr-contact">Contact Number</label>
+                <input
+                  id="rr-contact"
+                  type="tel"
+                  placeholder="e.g. 0917-123-4567"
+                  value={form.contactNumber}
+                  onChange={(e) => setForm((f) => ({ ...f, contactNumber: e.target.value }))}
+                  disabled={saving}
+                />
+              </div>
+
               {/* Location / Address */}
               <div className="requests-form-field">
-                <label htmlFor="rr-location">Permanent / Evacuation Address</label>
+                <label htmlFor="rr-location">Location / Address</label>
                 <div className="requests-location-row">
                   <LocationAutocomplete
                     id="rr-location"
                     value={form.location}
-                    onChange={(v) => {
-                      setForm((f) => {
-                        const detected = !f.barangay ? detectBarangayFromText(v) : ''
-                        return { ...f, location: v, ...(detected ? { barangay: detected } : {}) }
-                      })
-                    }}
+                    onChange={(v) => setForm((f) => ({ ...f, location: v }))}
                     onCoordChange={(c) => setForm((f) => ({ ...f, lat: c.lat, lng: c.lng }))}
                     disabled={saving}
-                    placeholder="e.g. House No., Sitio, Street, Naga City"
+                    placeholder="e.g. Barangay Mabolo, Naga City"
                   />
                   <button
                     type="button"
