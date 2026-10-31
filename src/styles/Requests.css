@@ -1073,6 +1073,81 @@
   background-color: #FFFFFF;
 }
 
+/* Multi-choice Relief Needs */
+.requests-needs-multiselect {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.requests-need-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 8px;
+  color: #14243A;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  user-select: none;
+}
+
+.requests-need-btn:hover:not(:disabled) {
+  border-color: #1674D1;
+  background: #F8FAFC;
+}
+
+.requests-need-btn.active {
+  background: #EFF6FF;
+  border-color: #1674D1;
+  color: #1674D1;
+  box-shadow: 0 0 0 1px #1674D1 inset;
+}
+
+.need-btn-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: #F1F5F9;
+  color: #64748B;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.requests-need-btn.active .need-btn-check {
+  background: #1674D1;
+  color: #FFFFFF;
+}
+
+.requests-needs-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.requests-need-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #EFF6FF;
+  color: #1674D1;
+  border: 1px solid #BFDBFE;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .requests-location-row {
   display: flex;
   gap: 8px;

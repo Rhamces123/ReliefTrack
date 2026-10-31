@@ -136,6 +136,7 @@ const EMPTY_FORM = {
   shelterDamage: 'none',
   description: '',
   primaryNeed: '',
+  primaryNeeds: [],
   assistiveDevice: '',
   categories: {
     pregnantWomen: { count: '' },
@@ -335,6 +336,20 @@ export default function Requests() {
     setShowForm(true)
   }
 
+  const togglePrimaryNeed = (opt) => {
+    setForm((f) => {
+      const current = f.primaryNeeds || (f.primaryNeed ? [f.primaryNeed] : [])
+      const next = current.includes(opt)
+        ? current.filter((item) => item !== opt)
+        : [...current, opt]
+      return {
+        ...f,
+        primaryNeeds: next,
+        primaryNeed: next.join(', '),
+      }
+    })
+  }
+
   const handleCreate = async (e) => {
     e.preventDefault()
     if (!form.requesterName.trim()) {
@@ -345,8 +360,11 @@ export default function Requests() {
       setError('Please provide a location / address.')
       return
     }
-    if (!form.primaryNeed) {
-      setError('Please choose the relief item the family needs most.')
+    const activeNeeds = (form.primaryNeeds && form.primaryNeeds.length > 0)
+      ? form.primaryNeeds
+      : (form.primaryNeed ? [form.primaryNeed] : [])
+    if (activeNeeds.length === 0) {
+      setError('Please choose at least one relief item the family needs most.')
       return
     }
 
@@ -385,7 +403,8 @@ export default function Requests() {
           familyMembers: form.familyMembers,
           hasEvacuationCenter: form.hasEvacuationCenter,
           categories: form.categories,
-          primaryNeed: form.primaryNeed,
+          primaryNeed: activeNeeds.join(', '),
+          primaryNeeds: activeNeeds,
           assistiveDevice: form.assistiveDevice,
           lat: form.lat,
           lng: form.lng,
@@ -746,7 +765,17 @@ export default function Requests() {
                 )}
                 <div className="requests-detail-row">
                   <span className="requests-detail-label">Most Needed</span>
-                  <span className="requests-detail-value">{detailRequest.primaryNeed || '—'}</span>
+                  <span className="requests-detail-value">
+                    {detailRequest.primaryNeeds && detailRequest.primaryNeeds.length > 0 ? (
+                      <span className="requests-needs-badges">
+                        {detailRequest.primaryNeeds.map((need) => (
+                          <span key={need} className="requests-need-badge">{need}</span>
+                        ))}
+                      </span>
+                    ) : (
+                      detailRequest.primaryNeed || '—'
+                    )}
+                  </span>
                 </div>
                 <div className="requests-detail-row">
                   <span className="requests-detail-label">PWD Assistive Device</span>
@@ -933,39 +962,48 @@ export default function Requests() {
                 </div>
               </div>
 
-              {/* Most Needed & Assistive Device */}
-              <div className="requests-form-grid">
-                <div className="requests-form-field">
-                  <label htmlFor="rr-primary-need">Most Needed Relief Item</label>
-                  <select
-                    id="rr-primary-need"
-                    className="requests-form-select"
-                    value={form.primaryNeed}
-                    onChange={(e) => setForm((f) => ({ ...f, primaryNeed: e.target.value }))}
-                    disabled={saving}
-                    required
-                  >
-                    <option value="" disabled>Select what they need most</option>
-                    {PRIMARY_NEED_OPTIONS.map((opt) => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
+              {/* Most Needed Relief Items (Multiple Choice) */}
+              <div className="requests-form-field">
+                <label>
+                  Most Needed Relief Items
+                  <span style={{ fontSize: '12px', fontWeight: 'normal', color: '#64748B', marginLeft: '6px' }}>
+                    (Choose all that apply)
+                  </span>
+                </label>
+                <div className="requests-needs-multiselect">
+                  {PRIMARY_NEED_OPTIONS.map((opt) => {
+                    const isSelected = (form.primaryNeeds || []).includes(opt)
+                    return (
+                      <button
+                        key={opt}
+                        type="button"
+                        className={`requests-need-btn ${isSelected ? 'active' : ''}`}
+                        onClick={() => togglePrimaryNeed(opt)}
+                        disabled={saving}
+                      >
+                        <span className="need-btn-check">{isSelected ? '✓' : '+'}</span>
+                        <span>{opt}</span>
+                      </button>
+                    )
+                  })}
                 </div>
-                <div className="requests-form-field">
-                  <label htmlFor="rr-assistive">PWD Assistive Device</label>
-                  <select
-                    id="rr-assistive"
-                    className="requests-form-select"
-                    value={form.assistiveDevice}
-                    onChange={(e) => setForm((f) => ({ ...f, assistiveDevice: e.target.value }))}
-                    disabled={saving}
-                  >
-                    <option value="">None / Not needed</option>
-                    {ASSISTIVE_DEVICE_OPTIONS.map((opt) => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
-                </div>
+              </div>
+
+              {/* PWD Assistive Device */}
+              <div className="requests-form-field">
+                <label htmlFor="rr-assistive">PWD Assistive Device</label>
+                <select
+                  id="rr-assistive"
+                  className="requests-form-select"
+                  value={form.assistiveDevice}
+                  onChange={(e) => setForm((f) => ({ ...f, assistiveDevice: e.target.value }))}
+                  disabled={saving}
+                >
+                  <option value="">None / Not needed</option>
+                  {ASSISTIVE_DEVICE_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
               </div>
 
               {/* Housing & Damage Classification */}
