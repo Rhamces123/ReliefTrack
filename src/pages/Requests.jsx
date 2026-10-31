@@ -35,6 +35,8 @@ import {
   HeartPulse,
   Baby,
   Accessibility,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
 
 const STATUS_FILTERS = [
@@ -183,6 +185,59 @@ export default function Requests() {
     }
     return result
   }, [requests, statusFilter, categoryFilter, search])
+
+  // Pagination for Relief Requests (5 items per page)
+  const [currentPage, setCurrentPage] = useState(1)
+  const PAGE_SIZE = 5
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [statusFilter, categoryFilter, search])
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage = Math.min(Math.max(1, currentPage), totalPages)
+
+  const paginatedRequests = useMemo(() => {
+    const startIndex = (safePage - 1) * PAGE_SIZE
+    return filtered.slice(startIndex, startIndex + PAGE_SIZE)
+  }, [filtered, safePage])
+
+  const getPageNumbers = () => {
+    const pages = []
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      if (safePage <= 4) {
+        pages.push(1, 2, 3, 4, 5, '...', totalPages)
+      } else if (safePage >= totalPages - 3) {
+        pages.push(
+          1,
+          '...',
+          totalPages - 4,
+          totalPages - 3,
+          totalPages - 2,
+          totalPages - 1,
+          totalPages
+        )
+      } else {
+        pages.push(1, '...', safePage - 1, safePage, safePage + 1, '...', totalPages)
+      }
+    }
+    return pages
+  }
+
+  const handlePageChange = (newPage, e) => {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      if (typeof e.currentTarget?.blur === 'function') {
+        e.currentTarget.blur()
+      }
+    }
+    setCurrentPage(newPage)
+  }
 
   const stats = useMemo(() => {
     const total = requests.length
@@ -412,80 +467,136 @@ export default function Requests() {
               : 'No requests match your current filters.'}
           </p>
         ) : (
-          <table className="dashboard-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Location</th>
-                <th>Family</th>
-                <th>Evac Center</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((row) => (
-                <tr
-                  key={row.docId}
-                  className="requests-row-clickable"
-                  onClick={() => setDetailRequest(row)}
-                >
-                  <td className="requests-id-cell">{row.requestId}</td>
-                  <td><span className="requests-name-cell">{row.requesterName || '—'}</span></td>
-                  <td className="requests-loc-cell">{row.location}</td>
-                  <td>{row.familyMembers || '—'}</td>
-                  <td>
-                    {row.hasEvacuationCenter ? (
-                      <span className="evac-badge active">
-                        <CheckCircle2 size={13} />
-                        <span>Yes</span>
-                      </span>
-                    ) : (
-                      <span className="evac-badge inactive">
-                        <XCircle size={13} />
-                        <span>No</span>
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    <span className={`dashboard-status ${getStatusClass(row.status)}`}>
-                      {getStatusLabel(row.status)}
-                    </span>
-                  </td>
-                  <td className="requests-date-cell">{formatRequestDate(row.createdAt)}</td>
-                  <td className="requests-actions-cell" onClick={(e) => e.stopPropagation()}>
-                    {isAdmin ? (
-                      <select
-                        className="requests-status-select"
-                        value={row.status}
-                        disabled={updatingId === row.docId}
-                        onChange={(e) => handleStatusChange(row.docId, e.target.value)}
-                        aria-label="Update request status"
-                      >
-                        {REQUEST_STATUSES.map((s) => (
-                          <option key={s} value={s}>{getStatusLabel(s)}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <span className="requests-status-readonly">{getStatusLabel(row.status)}</span>
-                    )}
-                    <button
-                      type="button"
-                      className="requests-delete-btn"
-                      disabled={updatingId === row.docId}
-                      onClick={() => handleDelete(row.docId)}
-                      title="Delete request"
+          <>
+            <div className="requests-table-wrapper">
+              <table className="dashboard-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Family</th>
+                    <th>Evac Center</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedRequests.map((row) => (
+                    <tr
+                      key={row.docId}
+                      className="requests-row-clickable"
+                      onClick={() => setDetailRequest(row)}
                     >
-                      <Trash2 size={12} />
-                      <span>Delete</span>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                      <td className="requests-id-cell">{row.requestId}</td>
+                      <td><span className="requests-name-cell">{row.requesterName || '—'}</span></td>
+                      <td className="requests-loc-cell">{row.location}</td>
+                      <td>{row.familyMembers || '—'}</td>
+                      <td>
+                        {row.hasEvacuationCenter ? (
+                          <span className="evac-badge active">
+                            <CheckCircle2 size={13} />
+                            <span>Yes</span>
+                          </span>
+                        ) : (
+                          <span className="evac-badge inactive">
+                            <XCircle size={13} />
+                            <span>No</span>
+                          </span>
+                        )}
+                      </td>
+                      <td>
+                        <span className={`dashboard-status ${getStatusClass(row.status)}`}>
+                          {getStatusLabel(row.status)}
+                        </span>
+                      </td>
+                      <td className="requests-date-cell">{formatRequestDate(row.createdAt)}</td>
+                      <td className="requests-actions-cell" onClick={(e) => e.stopPropagation()}>
+                        {isAdmin ? (
+                          <select
+                            className="requests-status-select"
+                            value={row.status}
+                            disabled={updatingId === row.docId}
+                            onChange={(e) => handleStatusChange(row.docId, e.target.value)}
+                            aria-label="Update request status"
+                          >
+                            {REQUEST_STATUSES.map((s) => (
+                              <option key={s} value={s}>{getStatusLabel(s)}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <span className="requests-status-readonly">{getStatusLabel(row.status)}</span>
+                        )}
+                        <button
+                          type="button"
+                          className="requests-delete-btn"
+                          disabled={updatingId === row.docId}
+                          onClick={() => handleDelete(row.docId)}
+                          title="Delete request"
+                        >
+                          <Trash2 size={12} />
+                          <span>Delete</span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="requests-table-pagination">
+              <div className="pagination-info">
+                Showing <strong>{(safePage - 1) * PAGE_SIZE + 1}</strong> to{' '}
+                <strong>{Math.min(safePage * PAGE_SIZE, filtered.length)}</strong> of{' '}
+                <strong>{filtered.length}</strong> requests
+              </div>
+
+              <div className="pagination-controls">
+                <button
+                  type="button"
+                  className="pagination-btn nav-btn"
+                  onClick={(e) => handlePageChange(Math.max(1, safePage - 1), e)}
+                  disabled={safePage === 1}
+                  title="Previous Page"
+                >
+                  <ChevronLeft size={15} />
+                  <span>Prev</span>
+                </button>
+
+                <div className="pagination-pages">
+                  {getPageNumbers().map((item, idx) =>
+                    item === '...' ? (
+                      <span key={`dots-${idx}`} className="pagination-ellipsis">
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={`page-${item}`}
+                        type="button"
+                        className={`pagination-btn page-num ${safePage === item ? 'active' : ''}`}
+                        onClick={(e) => handlePageChange(item, e)}
+                      >
+                        {item}
+                      </button>
+                    )
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  className="pagination-btn nav-btn"
+                  onClick={(e) => handlePageChange(Math.min(totalPages, safePage + 1), e)}
+                  disabled={safePage === totalPages}
+                  title="Next Page"
+                >
+                  <span>Next</span>
+                  <ChevronRight size={15} />
+                </button>
+              </div>
+            </div>
+          </>
         )}
       </div>
 

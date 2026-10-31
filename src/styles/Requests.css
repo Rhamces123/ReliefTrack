@@ -276,8 +276,13 @@
   border: 1px solid #E2E8F0;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(18, 59, 102, 0.06);
-  overflow-x: auto;
+  overflow: hidden;
   margin-bottom: 28px;
+}
+
+.requests-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
 }
 
 .dashboard-table {
@@ -426,6 +431,98 @@
 .requests-delete-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* =========================================================
+   REQUESTS TABLE PAGINATION
+   ========================================================= */
+.requests-table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: #FFFFFF;
+  border-top: 1px solid #EDF2F7;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.requests-table-pagination .pagination-info {
+  font-size: 13px;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.requests-table-pagination .pagination-info strong {
+  color: #123B66;
+  font-weight: 700;
+}
+
+.requests-table-pagination .pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.requests-table-pagination .pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.requests-table-pagination .pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 9px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4A5568;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.requests-table-pagination .pagination-btn:hover:not(:disabled) {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+  color: #123B66;
+}
+
+.requests-table-pagination .pagination-btn.active {
+  background: #1674D1 !important;
+  color: #FFFFFF !important;
+  border-color: #1674D1 !important;
+  box-shadow: 0 2px 4px rgba(22, 116, 209, 0.25);
+}
+
+.requests-table-pagination .pagination-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  border-color: #E2E8F0;
+  background: #F8FAFC;
+}
+
+.requests-table-pagination .pagination-btn.nav-btn {
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.requests-table-pagination .pagination-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 32px;
+  font-size: 13px;
+  color: #94A3B8;
+  user-select: none;
 }
 
 /* States */
