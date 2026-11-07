@@ -162,122 +162,6 @@ export default function GenerateReportModal({
 
   if (!isOpen) return null
 
-  // CSV Generator
-  const downloadCSV = () => {
-    let csvRows = []
-
-    const escapeCSV = (val) => {
-      if (val === null || val === undefined) return '""'
-      const str = String(val).replace(/"/g, '""')
-      return `"${str}"`
-    }
-
-    if (reportType === 'requests') {
-      csvRows.push([
-        'Request ID',
-        'Requester Name',
-        'Location',
-        'Family Members',
-        'Evacuation Center',
-        'Status',
-        'Date Created',
-      ])
-      filteredRequests.forEach((r) => {
-        csvRows.push([
-          r.requestId || '—',
-          r.requesterName || '—',
-          r.location || '—',
-          r.familyMembers ?? 0,
-          r.hasEvacuationCenter ? 'Yes' : 'No',
-          getStatusLabel(r.status),
-          formatRequestDate(r.createdAt),
-        ])
-      })
-    } else if (reportType === 'inventory') {
-      csvRows.push([
-        'Item ID',
-        'Item Name',
-        'Category',
-        'Quantity',
-        'Unit',
-        'Storage Location',
-        'Stock Status',
-        'Last Updated',
-      ])
-      filteredItems.forEach((i) => {
-        csvRows.push([
-          i.itemId || '—',
-          i.name || '—',
-          getCategoryLabel(i.category),
-          i.quantity ?? 0,
-          i.unit || '—',
-          i.storageLocation || '—',
-          isLowStock(i.quantity) ? 'LOW STOCK' : 'Normal',
-          formatInventoryDate(i.updatedAt || i.createdAt),
-        ])
-      })
-    } else if (reportType === 'donations') {
-      csvRows.push([
-        'Donor / Agency',
-        'Type',
-        'Items Description',
-        'Quantity',
-        'Unit',
-        'Received Date',
-        'Notes',
-      ])
-      filteredDonations.forEach((d) => {
-        csvRows.push([
-          d.agency || '—',
-          d.type || '—',
-          d.items || '—',
-          d.quantity ?? 0,
-          d.unit || '—',
-          formatRequestDate(d.createdAt),
-          d.notes || '—',
-        ])
-      })
-    } else {
-      // Summary
-      csvRows.push(['REPUBLIC OF THE PHILIPPINES • CITY GOVERNMENT OF NAGA'])
-      csvRows.push(['RELIEF OPERATIONS CONSOLIDATED EXECUTIVE REPORT'])
-      csvRows.push(['Report Generated Date:', reportDateStr, 'Timeframe Scope:', timeframe.toUpperCase()])
-      csvRows.push(['Prepared By:', `${operatorName} (${operatorRole})`, 'Operations Status:', 'ACTIVE RELIEF OPERATIONS'])
-      csvRows.push([])
-      csvRows.push(['Category Domain', 'Key Performance Indicator', 'Quantity / Count', 'Operational Status / Benchmark'])
-      csvRows.push(['Relief Requests', 'Total Registered Requests', reqTotal, 'Logged in ReliefTrack System'])
-      csvRows.push(['Relief Requests', 'Pending Assessment', reqPending, 'Requires Verification / Dispatch'])
-      csvRows.push(['Relief Requests', 'In Transit / Dispatching', reqInProgress, 'Relief Aid En Route to Barangay'])
-      csvRows.push(['Relief Requests', 'Successfully Completed', reqCompleted, 'Relief Packages Delivered'])
-      csvRows.push(['Relief Requests', 'Total Affected Beneficiaries', totalBeneficiaries, 'Estimated Individuals / Household Pax'])
-      csvRows.push([])
-      csvRows.push(['Relief Inventory', 'Cataloged Supplies Items', invTotalItems, 'Active Supply Categories in Warehouse'])
-      csvRows.push(['Relief Inventory', 'Total Available Units in Stock', invTotalQty, 'Stock Available for Distribution'])
-      csvRows.push(['Relief Inventory', 'Low Stock / Critical Shortages', invLowStock, invLowStock > 0 ? `${invLowStock} Items Require Replenishment` : 'All Stock Healthy (>10 units)'])
-      csvRows.push([])
-      csvRows.push(['Donations & Aid', 'Total Donation Shipments', donTotal, 'Inbound Aid Contributions'])
-      csvRows.push(['Donations & Aid', 'Total Donated Items Received', donTotalQty, 'Units Contributed by Donors'])
-      csvRows.push(['Donations & Aid', 'Partner Agencies & Donors', donAgencies, 'Distinct Partner Agencies'])
-    }
-
-    const csvContent = csvRows
-      .map((row) => row.map(escapeCSV).join(','))
-      .join('\r\n')
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute(
-      'download',
-      `ReliefTrack_${reportType}_Report_${new Date().toISOString().slice(0, 10)}.csv`
-    )
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  }
-
   // Excel (.xlsx) Worksheet Builder with Auto Column Sizing & Clean Layout
   const buildExcelWorksheet = (rows, customWidths = null) => {
     const ws = XLSX.utils.aoa_to_sheet(rows)
@@ -548,14 +432,6 @@ export default function GenerateReportModal({
           </div>
 
           <div className="grm-actions">
-            <button
-              type="button"
-              className="grm-btn grm-btn-secondary"
-              onClick={downloadCSV}
-              title="Download structured CSV file"
-            >
-              📥 Export CSV
-            </button>
             <button
               type="button"
               className="grm-btn grm-btn-excel"
