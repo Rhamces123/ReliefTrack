@@ -68,6 +68,19 @@ export default function DashboardLayout({
   const notifRef = useRef(null)
   const userMenuRef = useRef(null)
 
+  const [isOnline, setIsOnline] = useState(() => (typeof navigator !== 'undefined' ? navigator.onLine : true))
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true)
+    const handleOffline = () => setIsOnline(false)
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
+
   const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
   const isAdmin =
     (adminEmail && user?.email?.toLowerCase() === adminEmail.toLowerCase()) ||
@@ -181,8 +194,18 @@ export default function DashboardLayout({
         {/* Sidebar Footer User & Logout */}
         <div className="dashboard-sidebar-footer">
           <div className="dashboard-sidebar-user">
-            <div className={`dashboard-sidebar-avatar ${isAdmin ? 'admin-avatar' : ''}`}>
-              {getInitials(displayName)}
+            <div className="dashboard-sidebar-avatar-wrapper">
+              <div
+                className={`dashboard-sidebar-avatar ${isAdmin ? 'admin-avatar' : ''} ${
+                  isOnline ? 'is-online' : 'is-offline'
+                }`}
+              >
+                {getInitials(displayName)}
+              </div>
+              <span
+                className={`sidebar-status-circle ${isOnline ? 'online' : 'offline'}`}
+                title={isOnline ? 'Online' : 'Offline'}
+              />
             </div>
             <div className="dashboard-sidebar-user-meta">
               <div className="sidebar-user-name" title={displayName}>
@@ -324,8 +347,18 @@ export default function DashboardLayout({
                 onClick={() => setUserMenuOpen((prev) => !prev)}
                 aria-expanded={userMenuOpen}
               >
-                <div className={`dashboard-topbar-avatar ${isAdmin ? 'admin-avatar' : ''}`}>
-                  {getInitials(displayName)}
+                <div className="dashboard-topbar-avatar-wrapper">
+                  <div
+                    className={`dashboard-topbar-avatar ${isAdmin ? 'admin-avatar' : ''} ${
+                      isOnline ? 'is-online' : 'is-offline'
+                    }`}
+                  >
+                    {getInitials(displayName)}
+                  </div>
+                  <span
+                    className={`topbar-status-circle ${isOnline ? 'online' : 'offline'}`}
+                    title={isOnline ? 'Online' : 'Offline'}
+                  />
                 </div>
                 <div className="dashboard-user-meta">
                   <div className="name">{displayName}</div>
@@ -339,9 +372,15 @@ export default function DashboardLayout({
                   <div className="dropdown-user-header">
                     <div className="dropdown-user-name">{displayName}</div>
                     <div className="dropdown-user-email">{email}</div>
-                    <span className={`role-badge ${isAdmin ? 'admin' : 'member'}`}>
-                      {roleLabel}
-                    </span>
+                    <div className="dropdown-badges-row">
+                      <span className={`role-badge ${isAdmin ? 'admin' : 'member'}`}>
+                        {roleLabel}
+                      </span>
+                      <span className={`dropdown-presence-badge ${isOnline ? 'online' : 'offline'}`}>
+                        <span className={`online-indicator ${isOnline ? 'online' : 'offline'}`} />
+                        <span>{isOnline ? 'Online Now' : 'Offline'}</span>
+                      </span>
+                    </div>
                   </div>
                   <div className="dropdown-divider" />
                   <NavLink

@@ -11,7 +11,7 @@ import {
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/Donations.css'
 
-const DONATION_TYPES = ['Food', 'Water', 'Medical', 'Clothing', 'Cash', 'Other']
+const DONATION_TYPES = ['Food', 'Water', 'Medical', 'Clothing', 'Other']
 
 const TYPE_META = {
   Food:    { emoji: '🍱', gradient: 'linear-gradient(135deg, #f59e0b, #d97706)' },

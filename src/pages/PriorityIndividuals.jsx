@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react'
+import { Workflow } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { getUserProfile } from '../firebase/users'
 import { subscribeFamilies, ECONOMIC_STATUSES } from '../firebase/families'
@@ -98,11 +99,35 @@ export default function PriorityIndividuals() {
 
   return (
     <DashboardLayout title="Priority Individuals" userLabel={displayName} userEmail={email}>
-      <div className="pri-header">
+      <div className="pri-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div className="pri-header-text">
           <h2>Priority Individuals per Barangay</h2>
           <p>Ranked by economic status — Lower-Middle Class first.</p>
         </div>
+        <a
+          href="/Open_In_Drawio.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="requests-btn-secondary"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '9px 14px',
+            borderRadius: '8px',
+            border: '1px solid #d1d5db',
+            background: '#ffffff',
+            color: '#16a34a',
+            textDecoration: 'none',
+            fontWeight: 600,
+            fontSize: '13px',
+            cursor: 'pointer',
+          }}
+          title="Open and edit Priority Assessment Flowchart (Sub-flowchart B) in Draw.io"
+        >
+          <Workflow size={16} />
+          <span>Edit in Draw.io (B)</span>
+        </a>
       </div>
 
       {error && <div className="requests-error">{error}</div>}

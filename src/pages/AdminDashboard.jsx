@@ -11,6 +11,7 @@ import {
   addUserAccount,
   updateUserLocation,
   INITIAL_AUTH_USERS,
+  formatOfflineDuration,
 } from '../firebase/users'
 import {
   subscribeReliefRequests,
@@ -51,6 +52,8 @@ import {
   ExternalLink,
   ChevronLeft,
   ChevronRight,
+  Workflow,
+  Download,
 } from 'lucide-react'
 
 const NAGA_CENTER = [10.2085, 123.7591]
@@ -111,8 +114,9 @@ export default function AdminDashboard() {
   const navigate = useNavigate()
 
   const [profile, setProfile] = useState(null)
-  const [activeTab, setActiveTab] = useState('operations') // 'operations' | 'users'
+  const [activeTab, setActiveTab] = useState('operations') // 'operations' | 'users' | 'flowchart'
   const [dateFilter, setDateFilter] = useState('all') // 'all' | 'today' | '7d' | '30d'
+  const [flowchartView, setFlowchartView] = useState('figure13') // 'figure13' | 'figure14'
 
   // Data Collections
   const [requests, setRequests] = useState([])
@@ -436,9 +440,19 @@ export default function AdminDashboard() {
     }
   }
 
-  // User Management Presence Helpers (Preserved 100%)
+  // Live tick to keep offline durations and active presence freshly updated
+  const [, setPresenceTick] = useState(0)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setPresenceTick((t) => t + 1)
+    }, 30000)
+    return () => clearInterval(timer)
+  }, [])
+
+  // User Management Presence Helpers (Real-time live detection)
   const isUserOnline = useCallback((u) => {
-    if (user?.uid && u.docId === user.uid) return true
+    if (user?.uid && (u.docId === user.uid || u.uid === user.uid)) return true
+    if (user?.email && u.email && user.email.toLowerCase().trim() === u.email.toLowerCase().trim()) return true
     if (u.isOnline === false) return false
     if (!u.lastActiveAt) return false
     const ms = u.lastActiveAt?.toMillis
@@ -446,8 +460,8 @@ export default function AdminDashboard() {
       : typeof u.lastActiveAt === 'number'
       ? u.lastActiveAt
       : new Date(u.lastActiveAt).getTime()
-    if (isNaN(ms)) return false
-    return Date.now() - ms < 3 * 60 * 1000
+    if (!ms || isNaN(ms)) return false
+    return Date.now() - ms < 4 * 60 * 1000
   }, [user])
 
   const userStats = useMemo(() => {
@@ -679,6 +693,14 @@ export default function AdminDashboard() {
             >
               <Users size={16} />
               <span>User Accounts ({users.length})</span>
+            </button>
+            <button
+              type="button"
+              className={`tab-btn ${activeTab === 'flowchart' ? 'active' : ''}`}
+              onClick={() => setActiveTab('flowchart')}
+            >
+              <Workflow size={16} />
+              <span>Flowchart (Figure 13)</span>
             </button>
           </div>
         </div>
@@ -1251,7 +1273,7 @@ export default function AdminDashboard() {
 
             <div className="admin-stat-card stat-online">
               <div className="stat-card-top">
-                <span className="live-pulse" />
+                <span className={`live-pulse ${userStats.online > 0 ? 'online' : 'offline'}`} />
               </div>
               <div className="admin-stat-value text-online">
                 {loading ? '—' : userStats.online}
@@ -1369,16 +1391,23 @@ export default function AdminDashboard() {
                   <tbody>
                     {filteredUsers.map((u) => {
                       const online = isUserOnline(u)
+                      const offlineText = formatOfflineDuration(u.lastActiveAt)
                       return (
                         <tr key={u.docId}>
                           <td>
                             <div className="user-account-cell">
-                              <div
-                                className={`user-avatar ${
-                                  u.role === 'Admin' ? 'admin' : 'member'
-                                }`}
-                              >
-                                {(u.displayName || u.email || 'U').slice(0, 2).toUpperCase()}
+                              <div className="user-avatar-wrapper">
+                                <div
+                                  className={`user-avatar ${
+                                    u.role === 'Admin' ? 'admin' : 'member'
+                                  } ${online ? 'is-online' : 'is-offline'}`}
+                                >
+                                  {(u.displayName || u.email || 'U').slice(0, 2).toUpperCase()}
+                                </div>
+                                <span
+                                  className={`avatar-presence-badge ${online ? 'online' : 'offline'}`}
+                                  title={online ? 'Online Now' : offlineText}
+                                />
                               </div>
                               <div className="user-text-meta">
                                 <span className="font-semibold text-navy">
@@ -1416,15 +1445,26 @@ export default function AdminDashboard() {
                           </td>
                           <td>
                             <div className="user-status-cell">
-                              <span
-                                className={`online-indicator ${
-                                  online ? 'online' : 'offline'
-                                }`}
-                              />
-                              <span>{online ? 'Online' : 'Offline'}</span>
-                              {u.status === 'On Hold' && (
-                                <span className="badge-on-hold">On Hold</span>
-                              )}
+                              <div className="status-indicator-wrapper">
+                                <span
+                                  className={`online-indicator ${
+                                    online ? 'online' : 'offline'
+                                  }`}
+                                />
+                              </div>
+                              <div className="user-status-text-group">
+                                <div className="status-primary-row">
+                                  <span className={`status-label ${online ? 'text-online' : 'text-offline'}`}>
+                                    {online ? 'Online' : 'Offline'}
+                                  </span>
+                                  {u.status === 'On Hold' && (
+                                    <span className="badge-on-hold">On Hold</span>
+                                  )}
+                                </div>
+                                <span className="status-duration-subtext">
+                                  {online ? 'Active now' : offlineText}
+                                </span>
+                              </div>
                             </div>
                           </td>
                           <td style={{ textAlign: 'right' }}>
@@ -1473,6 +1513,678 @@ export default function AdminDashboard() {
                 <h4>No users found</h4>
                 <p>No matching user accounts with current filters.</p>
               </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* TAB 3: ADMIN DASHBOARD FLOWCHARTS */}
+      {activeTab === 'flowchart' && (
+        <div className="admin-tab-content">
+          <div className="admin-flowchart-card">
+            {/* View Switcher Bar */}
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '18px', borderBottom: '1px solid #e2e8f0', paddingBottom: '14px', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                className={`btn-flowchart-action ${flowchartView === 'figure13' ? 'btn-primary' : ''}`}
+                onClick={() => setFlowchartView('figure13')}
+                style={{ cursor: 'pointer' }}
+              >
+                <Workflow size={15} />
+                <span>Figure 13: Admin Dashboard Flowchart (9 Functions)</span>
+              </button>
+              <button
+                type="button"
+                className={`btn-flowchart-action ${flowchartView === 'figure14' ? 'btn-primary' : ''}`}
+                onClick={() => setFlowchartView('figure14')}
+                style={{ cursor: 'pointer' }}
+              >
+                <Files size={15} />
+                <span>Figure 14: Sub-flowchart A (Relief Requests)</span>
+              </button>
+              <button
+                type="button"
+                className={`btn-flowchart-action ${flowchartView === 'figure15' ? 'btn-primary' : ''}`}
+                onClick={() => setFlowchartView('figure15')}
+                style={{ cursor: 'pointer' }}
+              >
+                <AlertTriangle size={15} />
+                <span>Figure 15: Sub-flowchart B (Priority Assessment)</span>
+              </button>
+              <button
+                type="button"
+                className={`btn-flowchart-action ${flowchartView === 'figure16' ? 'btn-primary' : ''}`}
+                onClick={() => setFlowchartView('figure16')}
+                style={{ cursor: 'pointer' }}
+              >
+                <Package size={15} />
+                <span>Figure 16: Sub-flowchart C (Inventory Management)</span>
+              </button>
+              <button
+                type="button"
+                className={`btn-flowchart-action ${flowchartView === 'figure17' ? 'btn-primary' : ''}`}
+                onClick={() => setFlowchartView('figure17')}
+                style={{ cursor: 'pointer' }}
+              >
+                <Users size={15} />
+                <span>Figure 17: Sub-flowchart D (Beneficiaries)</span>
+              </button>
+            </div>
+
+            {flowchartView === 'figure13' ? (
+              <>
+                <div className="flowchart-header">
+                  <div className="flowchart-title-area">
+                    <h3>Admin Dashboard Flowchart (Figure 13)</h3>
+                    <p>
+                      Official system process workflow specification for the ReliefTrack Admin Dashboard, matching Capstone Research Figure 13.
+                    </p>
+                  </div>
+                  <div className="flowchart-actions">
+                    <a
+                      href="/Open_In_Drawio.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      style={{ background: '#f59e0b', color: '#ffffff', borderColor: '#d97706', fontWeight: 600 }}
+                      title="Open online editor in Draw.io / diagrams.net"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Edit in Draw.io</span>
+                    </a>
+                    <a
+                      href="/AdminDashboard_Flowchart.drawio"
+                      download="ReliefTrack_Admin_Dashboard_Flowchart.drawio"
+                      className="btn-flowchart-action btn-primary"
+                      title="Download multi-page Draw.io XML file (Contains Page 1: Admin Dashboard and Page 2: Sub-flowchart A)"
+                    >
+                      <Download size={15} />
+                      <span>Download .drawio</span>
+                    </a>
+                    <a
+                      href="/AdminDashboard_Flowchart.svg"
+                      download="ReliefTrack_Admin_Dashboard_Flowchart.svg"
+                      className="btn-flowchart-action"
+                      title="Download vector SVG"
+                    >
+                      <Download size={15} />
+                      <span>Download SVG</span>
+                    </a>
+                    <a
+                      href="/AdminDashboard_Flowchart.svg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      title="Open diagram in new tab"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Open Fullscreen</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Visual SVG Flowchart matching Figure 13 */}
+                <div className="flowchart-viewer-wrap">
+                  <img
+                    src="/AdminDashboard_Flowchart.svg"
+                    alt="ReliefTrack Admin Dashboard Flowchart - Figure 13"
+                    className="flowchart-svg-img"
+                  />
+                </div>
+
+                {/* Flowchart Modules Explanation */}
+                <div className="flowchart-modules-grid">
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">1. Relief Requests</span>
+                      <span className="module-connector-badge badge-a">Off-Page A</span>
+                    </div>
+                    <p className="module-desc">
+                      Review aid requests, verify priority demographics, and approve delivery status updates leading to Off-Page A.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">2. Priority Assessment</span>
+                      <span className="module-connector-badge badge-b">Off-Page B</span>
+                    </div>
+                    <p className="module-desc">
+                      Evaluate urgent incidents with vulnerability scoring and allocate critical emergency aid via the Priority Matrix (Off-Page B).
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">3. Inventory Management</span>
+                      <span className="module-connector-badge badge-c">Off-Page C</span>
+                    </div>
+                    <p className="module-desc">
+                      Monitor warehouse stock levels across categories and record batch additions or inventory adjustments (Off-Page C).
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">4. Beneficiaries</span>
+                      <span className="module-connector-badge badge-d">Off-Page D</span>
+                    </div>
+                    <p className="module-desc">
+                      Maintain registered disaster-affected family profiles, household demographics, and relief assistance histories (Off-Page D).
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">5. Donations</span>
+                      <span className="module-connector-badge badge-e">Off-Page E</span>
+                    </div>
+                    <p className="module-desc">
+                      Log in-kind relief goods, track donor records, and allocate items directly into community distribution channels (Off-Page E).
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">6. Map</span>
+                      <span className="module-connector-badge badge-loop">Interactive Loop</span>
+                    </div>
+                    <p className="module-desc">
+                      Geospatial tracking of Naga City evacuation centers and relief request locations with continuous interactive pan and zoom feedback.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">7. Reports &amp; Analytics</span>
+                      <span className="module-connector-badge badge-f">Off-Page F</span>
+                    </div>
+                    <p className="module-desc">
+                      Generate comprehensive operational summaries and export official distribution logs to PDF or Excel spreadsheets (Off-Page F).
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">8. Auto Suggest</span>
+                      <span className="module-connector-badge badge-g">Off-Page G</span>
+                    </div>
+                    <p className="module-desc">
+                      AI-driven relief pack recommendations based on family composition, vulnerability priorities, and available inventory (Off-Page G).
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">9. Settings</span>
+                      <span className="module-connector-badge badge-h">Off-Page H</span>
+                    </div>
+                    <p className="module-desc">
+                      Administrative system preferences, multi-factor authentication, trusted device authorizations, and security settings (Off-Page H).
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : flowchartView === 'figure14' ? (
+              <>
+                <div className="flowchart-header">
+                  <div className="flowchart-title-area">
+                    <h3>Relief Requests Sub-Process &amp; Form Flowchart (Figure 14 - Sub-flowchart A)</h3>
+                    <p>
+                      Official sub-process specification for Off-Page Connector A covering the Relief Requests overview, filter metrics, and multi-step (+ New Relief Request) modal workflow with Firestore persistence.
+                    </p>
+                  </div>
+                  <div className="flowchart-actions">
+                    <a
+                      href="/Open_In_Drawio.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      style={{ background: '#f59e0b', color: '#ffffff', borderColor: '#d97706', fontWeight: 600 }}
+                      title="Open online editor in Draw.io / diagrams.net"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Edit in Draw.io</span>
+                    </a>
+                    <a
+                      href="/ReliefRequests_Flowchart.drawio"
+                      download="ReliefTrack_Relief_Requests_Flowchart.drawio"
+                      className="btn-flowchart-action btn-primary"
+                      title="Download editable Draw.io XML file"
+                    >
+                      <Download size={15} />
+                      <span>Download Subflowchart .drawio</span>
+                    </a>
+                    <a
+                      href="/ReliefRequests_Flowchart.svg"
+                      download="ReliefTrack_Relief_Requests_Flowchart.svg"
+                      className="btn-flowchart-action"
+                      title="Download vector SVG"
+                    >
+                      <Download size={15} />
+                      <span>Download SVG</span>
+                    </a>
+                    <a
+                      href="/ReliefRequests_Flowchart.svg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      title="Open diagram in new tab"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Open Fullscreen</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Visual SVG Flowchart matching Sub-flowchart A */}
+                <div className="flowchart-viewer-wrap" style={{ justifyContent: 'center' }}>
+                  <img
+                    src="/ReliefRequests_Flowchart.svg"
+                    alt="ReliefTrack Relief Requests Sub-Flowchart A - Figure 14"
+                    className="flowchart-svg-img"
+                    style={{ maxWidth: '850px' }}
+                  />
+                </div>
+
+                {/* Sub-Flowchart Steps Explanation */}
+                <div className="flowchart-modules-grid">
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">Overview &amp; Statistics</span>
+                      <span className="module-connector-badge badge-a">5 Metric Cards</span>
+                    </div>
+                    <p className="module-desc">
+                      Displays live EOC aggregates: Total Requests, Affected People, Family Members, In Evacuation Centers, and Pending Action with tag filters.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">Step 1: Representative &amp; Family</span>
+                      <span className="module-connector-badge badge-b">Modal Section 1</span>
+                    </div>
+                    <p className="module-desc">
+                      Captures Head of Family name, family members count, birth date, age, sex, civil status, occupation, and monthly family net income.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">Step 2 &amp; 3: Needs &amp; Damage</span>
+                      <span className="module-connector-badge badge-c">Modal Section 2</span>
+                    </div>
+                    <p className="module-desc">
+                      Contact phone, Naga barangay/address, geolocation coordinates, needed relief kits (Food, Hygiene, Kitchen, Sleeping, Water, Shelter), and shelter damage rating.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">Step 4: Vulnerable Demographics</span>
+                      <span className="module-connector-badge badge-d">Modal Section 3</span>
+                    </div>
+                    <p className="module-desc">
+                      4Ps Pantawid beneficiary checkbox, Evacuation center shelter status, and exact headcounts for Pregnant Women, Elderly/Seniors, PWD, and Children ≤ 7.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">Validation &amp; Firestore Write</span>
+                      <span className="module-connector-badge badge-e">DB Write</span>
+                    </div>
+                    <p className="module-desc">
+                      Validates total family bounds, calculates vulnerability priority score, writes document to <code>relief_requests</code> collection, and updates table.
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : flowchartView === 'figure15' ? (
+              <>
+                <div className="flowchart-header">
+                  <div className="flowchart-title-area">
+                    <h3>Priority Assessment Flowchart (Figure 15 - Sub-flowchart B)</h3>
+                    <p>
+                      Official sub-process specification for Off-Page Connector B (/priority) covering the 5-metric overview, Firestore beneficiary grouping, economic priority ranking algorithm, and targeted relief pack allocation.
+                    </p>
+                  </div>
+                  <div className="flowchart-actions">
+                    <a
+                      href="/Open_In_Drawio.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      style={{ background: '#f59e0b', color: '#ffffff', borderColor: '#d97706', fontWeight: 600 }}
+                      title="Open online editor in Draw.io / diagrams.net"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Edit in Draw.io</span>
+                    </a>
+                    <a
+                      href="/PriorityAssessment_Flowchart.drawio"
+                      download="ReliefTrack_Priority_Assessment_Flowchart.drawio"
+                      className="btn-flowchart-action btn-primary"
+                      title="Download editable Draw.io XML file"
+                    >
+                      <Download size={15} />
+                      <span>Download Subflowchart .drawio</span>
+                    </a>
+                    <a
+                      href="/PriorityAssessment_Flowchart.svg"
+                      download="ReliefTrack_Priority_Assessment_Flowchart.svg"
+                      className="btn-flowchart-action"
+                      title="Download vector SVG"
+                    >
+                      <Download size={15} />
+                      <span>Download SVG</span>
+                    </a>
+                    <a
+                      href="/PriorityAssessment_Flowchart.svg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      title="Open diagram in new tab"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Open Fullscreen</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Visual SVG Flowchart matching Sub-flowchart B */}
+                <div className="flowchart-viewer-wrap" style={{ justifyContent: 'center' }}>
+                  <img
+                    src="/PriorityAssessment_Flowchart.svg"
+                    alt="ReliefTrack Priority Assessment Sub-Flowchart B - Figure 15"
+                    className="flowchart-svg-img"
+                    style={{ maxWidth: '850px' }}
+                  />
+                </div>
+
+                {/* Sub-Flowchart Steps Explanation */}
+                <div className="flowchart-modules-grid">
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">1. Summary Metrics</span>
+                      <span className="module-connector-badge badge-a">5 Metric Cards</span>
+                    </div>
+                    <p className="module-desc">
+                      Displays live aggregates: Total Families, Barangays, Not Set, Upper-Middle Class, and Middle Class counts.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">2. Beneficiary Grouping</span>
+                      <span className="module-connector-badge badge-b">Barangay Buckets</span>
+                    </div>
+                    <p className="module-desc">
+                      Subscribes to Firestore <code>families</code> collection and clusters households by their verified Naga City barangay location.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">3. Economic Ranking</span>
+                      <span className="module-connector-badge badge-c">Priority Engine</span>
+                    </div>
+                    <p className="module-desc">
+                      Sorts families within each barangay giving highest priority to Lower-Middle Class (#1), followed by Middle Class (#2), and Upper-Middle Class (#3).
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">4. Toolbar &amp; Filters</span>
+                      <span className="module-connector-badge badge-d">Interactive Filter</span>
+                    </div>
+                    <p className="module-desc">
+                      Dropdown selectors for filtering by specific barangay or economic classification with automatic family count recalculation.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">5. Emergency Aid Allocation</span>
+                      <span className="module-connector-badge badge-e">DB Write</span>
+                    </div>
+                    <p className="module-desc">
+                      Generates emergency aid allocation plans matching relief supplies to prioritized families and updates delivery schedules.
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : flowchartView === 'figure16' ? (
+              <>
+                <div className="flowchart-header">
+                  <div className="flowchart-title-area">
+                    <h3>Inventory Management Flowchart (Figure 16 - Sub-flowchart C)</h3>
+                    <p>
+                      Official sub-process specification for Off-Page Connector C (/inventory) covering stock summary metrics, category filter tabs (Food, Water, Medical, Shelter, Other), Add inventory item modal dialog with validation and Firestore persistence, and Edit / Delete / Report stock actions.
+                    </p>
+                  </div>
+                  <div className="flowchart-actions">
+                    <a
+                      href="/Open_In_Drawio.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      style={{ background: '#2563eb', color: '#ffffff', borderColor: '#1d4ed8', fontWeight: 600 }}
+                      title="Open online editor in Draw.io / diagrams.net"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Edit in Draw.io</span>
+                    </a>
+                    <a
+                      href="/InventoryManagement_Flowchart.drawio"
+                      download="ReliefTrack_Inventory_Management_Flowchart.drawio"
+                      className="btn-flowchart-action btn-primary"
+                      title="Download editable Draw.io XML file"
+                    >
+                      <Download size={15} />
+                      <span>Download Subflowchart .drawio</span>
+                    </a>
+                    <a
+                      href="/InventoryManagement_Flowchart.svg"
+                      download="ReliefTrack_Inventory_Management_Flowchart.svg"
+                      className="btn-flowchart-action"
+                      title="Download vector SVG"
+                    >
+                      <Download size={15} />
+                      <span>Download SVG</span>
+                    </a>
+                    <a
+                      href="/InventoryManagement_Flowchart.svg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      title="Open diagram in new tab"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Open Fullscreen</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Visual SVG Flowchart matching Sub-flowchart C */}
+                <div className="flowchart-viewer-wrap" style={{ justifyContent: 'center' }}>
+                  <img
+                    src="/InventoryManagement_Flowchart.svg"
+                    alt="ReliefTrack Inventory Management Sub-Flowchart C - Figure 16"
+                    className="flowchart-svg-img"
+                    style={{ maxWidth: '950px' }}
+                  />
+                </div>
+
+                {/* Sub-Flowchart Steps Explanation */}
+                <div className="flowchart-modules-grid">
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">1. Item Summary</span>
+                      <span className="module-connector-badge badge-a">Item Counts</span>
+                    </div>
+                    <p className="module-desc">
+                      Shows total number of relief items and warns if stock is low (below 20 items).
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">2. Category Filters</span>
+                      <span className="module-connector-badge badge-b">Filter Tabs</span>
+                    </div>
+                    <p className="module-desc">
+                      Quickly view items by category: All, Food, Water, Medical, Shelter, or Other.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">3. Add Item Form</span>
+                      <span className="module-connector-badge badge-c">New Item</span>
+                    </div>
+                    <p className="module-desc">
+                      Fill out item name, choose a category, enter quantity, and check that numbers are valid.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">4. Save to Database</span>
+                      <span className="module-connector-badge badge-d">Database</span>
+                    </div>
+                    <p className="module-desc">
+                      Saves new items to the system and immediately updates the items list and totals.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">5. Edit, Delete &amp; Report</span>
+                      <span className="module-connector-badge badge-e">Item Actions</span>
+                    </div>
+                    <p className="module-desc">
+                      Edit quantities, remove unwanted items with confirmation, and print summary reports.
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flowchart-header">
+                  <div className="flowchart-title-area">
+                    <h3>Beneficiaries Flowchart (Figure 17 - Sub-flowchart D)</h3>
+                    <p>
+                      Official sub-process specification for Off-Page Connector D (/beneficiaries) covering Family Registry summary metrics (Total Families, Members, Barangays), search and economic status filtering, Add Family modal with validation and Firestore persistence, and Edit / Delete actions.
+                    </p>
+                  </div>
+                  <div className="flowchart-actions">
+                    <a
+                      href="/Open_In_Drawio.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      style={{ background: '#7c3aed', color: '#ffffff', borderColor: '#6d28d9', fontWeight: 600 }}
+                      title="Open online editor in Draw.io / diagrams.net"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Edit in Draw.io</span>
+                    </a>
+                    <a
+                      href="/Beneficiaries_Flowchart.drawio"
+                      download="ReliefTrack_Beneficiaries_Flowchart.drawio"
+                      className="btn-flowchart-action btn-primary"
+                      title="Download editable Draw.io XML file"
+                    >
+                      <Download size={15} />
+                      <span>Download Subflowchart .drawio</span>
+                    </a>
+                    <a
+                      href="/Beneficiaries_Flowchart.svg"
+                      download="ReliefTrack_Beneficiaries_Flowchart.svg"
+                      className="btn-flowchart-action"
+                      title="Download vector SVG"
+                    >
+                      <Download size={15} />
+                      <span>Download SVG</span>
+                    </a>
+                    <a
+                      href="/Beneficiaries_Flowchart.svg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      title="Open diagram in new tab"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Open Fullscreen</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Visual SVG Flowchart matching Sub-flowchart D */}
+                <div className="flowchart-viewer-wrap" style={{ justifyContent: 'center' }}>
+                  <img
+                    src="/Beneficiaries_Flowchart.svg"
+                    alt="ReliefTrack Beneficiaries Sub-Flowchart D - Figure 17"
+                    className="flowchart-svg-img"
+                    style={{ maxWidth: '950px' }}
+                  />
+                </div>
+
+                {/* Sub-Flowchart Steps Explanation */}
+                <div className="flowchart-modules-grid">
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">1. Family Registry Summary</span>
+                      <span className="module-connector-badge badge-a">Registry Stats</span>
+                    </div>
+                    <p className="module-desc">
+                      Displays overall statistics including Total Families, Total Members, and Barangays covered.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">2. Search &amp; Filter</span>
+                      <span className="module-connector-badge badge-b">Filter &amp; Search</span>
+                    </div>
+                    <p className="module-desc">
+                      Search families by name, barangay, or head of family, or filter by economic classification.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">3. Add Family Form</span>
+                      <span className="module-connector-badge badge-c">New Family</span>
+                    </div>
+                    <p className="module-desc">
+                      Enter family name, barangay, member count, and economic status with input validation.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">4. Save to Database</span>
+                      <span className="module-connector-badge badge-d">Database</span>
+                    </div>
+                    <p className="module-desc">
+                      Saves verified family records to the database and automatically updates registry summary counts.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">5. Edit &amp; Delete Actions</span>
+                      <span className="module-connector-badge badge-e">Family Actions</span>
+                    </div>
+                    <p className="module-desc">
+                      Update existing household details or remove obsolete records with confirmation prompts.
+                    </p>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         </div>

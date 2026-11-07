@@ -274,6 +274,7 @@ export function AuthProvider({ children }) {
     window.addEventListener('click', handleActivity)
     document.addEventListener('visibilitychange', handleVisibilityChange)
     window.addEventListener('beforeunload', handleBeforeUnload)
+    window.addEventListener('pagehide', handleBeforeUnload)
 
     return () => {
       clearInterval(heartbeatTimer)
@@ -282,6 +283,7 @@ export function AuthProvider({ children }) {
       window.removeEventListener('click', handleActivity)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       window.removeEventListener('beforeunload', handleBeforeUnload)
+      window.removeEventListener('pagehide', handleBeforeUnload)
       // When component teardown / logging out
       setDoc(userRef, {
         isOnline: false,

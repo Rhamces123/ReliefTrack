@@ -8,6 +8,16 @@ import { db, firebaseConfig } from '../firebase.js'
 
 export const INITIAL_AUTH_USERS = [
   {
+    email: 'admin@relieftrack.com',
+    displayName: 'System Admin',
+    location: 'Naga EOC, City of Naga, Cebu',
+    role: 'Admin',
+    status: 'Active',
+    createdAt: new Date('2026-07-01T08:00:00Z'),
+    lastActiveAt: new Date(),
+    isOnline: true,
+  },
+  {
     email: 'iyasjessa1@gmail.com',
     displayName: 'Jessa Iyas',
     location: 'Brgy. Central Poblacion, City of Naga, Cebu',
@@ -183,8 +193,13 @@ export async function ensureUserProfile(user) {
       createdAt: existingMeta.createdAt || serverTimestamp(),
     })
   } else {
+    const isAdminEmail =
+      user.email &&
+      import.meta.env.VITE_ADMIN_EMAIL &&
+      user.email.toLowerCase() === import.meta.env.VITE_ADMIN_EMAIL.toLowerCase()
     await setDoc(ref, {
       status: snap.data().status || 'Active',
+      role: isAdminEmail ? 'Admin' : (snap.data().role || 'Member'),
       isOnline: true,
       lastActiveAt: serverTimestamp(),
     }, { merge: true })
@@ -308,12 +323,24 @@ export function subscribeUsers(onData, onError) {
 
       // Merge Firestore documents (overrides defaults with live state & includes admin)
       for (const fDoc of firestoreDocs) {
-        const key = (fDoc.email || fDoc.docId).toLowerCase().trim()
-        if (userMap.has(key)) {
-          const existing = userMap.get(key)
+        const docEmail = (fDoc.email || '').toLowerCase().trim()
+        const key = docEmail || fDoc.docId.toLowerCase().trim()
+
+        let targetKey = key
+        if (!userMap.has(targetKey) && docEmail) {
+          for (const [mKey, existing] of userMap.entries()) {
+            if (existing.email && existing.email.toLowerCase().trim() === docEmail) {
+              targetKey = mKey
+              break
+            }
+          }
+        }
+
+        if (userMap.has(targetKey)) {
+          const existing = userMap.get(targetKey)
           // Real auth UID doc takes precedence over placeholder docId
           const realDocId = !fDoc.docId.startsWith('user_') ? fDoc.docId : existing.docId
-          userMap.set(key, { ...existing, ...fDoc, docId: realDocId })
+          userMap.set(targetKey, { ...existing, ...fDoc, docId: realDocId })
         } else {
           userMap.set(key, fDoc)
         }
@@ -378,6 +405,50 @@ export async function deleteUserProfile(uid) {
     // ignore
   }
 }
+
+/**
+ * Format elapsed time since a user was last active/went offline.
+ * e.g., "Just went offline", "Offline for 15m", "Offline for 2h 10m", "Offline for 3d", "Never logged in"
+ */
+export function formatOfflineDuration(lastActiveAt) {
+  if (!lastActiveAt) return 'Never logged in'
+  const ms = lastActiveAt?.toMillis
+    ? lastActiveAt.toMillis()
+    : typeof lastActiveAt === 'number'
+    ? lastActiveAt
+    : new Date(lastActiveAt).getTime()
+
+  if (!ms || isNaN(ms)) return 'Never logged in'
+
+  const diffMs = Date.now() - ms
+  if (diffMs < 0) return 'Just now'
+  if (diffMs < 60 * 1000) return 'Just went offline'
+
+  const minutes = Math.floor(diffMs / (60 * 1000))
+  if (minutes < 60) {
+    return `Offline for ${minutes}m`
+  }
+
+  const hours = Math.floor(minutes / 60)
+  const remMinutes = minutes % 60
+  if (hours < 24) {
+    return `Offline for ${hours}h${remMinutes > 0 ? ` ${remMinutes}m` : ''}`
+  }
+
+  const days = Math.floor(hours / 24)
+  const remHours = hours % 24
+  if (days < 7) {
+    return `Offline for ${days}d${remHours > 0 ? ` ${remHours}h` : ''}`
+  }
+
+  if (days < 30) {
+    return `Offline for ${days}d`
+  }
+
+  const months = Math.floor(days / 30)
+  return `Offline for ${months}mo`
+}
+
 
 
 

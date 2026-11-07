@@ -1059,23 +1059,126 @@
 .user-status-cell {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   font-size: 13px;
 }
 
+.status-indicator-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .online-indicator {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
 }
 
 .online-indicator.online {
-  background: #39A935;
-  box-shadow: 0 0 0 2px rgba(57, 169, 53, 0.25);
+  background: #22C55E;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+  animation: pulse-green-ring 2s infinite ease-in-out;
 }
 
 .online-indicator.offline {
-  background: #CBD5E1;
+  background: #94A3B8;
+  box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2);
+}
+
+@keyframes pulse-green-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+.user-status-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.status-primary-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-label {
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.status-label.text-online {
+  color: #16A34A;
+}
+
+.status-label.text-offline {
+  color: #64748B;
+}
+
+.status-duration-subtext {
+  font-size: 11px;
+  color: #94A3B8;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+/* User Avatar with Presence Ring & Badge in User Account Cell */
+.user-avatar-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-avatar.is-online {
+  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 3.5px #22C55E !important;
+}
+
+.user-avatar.is-offline {
+  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 3px #CBD5E1 !important;
+}
+
+.avatar-presence-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #FFFFFF;
+}
+
+.avatar-presence-badge.online {
+  background: #22C55E;
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4);
+}
+
+.avatar-presence-badge.offline {
+  background: #94A3B8;
+}
+
+.stat-online .live-pulse.online {
+  background: #22C55E !important;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.35) !important;
+  animation: pulse-green-ring 2s infinite ease-in-out;
+}
+
+.stat-online .live-pulse.offline {
+  background: #94A3B8 !important;
+  box-shadow: none !important;
 }
 
 .badge-on-hold {
@@ -1251,3 +1354,153 @@
     flex: 1;
   }
 }
+
+/* =========================================================
+   ADMIN DASHBOARD FLOWCHART SECTION (FIGURE 13)
+   ========================================================= */
+.admin-flowchart-card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(18, 59, 102, 0.04);
+  padding: 24px;
+  margin-top: 8px;
+}
+
+.flowchart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.flowchart-title-area h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #123b66;
+}
+
+.flowchart-title-area p {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.flowchart-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-flowchart-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  transition: all 0.2s ease;
+}
+
+.btn-flowchart-action:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.btn-flowchart-action.btn-primary {
+  background: #1674d1;
+  color: #ffffff;
+  border-color: #1674d1;
+}
+
+.btn-flowchart-action.btn-primary:hover {
+  background: #125db0;
+  border-color: #125db0;
+}
+
+.flowchart-viewer-wrap {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 20px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.flowchart-svg-img {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  min-width: 780px;
+  display: block;
+}
+
+.flowchart-modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.flowchart-module-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.module-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.module-card-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #123b66;
+}
+
+.module-connector-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.module-connector-badge.badge-a { background: #dbeafe; color: #1e40af; }
+.module-connector-badge.badge-b { background: #fef3c7; color: #92400e; }
+.module-connector-badge.badge-c { background: #fee2e2; color: #991b1b; }
+.module-connector-badge.badge-d { background: #ffedd5; color: #9a3412; }
+.module-connector-badge.badge-e { background: #dcfce7; color: #166534; }
+.module-connector-badge.badge-f { background: #e0e7ff; color: #3730a3; }
+.module-connector-badge.badge-g { background: #ccfbf1; color: #115e59; }
+.module-connector-badge.badge-h { background: #f1f5f9; color: #334155; }
+.module-connector-badge.badge-loop { background: #f3e8ff; color: #6b21a8; }
+
+.module-desc {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
