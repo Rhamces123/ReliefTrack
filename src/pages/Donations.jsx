@@ -321,8 +321,8 @@ export default function Donations() {
             <h3 className="don-modal-title">{editingDocId ? '✏️ Edit donation' : '➕ New donation'}</h3>
             <form onSubmit={handleSubmit}>
               <div className="requests-form-field">
-                <label htmlFor="don-agency">Agency name</label>
-                <input id="don-agency" type="text" placeholder="e.g. Philippine Red Cross" value={form.agency} onChange={(e) => setForm((f) => ({ ...f, agency: e.target.value }))} required disabled={saving} />
+                <label htmlFor="don-agency">Name</label>
+                <input id="don-agency" type="text" placeholder="e.g. Juan Dela Cruz, Philippine Red Cross" value={form.agency} onChange={(e) => setForm((f) => ({ ...f, agency: e.target.value }))} required disabled={saving} />
               </div>
               <div className="requests-form-field">
                 <label htmlFor="don-type">Donation type</label>
