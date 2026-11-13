@@ -1032,6 +1032,166 @@
   color: #123B66;
 }
 
+/* Household Family Members List */
+.requests-members-section {
+  padding-bottom: 14px;
+}
+
+.requests-add-member-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: #1674D1;
+  color: #FFFFFF;
+  border: none;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(22, 116, 209, 0.2);
+}
+
+.requests-add-member-btn:hover:not(:disabled) {
+  background: #125fb0;
+  transform: translateY(-1px);
+}
+
+.requests-add-member-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.requests-members-empty {
+  padding: 16px 14px;
+  border: 1.5px dashed #CBD5E1;
+  border-radius: 8px;
+  background: #FFFFFF;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.requests-members-empty p {
+  margin: 0;
+  font-size: 12px;
+  color: #64748B;
+  line-height: 1.5;
+}
+
+.requests-members-empty strong {
+  color: #123B66;
+}
+
+.requests-members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.requests-member-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 10px 12px 6px 12px;
+  box-shadow: 0 1px 3px rgba(18, 59, 102, 0.04);
+}
+
+.requests-member-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.requests-member-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1674D1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.requests-member-remove-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  color: #DC2626;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+}
+
+.requests-member-remove-btn:hover:not(:disabled) {
+  background: #FEE2E2;
+}
+
+.requests-member-card-grid {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1fr 1fr;
+  gap: 10px;
+}
+
+.requests-form-field.compact {
+  margin-bottom: 8px;
+}
+
+.requests-form-field.compact label {
+  font-size: 10px;
+  margin-bottom: 4px;
+  letter-spacing: 0.3px;
+}
+
+.requests-form-field.compact input,
+.requests-form-field.compact select {
+  padding: 7px 10px;
+  font-size: 13px;
+}
+
+/* Detail Drawer Members Table */
+.requests-detail-members-table-wrap {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+  margin-top: 8px;
+}
+
+.requests-detail-members-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.requests-detail-members-table th {
+  background: #F8FAFC;
+  padding: 8px 10px;
+  color: #475569;
+  font-weight: 600;
+  border-bottom: 1px solid #E2E8F0;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.requests-detail-members-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #F1F5F9;
+  color: #1E293B;
+}
+
+.requests-detail-members-table tr:last-child td {
+  border-bottom: none;
+}
+
 .requests-form-field {
   margin-bottom: 16px;
 }
@@ -1427,5 +1587,8 @@
   .requests-search-wrap {
     width: 100%;
     min-width: 0;
+  }
+  .requests-member-card-grid {
+    grid-template-columns: 1fr;
   }
 }

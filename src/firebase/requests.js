@@ -68,6 +68,7 @@ export async function createReliefRequest(
     repCivilStatus,
     repOccupation,
     repMonthlyIncome,
+    familyMembersList,
     lat,
     lng,
   },
@@ -97,6 +98,16 @@ export async function createReliefRequest(
     repCivilStatus: (repCivilStatus || '').trim(),
     repOccupation: (repOccupation || '').trim(),
     repMonthlyIncome: (repMonthlyIncome || '').trim(),
+    familyMembersList: Array.isArray(familyMembersList)
+      ? familyMembersList
+          .map((m) => ({
+            name: (m.name || '').trim(),
+            relation: (m.relation || '').trim(),
+            age: m.age ? (Number(m.age) || m.age) : '',
+            sex: (m.sex || '').trim(),
+          }))
+          .filter((m) => m.name || m.relation || m.age || m.sex)
+      : [],
     categories: {},
     status: 'pending',
     createdBy: user.uid,
@@ -133,6 +144,7 @@ export async function createReliefRequest(
         repCivilStatus: data.repCivilStatus,
         repOccupation: data.repOccupation,
         repMonthlyIncome: data.repMonthlyIncome,
+        familyMembersList: data.familyMembersList,
         description: data.description,
       },
       user

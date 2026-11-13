@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1090" width="1200" height="1090" style="background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
+    </marker>
+  </defs>
+
+  <style>
+    .flow-rect { fill: #ffffff; stroke: #000000; stroke-width: 1.5; }
+    .flow-text { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #000000; text-anchor: middle; dominant-baseline: middle; }
+    .flow-edge { fill: none; stroke: #000000; stroke-width: 1.5; marker-end: url(#arrow); }
+    .edge-label { font-family: Helvetica, Arial, sans-serif; font-size: 10.5px; fill: #000000; font-weight: normal; }
+    .caption-text { font-family: Helvetica, Arial, sans-serif; font-size: 14px; fill: #000000; text-anchor: middle; font-weight: bold; }
+    .lane-label { font-family: Helvetica, Arial, sans-serif; font-size: 11.5px; fill: #0284c7; font-weight: bold; text-anchor: middle; }
+  </style>
+
+  <!-- ==================== HEADER ARROWS ==================== -->
+  <!-- Top Connector to Page Process -->
+  <path d="M 600 80 L 600 120" class="flow-edge" />
+  <!-- Page Process to Canvas Render -->
+  <path d="M 600 170 L 600 210" class="flow-edge" />
+  <!-- Canvas Render to Plot Incidents -->
+  <path d="M 600 260 L 600 300" class="flow-edge" />
+  <!-- Plot Incidents to Tool Router Decision -->
+  <path d="M 600 350 L 600 395" class="flow-edge" />
+
+  <!-- ==================== TOOL ROUTER DISTRIBUTION (SPACIOUS) ==================== -->
+  <!-- Branch 1: Search / GPS (Left) -->
+  <path d="M 490 430 L 180 430 L 180 490" class="flow-edge" />
+  <text x="320" y="420" class="edge-label">Search / GPS</text>
+
+  <!-- Branch 2: Layers & Views (Center-Left) -->
+  <path d="M 545 465 L 460 465 L 460 490" class="flow-edge" />
+  <text x="495" y="458" class="edge-label">Layers</text>
+
+  <!-- Branch 3: Shelters & Schools (Center-Right) -->
+  <path d="M 655 465 L 740 465 L 740 490" class="flow-edge" />
+  <text x="705" y="458" class="edge-label">Shelters</text>
+
+  <!-- Branch 4: Incident Pins (Far Right) -->
+  <path d="M 710 430 L 1020 430 L 1020 490" class="flow-edge" />
+  <text x="870" y="420" class="edge-label">Pin Details</text>
+
+
+  <!-- ==================== BRANCH 1 ARROWS (SEARCH / GPS) ==================== -->
+  <path d="M 180 536 L 180 576" class="flow-edge" />
+  <!-- Search Option -->
+  <path d="M 95 608 L 110 608 L 110 675" class="flow-edge" />
+  <text x="85" y="640" class="edge-label">Search</text>
+  <!-- GPS Option -->
+  <path d="M 265 608 L 250 608 L 250 675" class="flow-edge" />
+  <text x="260" y="640" class="edge-label">My GPS</text>
+
+  <!-- Sub-branch down to Fly/Center -->
+  <path d="M 110 723 L 110 758" class="flow-edge" />
+  <path d="M 250 723 L 250 758" class="flow-edge" />
+
+  <!-- Converge to B1 Output -->
+  <path d="M 110 806 L 110 846 L 150 846" class="flow-edge" />
+  <path d="M 250 806 L 250 846 L 210 846" class="flow-edge" />
+  <!-- B1 Output to Admin Dashboard -->
+  <path d="M 180 894 L 180 939" class="flow-edge" />
+
+
+  <!-- ==================== BRANCH 2 ARROWS (LAYERS & VIEWS) ==================== -->
+  <path d="M 460 536 L 460 576" class="flow-edge" />
+  <!-- Satellite Option -->
+  <path d="M 375 608 L 390 608 L 390 675" class="flow-edge" />
+  <text x="360" y="640" class="edge-label">Satellite</text>
+  <!-- Street View Option -->
+  <path d="M 545 608 L 530 608 L 530 675" class="flow-edge" />
+  <text x="540" y="640" class="edge-label">Street View</text>
+
+  <!-- Sub-branch down -->
+  <path d="M 390 723 L 390 758" class="flow-edge" />
+  <path d="M 530 723 L 530 758" class="flow-edge" />
+
+  <!-- Converge to B2 Output -->
+  <path d="M 390 806 L 390 846 L 430 846" class="flow-edge" />
+  <path d="M 530 806 L 530 846 L 490 846" class="flow-edge" />
+  <!-- B2 Output to Admin Dashboard -->
+  <path d="M 460 894 L 460 939" class="flow-edge" />
+
+
+  <!-- ==================== BRANCH 3 ARROWS (SHELTERS & SCHOOLS) ==================== -->
+  <path d="M 740 536 L 740 576" class="flow-edge" />
+  <!-- Evac Centers Option -->
+  <path d="M 655 608 L 670 608 L 670 675" class="flow-edge" />
+  <text x="640" y="640" class="edge-label">Evac</text>
+  <!-- All Schools Option -->
+  <path d="M 825 608 L 810 608 L 810 675" class="flow-edge" />
+  <text x="825" y="640" class="edge-label">Schools</text>
+
+  <!-- Sub-branch down -->
+  <path d="M 670 723 L 670 758" class="flow-edge" />
+  <path d="M 810 723 L 810 758" class="flow-edge" />
+
+  <!-- Converge to B3 Output -->
+  <path d="M 670 806 L 670 846 L 710 846" class="flow-edge" />
+  <path d="M 810 806 L 810 846 L 770 846" class="flow-edge" />
+  <!-- B3 Output to Admin Dashboard -->
+  <path d="M 740 894 L 740 939" class="flow-edge" />
+
+
+  <!-- ==================== BRANCH 4 ARROWS (INCIDENT PINS) ==================== -->
+  <path d="M 1020 536 L 1020 576" class="flow-edge" />
+  <!-- Marker Click Yes -->
+  <path d="M 1020 640 L 1020 675" class="flow-edge" />
+  <text x="1032" y="658" class="edge-label">Yes</text>
+  <!-- Marker Click No (local loop) -->
+  <path d="M 1105 608 L 1130 608 L 1130 513 L 1115 513" class="flow-edge" />
+  <text x="1135" y="560" class="edge-label">No</text>
+
+  <!-- Popup to Details Decision -->
+  <path d="M 1020 723 L 1020 758" class="flow-edge" />
+
+  <!-- View Details Yes -->
+  <path d="M 1020 814 L 1020 846" class="flow-edge" />
+  <text x="1032" y="830" class="edge-label">Yes</text>
+
+  <!-- View Details No / Close to Exit -->
+  <path d="M 940 786 L 910 786 L 910 966 L 975 966" class="flow-edge" />
+  <text x="880" y="776" class="edge-label">Close</text>
+
+  <!-- Details to Admin Dashboard -->
+  <path d="M 1020 894 L 1020 939" class="flow-edge" />
+
+
+  <!-- ==================== SHAPES & LABELS ==================== -->
+
+  <!-- Top Entry Off-Page Connector Map -->
+  <polygon points="575,30 625,30 625,67 600,80 575,67" class="flow-rect" />
+  <text x="600" y="52" class="flow-text" style="font-weight: bold; font-size: 13px;">Map</text>
+
+  <!-- Interactive GIS Map Page -->
+  <rect x="450" y="120" width="300" height="50" class="flow-rect" />
+  <text x="600" y="139" class="flow-text" style="font-weight: bold; font-size: 11.5px;">Interactive GIS Map Page (/map)</text>
+  <text x="600" y="154" class="flow-text" style="font-size: 9.5px; fill: #475569;">City of Naga Operations Active</text>
+
+  <!-- Render Naga City Canvas -->
+  <polygon points="440,210 770,210 750,260 420,260" class="flow-rect" />
+  <text x="595" y="229" class="flow-text">Render Naga City Map Canvas &amp; Boundary</text>
+  <text x="595" y="243" class="flow-text" style="font-size: 9.5px; fill: #475569;">(Centered at 10.2085, 123.7591 with Green Polygon Border)</text>
+
+  <!-- Plot Real-Time Incident Markers -->
+  <polygon points="440,300 770,300 750,350 420,350" class="flow-rect" />
+  <text x="595" y="319" class="flow-text">Load &amp; Plot Real-Time Incident Markers</text>
+  <text x="595" y="333" class="flow-text" style="font-size: 9.5px; fill: #475569;">(Red = Pending, Green = In-Progress, Blue = Completed)</text>
+
+  <!-- Central Tool Router Decision -->
+  <polygon points="600,395 710,430 600,465 490,430" class="flow-rect" />
+  <text x="600" y="424" class="flow-text" style="font-weight: bold; font-size: 11px;">Select Map Tool</text>
+  <text x="600" y="438" class="flow-text">or Action:</text>
+
+
+  <!-- ==================== BRANCH 1: SEARCH & GPS ==================== -->
+  <rect x="85" y="490" width="190" height="46" class="flow-rect" />
+  <text x="180" y="513" class="lane-label">1. SEARCH &amp; GPS TOOLS</text>
+
+  <polygon points="180,576 265,608 180,640 95,608" class="flow-rect" />
+  <text x="180" y="608" class="flow-text" style="font-size: 9.5px;">Search Place or GPS?</text>
+
+  <polygon points="50,675 170,675 160,723 40,723" class="flow-rect" />
+  <text x="105" y="693" class="flow-text" style="font-size: 9px;">Enter Address / Name</text>
+  <text x="105" y="707" class="flow-text" style="font-size: 8.5px; fill: #475569;">in Search Bar</text>
+
+  <rect x="45" y="758" width="130" height="48" class="flow-rect" />
+  <text x="110" y="776" class="flow-text" style="font-size: 9px;">Geocode Location &amp;</text>
+  <text x="110" y="790" class="flow-text" style="font-size: 8.5px; fill: #475569;">Fly to Bounding Box</text>
+
+  <rect x="185" y="675" width="130" height="48" class="flow-rect" />
+  <text x="250" y="693" class="flow-text" style="font-size: 9px;">Click [My Location]</text>
+  <text x="250" y="707" class="flow-text" style="font-size: 8.5px; fill: #475569;">Toolbar Button</text>
+
+  <rect x="185" y="758" width="130" height="48" class="flow-rect" />
+  <text x="250" y="776" class="flow-text" style="font-size: 9px;">Get GPS &amp; Center</text>
+  <text x="250" y="790" class="flow-text" style="font-size: 8.5px; fill: #475569;">on Blue User Pin</text>
+
+  <polygon points="95,846 270,846 255,894 80,894" class="flow-rect" />
+  <text x="175" y="870" class="flow-text" style="font-size: 9.5px;">Update Map View &amp; Marker</text>
+
+  <polygon points="135,939 225,939 225,975 180,994 135,975" class="flow-rect" />
+  <text x="180" y="960" class="flow-text" style="font-weight: bold; font-size: 10px;">Admin</text>
+  <text x="180" y="972" class="flow-text" style="font-size: 9.5px;">Dashboard</text>
+
+
+  <!-- ==================== BRANCH 2: LAYERS & VIEWS ==================== -->
+  <rect x="365" y="490" width="190" height="46" class="flow-rect" />
+  <text x="460" y="513" class="lane-label">2. LAYERS &amp; STREET VIEW</text>
+
+  <polygon points="460,576 545,608 460,640 375,608" class="flow-rect" />
+  <text x="460" y="608" class="flow-text" style="font-size: 9.5px;">Satellite or Street View?</text>
+
+  <rect x="325" y="675" width="130" height="48" class="flow-rect" />
+  <text x="390" y="693" class="flow-text" style="font-size: 9px;">Click [Satellite View]</text>
+  <text x="390" y="707" class="flow-text" style="font-size: 8.5px; fill: #475569;">Toolbar Button</text>
+
+  <rect x="325" y="758" width="130" height="48" class="flow-rect" />
+  <text x="390" y="776" class="flow-text" style="font-size: 9px;">Toggle Satellite</text>
+  <text x="390" y="790" class="flow-text" style="font-size: 8.5px; fill: #475569;">vs Street Map Tile</text>
+
+  <rect x="465" y="675" width="130" height="48" class="flow-rect" />
+  <text x="530" y="693" class="flow-text" style="font-size: 9px;">Click [Street View]</text>
+  <text x="530" y="707" class="flow-text" style="font-size: 8.5px; fill: #475569;">Toolbar Button</text>
+
+  <rect x="465" y="758" width="130" height="48" class="flow-rect" />
+  <text x="530" y="776" class="flow-text" style="font-size: 9px;">Click Map Coordinate</text>
+  <text x="530" y="790" class="flow-text" style="font-size: 8.5px; fill: #475569;">Open 360° Panorama</text>
+
+  <polygon points="375,846 550,846 535,894 360,894" class="flow-rect" />
+  <text x="455" y="870" class="flow-text" style="font-size: 9.5px;">Display Selected Map Mode</text>
+
+  <polygon points="415,939 505,939 505,975 460,994 415,975" class="flow-rect" />
+  <text x="460" y="960" class="flow-text" style="font-weight: bold; font-size: 10px;">Admin</text>
+  <text x="460" y="972" class="flow-text" style="font-size: 9.5px;">Dashboard</text>
+
+
+  <!-- ==================== BRANCH 3: SHELTERS & SCHOOLS ==================== -->
+  <rect x="645" y="490" width="190" height="46" class="flow-rect" />
+  <text x="740" y="513" class="lane-label">3. EVAC &amp; SCHOOL LAYERS</text>
+
+  <polygon points="740,576 825,608 740,640 655,608" class="flow-rect" />
+  <text x="740" y="608" class="flow-text" style="font-size: 9.5px;">Evac or All Schools?</text>
+
+  <rect x="605" y="675" width="130" height="48" class="flow-rect" />
+  <text x="670" y="693" class="flow-text" style="font-size: 9px;">Click [Evac Centers]</text>
+  <text x="670" y="707" class="flow-text" style="font-size: 8.5px; fill: #475569;">Toolbar Button</text>
+
+  <rect x="605" y="758" width="130" height="48" class="flow-rect" />
+  <text x="670" y="776" class="flow-text" style="font-size: 9px;">Find Schools in 5km</text>
+  <text x="670" y="790" class="flow-text" style="font-size: 8.5px; fill: #475569;">Plot Purple Pins</text>
+
+  <rect x="745" y="675" width="130" height="48" class="flow-rect" />
+  <text x="810" y="693" class="flow-text" style="font-size: 9px;">Click [All Schools]</text>
+  <text x="810" y="707" class="flow-text" style="font-size: 8.5px; fill: #475569;">(Admin Only Button)</text>
+
+  <rect x="745" y="758" width="130" height="48" class="flow-rect" />
+  <text x="810" y="776" class="flow-text" style="font-size: 9px;">Query Naga Registry</text>
+  <text x="810" y="790" class="flow-text" style="font-size: 8.5px; fill: #475569;">Plot Amber Pins</text>
+
+  <polygon points="655,846 830,846 815,894 640,894" class="flow-rect" />
+  <text x="735" y="870" class="flow-text" style="font-size: 9.5px;">Display Shelter Pins on Map</text>
+
+  <polygon points="695,939 785,939 785,975 740,994 695,975" class="flow-rect" />
+  <text x="740" y="960" class="flow-text" style="font-weight: bold; font-size: 10px;">Admin</text>
+  <text x="740" y="972" class="flow-text" style="font-size: 9.5px;">Dashboard</text>
+
+
+  <!-- ==================== BRANCH 4: INCIDENT INSPECTION ==================== -->
+  <rect x="925" y="490" width="190" height="46" class="flow-rect" />
+  <text x="1020" y="513" class="lane-label">4. INCIDENT PIN INSPECT</text>
+
+  <polygon points="1020,576 1105,608 1020,640 935,608" class="flow-rect" />
+  <text x="1020" y="608" class="flow-text" style="font-size: 9.5px;">Click Marker on Map?</text>
+
+  <polygon points="935,675 1110,675 1095,723 920,723" class="flow-rect" />
+  <text x="1015" y="693" class="flow-text" style="font-size: 9px;">Open Interactive Popup Card</text>
+  <text x="1015" y="707" class="flow-text" style="font-size: 8.5px; fill: #475569;">(Family, Needs, Status, Evac)</text>
+
+  <polygon points="1020,758 1100,786 1020,814 940,786" class="flow-rect" />
+  <text x="1020" y="786" class="flow-text" style="font-size: 9.5px;">View Details?</text>
+
+  <rect x="925" y="846" width="190" height="48" class="flow-rect" />
+  <text x="1020" y="864" class="flow-text" style="font-size: 9px;">Open Full Request Modal</text>
+  <text x="1020" y="878" class="flow-text" style="font-size: 8.5px; fill: #475569;">(View Aid &amp; Action Buttons)</text>
+
+  <polygon points="975,939 1065,939 1065,975 1020,994 975,975" class="flow-rect" />
+  <text x="1020" y="960" class="flow-text" style="font-weight: bold; font-size: 10px;">Admin</text>
+  <text x="1020" y="972" class="flow-text" style="font-size: 9.5px;">Dashboard</text>
+
+  <!-- Caption Figure 19 -->
+  <text x="600" y="1055" class="caption-text">Figure 19: ReliefTrack Interactive Map Flowchart</text>
+</svg>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1150 1060" width="1150" height="1060" style="background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
+    </marker>
+  </defs>
+
+  <style>
+    .flow-rect { fill: #ffffff; stroke: #000000; stroke-width: 1.5; }
+    .flow-text { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #000000; text-anchor: middle; dominant-baseline: middle; }
+    .flow-edge { fill: none; stroke: #000000; stroke-width: 1.5; marker-end: url(#arrow); }
+    .edge-line { fill: none; stroke: #000000; stroke-width: 1.5; }
+    .edge-label { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #000000; font-weight: normal; }
+    .caption-text { font-family: Helvetica, Arial, sans-serif; font-size: 14px; fill: #000000; text-anchor: middle; font-weight: bold; }
+  </style>
+
+  <!-- TOP HEADER ARROWS -->
+  <!-- offpage_c -> proc_main -->
+  <path d="M 550 85 L 550 115" class="flow-edge" />
+  <!-- proc_main -> io_header -->
+  <path d="M 550 161 L 550 185" class="flow-edge" />
+  <!-- io_header -> io_table -->
+  <path d="M 550 231 L 550 255" class="flow-edge" />
+
+  <!-- DISTRIBUTION BUS (Top to 4 clean vertical columns) -->
+  <path d="M 550 301 L 550 328" class="edge-line" />
+  <path d="M 150 328 L 950 328" class="edge-line" />
+
+  <!-- Down into Column 1 -->
+  <path d="M 150 328 L 150 360" class="flow-edge" />
+  <!-- Down into Column 2 -->
+  <path d="M 410 328 L 410 360" class="flow-edge" />
+  <!-- Down into Column 3 -->
+  <path d="M 690 328 L 690 360" class="flow-edge" />
+  <!-- Down into Column 4 -->
+  <path d="M 950 328 L 950 360" class="flow-edge" />
+
+  <!-- ==================== COLUMN 1 ARROWS ==================== -->
+  <path d="M 150 406 L 150 435" class="flow-edge" />
+  <!-- Yes down to filter -->
+  <path d="M 150 501 L 150 525" class="flow-edge" />
+  <text x="162" y="513" class="edge-label">Yes</text>
+  <!-- No left to exit -->
+  <path d="M 70 468 L 35 468 L 35 650 L 150 650 L 150 675" class="flow-edge" />
+  <text x="50" y="458" class="edge-label">No</text>
+  <!-- filter -> display -->
+  <path d="M 150 571 L 150 595" class="flow-edge" />
+  <!-- display -> admin -->
+  <path d="M 150 641 L 150 675" class="flow-edge" />
+
+  <!-- ==================== COLUMN 2 ARROWS (ADD ITEM) ==================== -->
+  <path d="M 410 406 L 410 435" class="flow-edge" />
+  <!-- Yes down to Open Form -->
+  <path d="M 410 501 L 410 525" class="flow-edge" />
+  <text x="422" y="513" class="edge-label">Yes</text>
+  <!-- No loop up locally inside col2 -->
+  <path d="M 490 468 L 515 468 L 515 383 L 500 383" class="flow-edge" />
+  <text x="522" y="425" class="edge-label">No</text>
+  <!-- Open Form -> Input -->
+  <path d="M 410 571 L 410 595" class="flow-edge" />
+  <!-- Input -> Valid Decision -->
+  <path d="M 410 643 L 410 670" class="flow-edge" />
+  <!-- Valid Yes -> Save -->
+  <path d="M 410 736 L 410 760" class="flow-edge" />
+  <text x="422" y="748" class="edge-label">Yes</text>
+  <!-- Valid No -> Show Error Alert -->
+  <path d="M 490 703 L 500 703" class="flow-edge" />
+  <text x="495" y="693" class="edge-label">No</text>
+  <!-- Error Alert loops locally back up to Input -->
+  <path d="M 562 682 L 562 619 L 505 619" class="flow-edge" />
+  <!-- Save -> Success -->
+  <path d="M 410 806 L 410 830" class="flow-edge" />
+  <!-- Success -> Update -->
+  <path d="M 410 876 L 410 900" class="flow-edge" />
+
+  <!-- ==================== COLUMN 3 ARROWS (EDIT ITEM) ==================== -->
+  <path d="M 690 406 L 690 435" class="flow-edge" />
+  <!-- Yes down to Open Edit Form -->
+  <path d="M 690 501 L 690 525" class="flow-edge" />
+  <text x="702" y="513" class="edge-label">Yes</text>
+  <!-- No loop up locally inside col3 -->
+  <path d="M 770 468 L 795 468 L 795 383 L 775 383" class="flow-edge" />
+  <text x="802" y="425" class="edge-label">No</text>
+  <!-- Open Edit -> Modify -->
+  <path d="M 690 571 L 690 595" class="flow-edge" />
+  <!-- Modify -> Save Changes -->
+  <path d="M 690 643 L 690 670" class="flow-edge" />
+  <!-- Save Changes -> Success -->
+  <path d="M 690 716 L 690 745" class="flow-edge" />
+
+  <!-- ==================== COLUMN 4 ARROWS (DELETE & REPORT) ==================== -->
+  <path d="M 950 406 L 950 435" class="flow-edge" />
+  <!-- Left to Delete -->
+  <path d="M 870 468 L 880 468 L 880 525" class="flow-edge" />
+  <text x="850" y="460" class="edge-label">Delete</text>
+  <!-- Right to Report -->
+  <path d="M 1030 468 L 1020 468 L 1020 525" class="flow-edge" />
+  <text x="1035" y="460" class="edge-label">Report</text>
+  <!-- Confirm Delete Yes -> Delete DB -->
+  <path d="M 880 581 L 880 610" class="flow-edge" />
+  <text x="892" y="595" class="edge-label">Yes</text>
+  <!-- Delete DB -> Remove from Table -->
+  <path d="M 880 654 L 880 675" class="flow-edge" />
+  <!-- Prepare Report -> Display Report -->
+  <path d="M 1020 571 L 1020 595" class="flow-edge" />
+
+
+  <!-- ==================== SHAPES & LABELS ==================== -->
+
+  <!-- Top Offpage Connector C -->
+  <polygon points="525,30 575,30 575,67 550,85 525,67" class="flow-rect" />
+  <text x="550" y="55" class="flow-text" style="font-weight: bold; font-size: 13px;">C</text>
+
+  <!-- proc_main -->
+  <rect x="430" y="115" width="240" height="46" class="flow-rect" />
+  <text x="550" y="138" class="flow-text" style="font-weight: bold;">Inventory Management Page</text>
+
+  <!-- io_header -->
+  <polygon points="415,185 700,185 685,231 400,231" class="flow-rect" />
+  <text x="550" y="208" class="flow-text">Display Total Items and Low Stock Count</text>
+
+  <!-- io_table -->
+  <polygon points="415,255 700,255 685,301 400,301" class="flow-rect" />
+  <text x="550" y="278" class="flow-text">Display Items Table &amp; Category Tabs</text>
+
+  <!-- COLUMN 1 SHAPES -->
+  <rect x="65" y="360" width="170" height="46" class="flow-rect" />
+  <text x="150" y="383" class="flow-text" style="font-weight: bold;">Filter by Category</text>
+
+  <polygon points="150,435 230,468 150,501 70,468" class="flow-rect" />
+  <text x="150" y="462" class="flow-text">Select Category tab</text>
+  <text x="150" y="475" class="flow-text">(Food, Water, etc.)?</text>
+
+  <rect x="70" y="525" width="160" height="46" class="flow-rect" />
+  <text x="150" y="548" class="flow-text">Filter Supplies List</text>
+
+  <polygon points="80,595 235,595 220,641 65,641" class="flow-rect" />
+  <text x="150" y="618" class="flow-text">Display Filtered Items</text>
+
+  <polygon points="105,675 195,675 195,715 150,735 105,715" class="flow-rect" />
+  <text x="150" y="696" class="flow-text" style="font-weight: bold;">Admin</text>
+  <text x="150" y="709" class="flow-text">Dashboard</text>
+
+  <!-- COLUMN 2 SHAPES (ADD ITEM) -->
+  <rect x="320" y="360" width="180" height="46" class="flow-rect" />
+  <text x="410" y="383" class="flow-text" style="font-weight: bold;">Add Item Workflow</text>
+
+  <polygon points="410,435 490,468 410,501 330,468" class="flow-rect" />
+  <text x="410" y="468" class="flow-text">Click "+ Add item"?</text>
+
+  <rect x="325" y="525" width="170" height="46" class="flow-rect" />
+  <text x="410" y="548" class="flow-text">Open Add Item Form</text>
+
+  <polygon points="330,595 505,595 490,643 315,643" class="flow-rect" />
+  <text x="410" y="613" class="flow-text">Enter Item Name, Category,</text>
+  <text x="410" y="627" class="flow-text">Quantity, and Notes</text>
+
+  <polygon points="410,670 490,703 410,736 330,703" class="flow-rect" />
+  <text x="410" y="697" class="flow-text">Is input valid?</text>
+  <text x="410" y="710" class="flow-text">(Name filled &amp; Qty &gt;= 0)</text>
+
+  <polygon points="510,682 625,682 615,724 500,724" class="flow-rect" />
+  <text x="562" y="703" class="flow-text" style="font-size: 9.5px;">Show Error</text>
+
+  <rect x="320" y="760" width="180" height="46" class="flow-rect" />
+  <text x="410" y="783" class="flow-text">Save Item to Database</text>
+
+  <polygon points="335,830 500,830 485,876 320,876" class="flow-rect" />
+  <text x="410" y="853" class="flow-text">Show Success &amp; Close Form</text>
+
+  <rect x="320" y="900" width="180" height="46" class="flow-rect" />
+  <text x="410" y="923" class="flow-text">Update Table &amp; Stock Totals</text>
+
+  <!-- COLUMN 3 SHAPES (EDIT ITEM) -->
+  <rect x="605" y="360" width="170" height="46" class="flow-rect" />
+  <text x="690" y="383" class="flow-text" style="font-weight: bold;">Edit Item Workflow</text>
+
+  <polygon points="690,435 770,468 690,501 610,468" class="flow-rect" />
+  <text x="690" y="468" class="flow-text">Click [Edit] Button?</text>
+
+  <rect x="605" y="525" width="170" height="46" class="flow-rect" />
+  <text x="690" y="548" class="flow-text">Open Edit Form</text>
+
+  <polygon points="615,595 780,595 765,643 600,643" class="flow-rect" />
+  <text x="690" y="619" class="flow-text">Update Details or Quantity</text>
+
+  <rect x="605" y="670" width="170" height="46" class="flow-rect" />
+  <text x="690" y="693" class="flow-text">Save Changes to Database</text>
+
+  <polygon points="615,745 780,745 765,791 600,791" class="flow-rect" />
+  <text x="690" y="768" class="flow-text">Show Success &amp; Refresh Table</text>
+
+  <!-- COLUMN 4 SHAPES (DELETE & REPORT) -->
+  <rect x="860" y="360" width="180" height="46" class="flow-rect" />
+  <text x="950" y="383" class="flow-text" style="font-weight: bold;">Delete &amp; Report Actions</text>
+
+  <polygon points="950,435 1030,468 950,501 870,468" class="flow-rect" />
+  <text x="950" y="468" class="flow-text">Delete or Report?</text>
+
+  <polygon points="880,525 945,553 880,581 815,553" class="flow-rect" />
+  <text x="880" y="553" class="flow-text" style="font-size: 9.5px;">Confirm Delete?</text>
+
+  <rect x="815" y="610" width="130" height="44" class="flow-rect" />
+  <text x="880" y="632" class="flow-text" style="font-size: 10px;">Delete from Database</text>
+
+  <polygon points="825,675 950,675 935,719 810,719" class="flow-rect" />
+  <text x="880" y="697" class="flow-text" style="font-size: 9.5px;">Remove from Table</text>
+
+  <rect x="955" y="525" width="130" height="46" class="flow-rect" />
+  <text x="1020" y="548" class="flow-text" style="font-size: 10px;">Prepare Report Data</text>
+
+  <polygon points="965,595 1090,595 1075,641 950,641" class="flow-rect" />
+  <text x="1020" y="618" class="flow-text" style="font-size: 9.5px;">Display / Print Report</text>
+
+  <!-- Figure 16 Caption -->
+  <text x="550" y="990" class="caption-text">Figure 16: ReliefTrack Inventory Management Flowchart</text>
+</svg>

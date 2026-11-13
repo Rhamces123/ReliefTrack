@@ -247,6 +247,19 @@ export default function Beneficiaries() {
                     <span className="benef-label">Contact</span>
                     <span>{f.contactNumber || '—'}</span>
                   </div>
+                  {f.familyMembersList && f.familyMembersList.length > 0 && (
+                    <div className="benef-card-row">
+                      <span className="benef-label">Members ({f.familyMembersList.length})</span>
+                      <span title={f.familyMembersList.map((m) => `${m.name || 'Member'} (${m.relation || 'Relative'})`).join(', ')}>
+                        {f.familyMembersList
+                          .map((m) => m.name || m.relation)
+                          .filter(Boolean)
+                          .slice(0, 3)
+                          .join(', ')}
+                        {f.familyMembersList.length > 3 && ` +${f.familyMembersList.length - 3} more`}
+                      </span>
+                    </div>
+                  )}
                   {f.houseOwnership && (
                     <div className="benef-card-row">
                       <span className="benef-label">House Ownership</span>

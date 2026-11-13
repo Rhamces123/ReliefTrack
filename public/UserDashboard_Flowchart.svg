@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 860" width="1080" height="860" style="background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
+    </marker>
+  </defs>
+
+  <style>
+    .flow-rect { fill: #ffffff; stroke: #000000; stroke-width: 1.5; }
+    .flow-text { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #000000; text-anchor: middle; dominant-baseline: middle; }
+    .flow-edge { fill: none; stroke: #000000; stroke-width: 1.5; marker-end: url(#arrow); stroke-linejoin: miter; stroke-linecap: square; }
+    .flow-edge-no-arrow { fill: none; stroke: #000000; stroke-width: 1.5; stroke-linejoin: miter; stroke-linecap: square; }
+    .edge-label { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #000000; font-weight: normal; }
+    .caption-text { font-family: Helvetica, Arial, sans-serif; font-size: 14px; fill: #000000; text-anchor: middle; font-weight: bold; }
+  </style>
+
+  <!-- ==================== TOP SPINE & DISTRIBUTOR BUS ==================== -->
+  <!-- Top Off-Page Entry -> User Dashboard box -->
+  <path d="M 540 88 L 540 130" class="flow-edge" />
+
+  <!-- User Dashboard box -> Horizontal bus line -->
+  <path d="M 540 178 L 540 220" class="flow-edge-no-arrow" />
+  <!-- Horizontal bus line spanning across 3 columns -->
+  <path d="M 200 220 L 880 220" class="flow-edge-no-arrow" />
+
+  <!-- Drops to each column -->
+  <!-- Col 1 Drop -->
+  <path d="M 200 220 L 200 260" class="flow-edge" />
+  <!-- Col 2 Drop -->
+  <path d="M 540 220 L 540 260" class="flow-edge" />
+  <!-- Col 3 Drop -->
+  <path d="M 880 220 L 880 260" class="flow-edge" />
+
+
+  <!-- ==================== COLUMN 1: RELIEF REQUESTS ==================== -->
+  <!-- My Relief Requests -> Off-Page Connector A (Straight horizontal line) -->
+  <path d="M 120 284 L 65 284" class="flow-edge" />
+
+  <!-- My Relief Requests -> Submit Relief Request -->
+  <path d="M 200 308 L 200 360" class="flow-edge" />
+
+  <!-- Submit Relief Request -> Input Aid Needs -->
+  <path d="M 200 408 L 200 460" class="flow-edge" />
+
+  <!-- Input Aid Needs -> Track Request Status -->
+  <path d="M 200 510 L 200 560" class="flow-edge" />
+
+  <!-- Track Request Status -> Display Request Status -->
+  <path d="M 200 608 L 200 660" class="flow-edge" />
+
+
+  <!-- ==================== COLUMN 2: DASHBOARD & ALERTS ==================== -->
+  <!-- Dashboard Overview -> Display Metric Cards -->
+  <path d="M 540 308 L 540 360" class="flow-edge" />
+
+  <!-- Display Metric Cards -> Relief Alerts -->
+  <path d="M 540 410 L 540 480" class="flow-edge" />
+
+  <!-- Relief Alerts -> Display Relief Advisory -->
+  <path d="M 540 528 L 540 580" class="flow-edge" />
+
+  <!-- Loopback from Display Relief Advisory back to Relief Alerts (Straight 90-degree lines) -->
+  <path d="M 640 605 L 670 605 L 670 504 L 625 504" class="flow-edge" />
+
+
+  <!-- ==================== COLUMN 3: REPORTS & SETTINGS ==================== -->
+  <!-- Reports -> Off-Page Connector F (Straight horizontal line) -->
+  <path d="M 960 284 L 1005 284" class="flow-edge" />
+
+  <!-- Reports -> Display Reports -->
+  <path d="M 880 308 L 880 360" class="flow-edge" />
+
+  <!-- Display Reports -> Settings -->
+  <path d="M 880 410 L 880 480" class="flow-edge" />
+
+  <!-- Settings -> Display Settings -->
+  <path d="M 880 528 L 880 580" class="flow-edge" />
+
+  <!-- Display Settings -> Decision Diamond (Save settings changes?) -->
+  <path d="M 880 630 L 880 680" class="flow-edge" />
+
+  <!-- Decision No (Right tip loops back up to Settings with straight 90-degree lines) -->
+  <path d="M 980 720 L 1010 720 L 1010 504 L 960 504" class="flow-edge" />
+  <text x="995" y="710" class="edge-label">No</text>
+
+  <!-- Decision Yes (Straight horizontal line at Y=720) -->
+  <path d="M 780 720 L 710 720" class="flow-edge" />
+  <text x="740" y="710" class="edge-label">Yes</text>
+
+  <!-- Successfully saved -> Off-Page Connector A1 (Straight horizontal line at Y=720) -->
+  <path d="M 560 720 L 500 720" class="flow-edge" />
+
+
+  <!-- ==================== SHAPES & LABELS ==================== -->
+
+  <!-- Top Entry Off-Page Connector: User Dashboard -->
+  <polygon points="495,30 585,30 585,68 540,88 495,68" class="flow-rect" />
+  <text x="540" y="52" class="flow-text">
+    <tspan x="540" dy="-7">User</tspan>
+    <tspan x="540" dy="14">Dashboard</tspan>
+  </text>
+
+  <!-- User Dashboard Box -->
+  <rect x="440" y="130" width="200" height="48" class="flow-rect" />
+  <text x="540" y="154" class="flow-text">User Dashboard</text>
+
+
+  <!-- COLUMN 1 SHAPES -->
+  <!-- My Relief Requests -->
+  <rect x="120" y="260" width="160" height="48" class="flow-rect" />
+  <text x="200" y="284" class="flow-text">My Relief Requests</text>
+
+  <!-- Off-Page Connector A (height 48, y 260) -->
+  <polygon points="15,260 65,260 65,296 40,308 15,296" class="flow-rect" />
+  <text x="40" y="284" class="flow-text" style="font-size: 13px;">A</text>
+
+  <!-- Submit Relief Request -->
+  <rect x="120" y="360" width="160" height="48" class="flow-rect" />
+  <text x="200" y="384" class="flow-text">Submit Relief Request</text>
+
+  <!-- Input Aid Needs -->
+  <polygon points="130,460 290,460 270,510 110,510" class="flow-rect" />
+  <text x="200" y="485" class="flow-text">Input Aid Needs</text>
+
+  <!-- Track Request Status -->
+  <rect x="120" y="560" width="160" height="48" class="flow-rect" />
+  <text x="200" y="584" class="flow-text">Track Request Status</text>
+
+  <!-- Display Request Status -->
+  <polygon points="130,660 290,660 270,710 110,710" class="flow-rect" />
+  <text x="200" y="685" class="flow-text">Display Request Status</text>
+
+
+  <!-- COLUMN 2 SHAPES -->
+  <!-- Dashboard Overview -->
+  <rect x="455" y="260" width="170" height="48" class="flow-rect" />
+  <text x="540" y="284" class="flow-text">Dashboard Overview</text>
+
+  <!-- Display Metric Cards -->
+  <polygon points="460,360 640,360 620,410 440,410" class="flow-rect" />
+  <text x="540" y="385" class="flow-text">Display Metric Cards</text>
+
+  <!-- Relief Alerts -->
+  <rect x="455" y="480" width="170" height="48" class="flow-rect" />
+  <text x="540" y="504" class="flow-text">Relief Alerts</text>
+
+  <!-- Display Relief Advisory -->
+  <polygon points="460,580 640,580 620,630 440,630" class="flow-rect" />
+  <text x="540" y="605" class="flow-text">Display Relief Advisory</text>
+
+
+  <!-- COLUMN 3 SHAPES -->
+  <!-- Reports -->
+  <rect x="800" y="260" width="160" height="48" class="flow-rect" />
+  <text x="880" y="284" class="flow-text">Reports</text>
+
+  <!-- Off-Page Connector F (height 48, y 260) -->
+  <polygon points="1005,260 1055,260 1055,296 1030,308 1005,296" class="flow-rect" />
+  <text x="1030" y="284" class="flow-text" style="font-size: 13px;">F</text>
+
+  <!-- Display Reports -->
+  <polygon points="800,360 980,360 960,410 780,410" class="flow-rect" />
+  <text x="880" y="385" class="flow-text">Display Reports</text>
+
+  <!-- Settings -->
+  <rect x="800" y="480" width="160" height="48" class="flow-rect" />
+  <text x="880" y="504" class="flow-text">Settings</text>
+
+  <!-- Display Settings -->
+  <polygon points="800,580 980,580 960,630 780,630" class="flow-rect" />
+  <text x="880" y="605" class="flow-text">Display Settings</text>
+
+  <!-- Decision Diamond: Save settings changes? -->
+  <polygon points="880,680 980,720 880,760 780,720" class="flow-rect" />
+  <text x="880" y="713" class="flow-text">
+    <tspan x="880" dy="-7">Save settings</tspan>
+    <tspan x="880" dy="14">changes?</tspan>
+  </text>
+
+  <!-- Successfully saved (height 48, y 696, center y 720) -->
+  <polygon points="575,696 710,696 695,744 560,744" class="flow-rect" />
+  <text x="635" y="713" class="flow-text">
+    <tspan x="635" dy="-7">Successfully</tspan>
+    <tspan x="635" dy="14">saved</tspan>
+  </text>
+
+  <!-- Off-Page Connector A1 (height 48, y 696, center y 720) -->
+  <polygon points="445,696 500,696 500,732 472.5,744 445,732" class="flow-rect" />
+  <text x="472.5" y="720" class="flow-text" style="font-size: 12px;">A1</text>
+
+
+  <!-- ==================== CAPTION ==================== -->
+  <text x="540" y="820" class="caption-text">Figure 12: ReliefTrack User Dashboard Flowchart</text>
+</svg>

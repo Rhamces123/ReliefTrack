@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1350" width="800" height="1350" style="background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
+    </marker>
+  </defs>
+
+  <style>
+    .flow-rect { fill: #ffffff; stroke: #000000; stroke-width: 1.5; }
+    .flow-text { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #000000; text-anchor: middle; dominant-baseline: middle; }
+    .flow-edge { fill: none; stroke: #000000; stroke-width: 1.5; marker-end: url(#arrow); }
+    .edge-label { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #000000; font-weight: normal; }
+    .caption-text { font-family: Helvetica, Arial, sans-serif; font-size: 14px; fill: #000000; text-anchor: middle; font-weight: bold; }
+  </style>
+
+  <!-- Connectors -->
+  <path d="M 510 90 L 510 125" class="flow-edge" />
+  <path d="M 510 173 L 510 200" class="flow-edge" />
+  <path d="M 510 250 L 510 280" class="flow-edge" />
+  <path d="M 510 330 L 510 360" class="flow-edge" />
+
+  <!-- Action Decision No: Search / Filter / Exit -->
+  <path d="M 420 397.5 L 290 397.5" class="flow-edge" />
+  <text x="350" y="388" class="edge-label">No</text>
+  <path d="M 215 360 L 215 328" class="flow-edge" />
+  <text x="225" y="348" class="edge-label">Yes</text>
+  <path d="M 295 304 L 375 304" class="flow-edge" />
+  <path d="M 215 435 L 215 475" class="flow-edge" />
+  <text x="225" y="455" class="edge-label">No</text>
+
+  <!-- Action Decision Yes: Open Modal -->
+  <path d="M 510 435 L 510 465" class="flow-edge" />
+  <text x="522" y="450" class="edge-label">Yes</text>
+  <path d="M 510 513 L 510 540" class="flow-edge" />
+  <path d="M 510 592 L 510 620" class="flow-edge" />
+  <path d="M 510 672 L 510 700" class="flow-edge" />
+  <path d="M 510 752 L 510 780" class="flow-edge" />
+  <path d="M 510 832 L 510 860" class="flow-edge" />
+  <path d="M 510 910 L 510 940" class="flow-edge" />
+
+  <!-- Validation Decision: No -->
+  <path d="M 420 977.5 L 300 977.5" class="flow-edge" />
+  <text x="350" y="968" class="edge-label">No</text>
+  <!-- Error loopback to form top -->
+  <path d="M 220 952.5 L 220 566 L 370 566" class="flow-edge" />
+
+  <!-- Validation Decision: Yes -->
+  <path d="M 510 1015 L 510 1045" class="flow-edge" />
+  <text x="522" y="1030" class="edge-label">Yes</text>
+  <path d="M 510 1093 L 510 1120" class="flow-edge" />
+  <path d="M 510 1185 L 510 1215" class="flow-edge" />
+
+  <!-- Success toast loop back to table -->
+  <path d="M 610 1239 L 710 1239 L 710 305 L 645 305" class="flow-edge" />
+
+  <!-- SHAPES -->
+  <!-- Top Entry Off-Page A -->
+  <polygon points="485,35 535,35 535,72 510,90 485,72" class="flow-rect" />
+  <text x="510" y="60" class="flow-text" style="font-weight: bold; font-size: 13px;">A</text>
+
+  <!-- Relief Requests Module Main Process -->
+  <rect x="435" y="125" width="150" height="48" class="flow-rect" />
+  <text x="510" y="149" class="flow-text">
+    <tspan x="510" dy="-6">Relief Requests Module</tspan>
+    <tspan x="510" dy="14">Main Interface</tspan>
+  </text>
+
+  <!-- Display Stats Cards (Image 1) -->
+  <polygon points="395,200 645,200 625,250 375,250" class="flow-rect" />
+  <text x="510" y="225" class="flow-text">
+    <tspan x="510" dy="-6">Display Request Statistics (5 Cards):</tspan>
+    <tspan x="510" dy="14">Total Requests, Affected, Families, Evacuees, Pending</tspan>
+  </text>
+
+  <!-- Display Requests Table (Image 1) -->
+  <polygon points="395,280 645,280 625,330 375,330" class="flow-rect" />
+  <text x="510" y="305" class="flow-text">
+    <tspan x="510" dy="-6">Display Requests Table &amp; Filter Pills:</tspan>
+    <tspan x="510" dy="14">Status (Pending, In Progress, Completed) &amp; Demographics</tspan>
+  </text>
+
+  <!-- Decision: New Relief Request? -->
+  <polygon points="510,360 600,397.5 510,435 420,397.5" class="flow-rect" />
+  <text x="510" y="397.5" class="flow-text" style="font-size: 10px;">
+    <tspan x="510" dy="-5">Click "+ New Relief Request"</tspan>
+    <tspan x="510" dy="12">button?</tspan>
+  </text>
+
+  <!-- Search / Exit Decision -->
+  <polygon points="215,360 290,397.5 215,435 140,397.5" class="flow-rect" />
+  <text x="215" y="397.5" class="flow-text" style="font-size: 10px;">
+    <tspan x="215" dy="-5">Search or filter</tspan>
+    <tspan x="215" dy="12">requests list?</tspan>
+  </text>
+
+  <!-- Display Filter Results -->
+  <polygon points="145,280 295,280 285,328 135,328" class="flow-rect" />
+  <text x="215" y="304" class="flow-text">
+    <tspan x="215" dy="-6">Display Filtered Search</tspan>
+    <tspan x="215" dy="14">Results in Table</tspan>
+  </text>
+
+  <!-- Exit to Admin Dashboard -->
+  <polygon points="170,475 260,475 260,520 215,540 170,520" class="flow-rect" />
+  <text x="215" y="500" class="flow-text">
+    <tspan x="215" dy="-6">Admin</tspan>
+    <tspan x="215" dy="14">Dashboard</tspan>
+  </text>
+
+  <!-- Open Modal Process -->
+  <rect x="435" y="465" width="150" height="48" class="flow-rect" />
+  <text x="510" y="489" class="flow-text">
+    <tspan x="510" dy="-6">Open "New Relief Request"</tspan>
+    <tspan x="510" dy="14">Input Modal Window</tspan>
+  </text>
+
+  <!-- Step 1: Representative Details (Image 2) -->
+  <polygon points="385,540 650,540 635,592 370,592" class="flow-rect" />
+  <text x="510" y="566" class="flow-text">
+    <tspan x="510" dy="-6">Input Representative &amp; Family Details (Image 2):</tspan>
+    <tspan x="510" dy="14">Name, Family Count, Birth Date, Age, Sex, Civil Status, Occupation, Income</tspan>
+  </text>
+
+  <!-- Step 2: Contact & Location (Image 3) -->
+  <polygon points="385,620 650,620 635,672 370,672" class="flow-rect" />
+  <text x="510" y="646" class="flow-text">
+    <tspan x="510" dy="-6">Input Contact &amp; Geographic Location (Image 3):</tspan>
+    <tspan x="510" dy="14">Contact Number, Naga Barangay / Street Address, Geolocation Pin</tspan>
+  </text>
+
+  <!-- Step 3: Needed Kits & Shelter (Image 3) -->
+  <polygon points="385,700 650,700 635,752 370,752" class="flow-rect" />
+  <text x="510" y="726" class="flow-text">
+    <tspan x="510" dy="-6">Select Needed Relief Kits &amp; Housing (Image 3):</tspan>
+    <tspan x="510" dy="14">Food Pack, Hygiene, Kitchen, Water, Shelter Kit, Assistive Device, Damage</tspan>
+  </text>
+
+  <!-- Step 4: Vulnerable Groups (Image 4) -->
+  <polygon points="385,780 650,780 635,832 370,832" class="flow-rect" />
+  <text x="510" y="806" class="flow-text">
+    <tspan x="510" dy="-6">Input Vulnerable Demographics &amp; 4Ps (Image 4):</tspan>
+    <tspan x="510" dy="14">4Ps Beneficiary Check, Evac Center Status, Pregnant, Seniors, PWD, Children ≤ 7</tspan>
+  </text>
+
+  <!-- Step 5: Notes & Submit (Image 5) -->
+  <polygon points="385,860 650,860 635,910 370,910" class="flow-rect" />
+  <text x="510" y="885" class="flow-text">
+    <tspan x="510" dy="-6">Input Additional Situation Notes (Image 5)</tspan>
+    <tspan x="510" dy="14">&amp; Click "+ Create Relief Request"</tspan>
+  </text>
+
+  <!-- Decision: Validation Check -->
+  <polygon points="510,940 600,977.5 510,1015 420,977.5" class="flow-rect" />
+  <text x="510" y="977.5" class="flow-text" style="font-size: 10px;">
+    <tspan x="510" dy="-5">Required fields complete</tspan>
+    <tspan x="510" dy="12">&amp; valid format?</tspan>
+  </text>
+
+  <!-- Validation Error -->
+  <polygon points="150,952.5 300,952.5 290,1002.5 140,1002.5" class="flow-rect" />
+  <text x="220" y="977.5" class="flow-text">
+    <tspan x="220" dy="-6">Display Form Validation</tspan>
+    <tspan x="220" dy="14">Error Alert Messages</tspan>
+  </text>
+
+  <!-- Calculate Priority Score -->
+  <rect x="420" y="1045" width="180" height="48" class="flow-rect" />
+  <text x="510" y="1069" class="flow-text">
+    <tspan x="510" dy="-6">Calculate Demographic Vulnerability &amp;</tspan>
+    <tspan x="510" dy="14">Auto-Assign Priority Score</tspan>
+  </text>
+
+  <!-- Firestore Database Cylinder -->
+  <g class="flow-rect">
+    <path d="M 460 1130 A 50 10 0 0 1 560 1130 L 560 1175 A 50 10 0 0 1 460 1175 Z" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
+    <ellipse cx="510" cy="1130" rx="50" ry="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
+  </g>
+  <text x="510" y="1155" class="flow-text">
+    <tspan x="510" dy="-4">Firestore DB</tspan>
+    <tspan x="510" dy="12" style="font-weight: bold;">relief_requests</tspan>
+  </text>
+
+  <!-- Success Toast Notification -->
+  <polygon points="420,1215 610,1215 595,1263 405,1263" class="flow-rect" />
+  <text x="510" y="1239" class="flow-text">
+    <tspan x="510" dy="-6">Display Success Toast Notification</tspan>
+    <tspan x="510" dy="14">&amp; Close Modal Window</tspan>
+  </text>
+
+  <!-- Bottom Caption -->
+  <text x="510" y="1315" class="caption-text">Figure 14: ReliefTrack Relief Requests Flowchart (Sub-flowchart A)</text>
+</svg>

@@ -1,0 +1,135 @@
+<mxfile host="app.diagrams.net" agent="ReliefTrack">
+  <diagram id="page-relief-requests" name="Relief Requests Flowchart (Sub-flowchart A)">
+    <mxGraphModel dx="1248" dy="740" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="800" pageHeight="1360" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="offpage_top_a" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="A" vertex="1">
+          <mxGeometry height="55" width="50" x="485" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_requests_main" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Relief Requests Module&lt;br&gt;Main Interface" vertex="1">
+          <mxGeometry height="48" width="150" x="435" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="io_stats_cards" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Request Statistics (5 Cards):&lt;br&gt;Total Requests, Affected People, Family Members, Evacuees, Pending" vertex="1">
+          <mxGeometry height="50" width="270" x="375" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="io_requests_table" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Requests Table &amp;amp; Filter Pills:&lt;br&gt;Status (All, Pending, In Progress, Completed) &amp;amp; Demographic Tags" vertex="1">
+          <mxGeometry height="50" width="270" x="375" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_user_action" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;spacingLeft=3;spacingRight=3;" value="Click &quot;+ New Relief Request&quot;&lt;br&gt;button?" vertex="1">
+          <mxGeometry height="75" width="180" x="420" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_search_or_exit" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;spacingLeft=3;spacingRight=3;" value="Search or filter&lt;br&gt;requests list?" vertex="1">
+          <mxGeometry height="75" width="150" x="140" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="io_filter_results" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Filtered Search&lt;br&gt;Results in Table" vertex="1">
+          <mxGeometry height="48" width="160" x="135" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="offpage_exit_admin" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="Admin&lt;br&gt;Dashboard" vertex="1">
+          <mxGeometry height="65" width="90" x="170" y="475" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_open_modal" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Open &quot;New Relief Request&quot;&lt;br&gt;Input Modal" vertex="1">
+          <mxGeometry height="48" width="150" x="435" y="465" as="geometry" />
+        </mxCell>
+        <mxCell id="io_rep_details" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Input Representative &amp;amp; Family Details:&lt;br&gt;Name, Family Members Count, Birth Date, Age, Sex, Civil Status, Occupation, Net Income" vertex="1">
+          <mxGeometry height="52" width="320" x="370" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="io_contact_location" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Input Contact &amp;amp; Geographic Location:&lt;br&gt;Contact Number, Barangay / Street Address, Geolocation Pin / Coordinates" vertex="1">
+          <mxGeometry height="52" width="310" x="370" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="io_needs_shelter" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Select Needed Relief Kits &amp;amp; Housing:&lt;br&gt;Food Pack, Hygiene, Kitchen, Sleeping, Water, Shelter Kit, Assistive Devices, Ownership, Damage Level" vertex="1">
+          <mxGeometry height="52" width="300" x="370" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="io_vulnerable_groups" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Input Vulnerable Demographics &amp;amp; 4Ps:&lt;br&gt;4Ps Beneficiary Check, Evacuation Center Status, Pregnant Women, Elderly / Seniors, PWD, Children ≤ 7" vertex="1">
+          <mxGeometry height="52" width="300" x="370" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="io_notes_submit" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Input Additional Situation Notes (Optional)&lt;br&gt;&amp;amp; Click &quot;+ Create Relief Request&quot;" vertex="1">
+          <mxGeometry height="50" width="290" x="370" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_validation" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;spacingLeft=3;spacingRight=3;" value="Required fields complete&lt;br&gt;&amp;amp; valid format?" vertex="1">
+          <mxGeometry height="75" width="180" x="420" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="io_validation_error" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Form Validation&lt;br&gt;Error Alert Messages" vertex="1">
+          <mxGeometry height="50" width="160" x="140" y="952.5" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_calc_priority" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Calculate Demographic Vulnerability &amp;amp;&lt;br&gt;Auto-Assign Priority Score" vertex="1">
+          <mxGeometry height="48" width="180" x="420" y="1045" as="geometry" />
+        </mxCell>
+        <mxCell id="io_success_toast" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Success Toast Notification&lt;br&gt;&amp;amp; Close Modal Window" vertex="1">
+          <mxGeometry height="48" width="200" x="410" y="1120" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_top_to_main" edge="1" parent="1" source="offpage_top_a" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_requests_main">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_main_to_stats" edge="1" parent="1" source="proc_requests_main" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_stats_cards">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_stats_to_table" edge="1" parent="1" source="io_stats_cards" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_requests_table">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_table_to_dec" edge="1" parent="1" source="io_requests_table" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="dec_user_action">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_dec_no_to_search" edge="1" parent="1" source="dec_user_action" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=#ffffff;align=bottom;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="dec_search_or_exit" value="No">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_search_yes_filter" edge="1" parent="1" source="dec_search_or_exit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=#ffffff;align=right;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="io_filter_results" value="Yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_filter_to_table" edge="1" parent="1" source="io_filter_results" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="io_requests_table">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_search_no_exit" edge="1" parent="1" source="dec_search_or_exit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=#ffffff;align=right;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="offpage_exit_admin" value="No">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_dec_yes_open_modal" edge="1" parent="1" source="dec_user_action" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=#ffffff;align=left;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_open_modal" value="Yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_modal_to_s1" edge="1" parent="1" source="proc_open_modal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_rep_details">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_s1_to_s2" edge="1" parent="1" source="io_rep_details" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_contact_location">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_s2_to_s3" edge="1" parent="1" source="io_contact_location" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_needs_shelter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_s3_to_s4" edge="1" parent="1" source="io_needs_shelter" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_vulnerable_groups">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_s4_to_s5" edge="1" parent="1" source="io_vulnerable_groups" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_notes_submit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_s5_to_val_dec" edge="1" parent="1" source="io_notes_submit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="dec_validation">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_val_no" edge="1" parent="1" source="dec_validation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=#ffffff;align=bottom;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="io_validation_error" value="No">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_err_loopback" edge="1" parent="1" source="io_validation_error" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="io_rep_details">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="566" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ea_val_yes" edge="1" parent="1" source="dec_validation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=#ffffff;align=left;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_calc_priority" value="Yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea_calc_to_db" edge="1" parent="1" source="proc_calc_priority" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="1120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ea_toast_to_table_loop" edge="1" parent="1" source="io_success_toast" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="io_requests_table">
+          <mxGeometry relative="1" x="-0.1892" as="geometry">
+            <Array as="points">
+              <mxPoint x="700" y="1144" />
+              <mxPoint x="700" y="305" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

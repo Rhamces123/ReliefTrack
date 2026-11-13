@@ -1,0 +1,217 @@
+<mxfile host="Electron" agent="ReliefTrack">
+  <diagram id="page-user-dashboard" name="User Dashboard Flowchart">
+    <mxGraphModel dx="1333" dy="893" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1080" pageHeight="860" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Top Entry Off-Page Connector: User Dashboard -->
+        <mxCell id="offpage_user_top" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="User&lt;br&gt;Dashboard" vertex="1">
+          <mxGeometry height="58" width="90" x="495" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="e_top_to_main" edge="1" parent="1" source="offpage_user_top" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_user_dashboard">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- User Dashboard Box -->
+        <mxCell id="proc_user_dashboard" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;" value="User Dashboard" vertex="1">
+          <mxGeometry height="48" width="200" x="440" y="130" as="geometry" />
+        </mxCell>
+
+        <!-- 3-Way Horizontal Distributor Bus -->
+        <mxCell id="e_bus_drop1" edge="1" parent="1" source="proc_user_dashboard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_my_requests">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="540" y="220" />
+              <mxPoint x="200" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_bus_drop2" edge="1" parent="1" source="proc_user_dashboard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_dashboard_overview">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_bus_drop3" edge="1" parent="1" source="proc_user_dashboard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_reports">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="540" y="220" />
+              <mxPoint x="880" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- COLUMN 1: RELIEF REQUESTS -->
+        <mxCell id="proc_my_requests" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;" value="My Relief Requests" vertex="1">
+          <mxGeometry height="48" width="160" x="120" y="260" as="geometry" />
+        </mxCell>
+
+        <!-- Off-Page Connector A (left) -->
+        <mxCell id="e_my_requests_to_a" edge="1" parent="1" source="proc_my_requests" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="offpage_a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="offpage_a" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=13;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="A" vertex="1">
+          <mxGeometry height="48" width="50" x="15" y="260" as="geometry" />
+        </mxCell>
+
+        <!-- Submit Relief Request -->
+        <mxCell id="e_requests_to_submit" edge="1" parent="1" source="proc_my_requests" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_submit_request">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_submit_request" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;" value="Submit Relief Request" vertex="1">
+          <mxGeometry height="48" width="160" x="120" y="360" as="geometry" />
+        </mxCell>
+
+        <!-- Input Aid Needs -->
+        <mxCell id="e_submit_to_input" edge="1" parent="1" source="proc_submit_request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_input_needs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_input_needs" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Input Aid Needs" vertex="1">
+          <mxGeometry height="50" width="180" x="110" y="460" as="geometry" />
+        </mxCell>
+
+        <!-- Track Request Status -->
+        <mxCell id="e_input_to_track" edge="1" parent="1" source="io_input_needs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_track_status">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_track_status" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;" value="Track Request Status" vertex="1">
+          <mxGeometry height="48" width="160" x="120" y="560" as="geometry" />
+        </mxCell>
+
+        <!-- Display Request Status -->
+        <mxCell id="e_track_to_display" edge="1" parent="1" source="proc_track_status" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_display_status">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_display_status" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Request Status" vertex="1">
+          <mxGeometry height="50" width="180" x="110" y="660" as="geometry" />
+        </mxCell>
+
+
+        <!-- COLUMN 2: DASHBOARD OVERVIEW & ALERTS -->
+        <mxCell id="proc_dashboard_overview" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;" value="Dashboard Overview" vertex="1">
+          <mxGeometry height="48" width="170" x="455" y="260" as="geometry" />
+        </mxCell>
+
+        <!-- Display Metric Cards -->
+        <mxCell id="e_overview_to_metrics" edge="1" parent="1" source="proc_dashboard_overview" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_display_metrics">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_display_metrics" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Metric Cards" vertex="1">
+          <mxGeometry height="50" width="195" x="440" y="360" as="geometry" />
+        </mxCell>
+
+        <!-- Relief Alerts -->
+        <mxCell id="e_metrics_to_alerts" edge="1" parent="1" source="io_display_metrics" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_relief_alerts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_relief_alerts" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;" value="Relief Alerts" vertex="1">
+          <mxGeometry height="48" width="170" x="455" y="480" as="geometry" />
+        </mxCell>
+
+        <!-- Display Relief Advisory -->
+        <mxCell id="e_alerts_to_advisory" edge="1" parent="1" source="proc_relief_alerts" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_display_advisory">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_display_advisory" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Relief Advisory" vertex="1">
+          <mxGeometry height="50" width="195" x="440" y="580" as="geometry" />
+        </mxCell>
+
+        <!-- Loopback from Advisory back to Alerts (Straight orthogonal lines, no curves) -->
+        <mxCell id="e_advisory_loopback" edge="1" parent="1" source="io_display_advisory" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="proc_relief_alerts">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="605" />
+              <mxPoint x="670" y="504" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- COLUMN 3: REPORTS & SETTINGS -->
+        <mxCell id="proc_reports" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;" value="Reports" vertex="1">
+          <mxGeometry height="48" width="160" x="800" y="260" as="geometry" />
+        </mxCell>
+
+        <!-- Off-Page Connector F (right) -->
+        <mxCell id="e_reports_to_f" edge="1" parent="1" source="proc_reports" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="offpage_f">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="offpage_f" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=13;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="F" vertex="1">
+          <mxGeometry height="48" width="50" x="1005" y="260" as="geometry" />
+        </mxCell>
+
+        <!-- Display Reports -->
+        <mxCell id="e_reports_to_summary" edge="1" parent="1" source="proc_reports" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_display_reports">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_display_reports" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Reports" vertex="1">
+          <mxGeometry height="50" width="195" x="780" y="360" as="geometry" />
+        </mxCell>
+
+        <!-- Settings -->
+        <mxCell id="e_reports_to_settings" edge="1" parent="1" source="io_display_reports" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_settings">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_settings" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;" value="Settings" vertex="1">
+          <mxGeometry height="48" width="160" x="800" y="480" as="geometry" />
+        </mxCell>
+
+        <!-- Display Settings -->
+        <mxCell id="e_settings_to_display" edge="1" parent="1" source="proc_settings" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_display_settings">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_display_settings" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Settings" vertex="1">
+          <mxGeometry height="50" width="195" x="780" y="580" as="geometry" />
+        </mxCell>
+
+        <!-- Decision Diamond: Save settings changes? -->
+        <mxCell id="e_display_to_dec" edge="1" parent="1" source="io_display_settings" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="dec_save_settings">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_save_settings" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Save settings&lt;br&gt;changes?" vertex="1">
+          <mxGeometry height="80" width="200" x="780" y="680" as="geometry" />
+        </mxCell>
+
+        <!-- Decision No Loopback (Straight orthogonal lines, no curves) -->
+        <mxCell id="e_dec_no_loop" edge="1" parent="1" source="dec_save_settings" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="proc_settings">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="720" />
+              <mxPoint x="1010" y="504" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_no" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#000000;" value="No" vertex="1">
+          <mxGeometry height="20" width="30" x="985" y="700" as="geometry" />
+        </mxCell>
+
+        <!-- Decision Yes to Successfully saved (Straight line, exactly Y=720) -->
+        <mxCell id="e_dec_yes_to_saved" edge="1" parent="1" source="dec_save_settings" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="io_successfully_saved">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_yes" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#000000;" value="Yes" vertex="1">
+          <mxGeometry height="20" width="30" x="735" y="700" as="geometry" />
+        </mxCell>
+
+        <!-- Successfully saved (Centered at Y=720) -->
+        <mxCell id="io_successfully_saved" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Successfully&lt;br&gt;saved" vertex="1">
+          <mxGeometry height="48" width="150" x="560" y="696" as="geometry" />
+        </mxCell>
+
+        <!-- Off-Page Connector A1 (Straight line, centered at Y=720) -->
+        <mxCell id="e_saved_to_a1" edge="1" parent="1" source="io_successfully_saved" style="edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="offpage_a1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="offpage_a1" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="A1" vertex="1">
+          <mxGeometry height="48" width="55" x="445" y="696" as="geometry" />
+        </mxCell>
+
+
+        <!-- CAPTION -->
+        <mxCell id="caption_fig12" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#000000;" value="Figure 12: ReliefTrack User Dashboard Flowchart" vertex="1">
+          <mxGeometry height="30" width="500" x="290" y="810" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

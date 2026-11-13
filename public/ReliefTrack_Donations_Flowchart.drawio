@@ -1,0 +1,342 @@
+<mxfile host="app.diagrams.net" agent="ReliefTrack">
+  <diagram id="page-donations-pipeline" name="Donations Flowchart (Sub-flowchart E)">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="940" pageHeight="1220" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Top Connector E -->
+        <mxCell id="offpage_e" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=13;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="E" vertex="1">
+          <mxGeometry x="445" y="30" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Edge: offpage_e -> proc_main -->
+        <mxCell id="e-top-1" edge="1" parent="1" source="offpage_e" target="proc_main" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- proc_main -->
+        <mxCell id="proc_main" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Donations Management Page" vertex="1">
+          <mxGeometry x="340" y="110" width="260" height="46" as="geometry" />
+        </mxCell>
+
+        <!-- Edge: proc_main -> io_stats -->
+        <mxCell id="e-top-2" edge="1" parent="1" source="proc_main" target="io_stats" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- io_stats -->
+        <mxCell id="io_stats" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Total Donations, Quantity, &amp;amp; Agencies&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 9.5px;&quot;&gt;(Circular Progress Meters &amp;amp; Category Badges)&lt;/font&gt;" vertex="1">
+          <mxGeometry x="290" y="180" width="360" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Edge: io_stats -> io_feed -->
+        <mxCell id="e-top-3" edge="1" parent="1" source="io_stats" target="io_feed" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- io_feed -->
+        <mxCell id="io_feed" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Donations Feed &amp;amp; Category Tabs" vertex="1">
+          <mxGeometry x="310" y="255" width="320" height="46" as="geometry" />
+        </mxCell>
+
+        <!-- Edge: io_feed -> dec_action -->
+        <mxCell id="e-top-4" edge="1" parent="1" source="io_feed" target="dec_action" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Main Action Router Decision -->
+        <mxCell id="dec_action" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="&lt;b&gt;Select Action&lt;/b&gt;&lt;br&gt;to Perform?" vertex="1">
+          <mxGeometry x="370" y="330" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Router Branch Left: Filter -->
+        <mxCell id="e-route-left" edge="1" parent="1" source="dec_action" target="proc_filter_select" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="180" y="365" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_route_left" value="Filter by Type" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10.5;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="230" y="345" width="80" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Router Branch Center: New Donation Intake -->
+        <mxCell id="e-route-center" edge="1" parent="1" source="dec_action" target="proc_open_modal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_route_center" value="+ New Donation" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10.5;fontStyle=1;fontColor=#d97706;" vertex="1" parent="1">
+          <mxGeometry x="480" y="405" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Router Branch Right: Card Actions -->
+        <mxCell id="e-route-right" edge="1" parent="1" source="dec_action" target="dec_card_action" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="365" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_route_right" value="Card Actions" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10.5;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="630" y="345" width="80" height="20" as="geometry" />
+        </mxCell>
+
+
+        <!-- ==================== LEFT COLUMN: FEED FILTERING ==================== -->
+        <mxCell id="hdr_left" value="FEED FILTERING" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="120" y="395" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="proc_filter_select" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Select Category Tab&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 9px;&quot;&gt;(Food, Water, Medical, Other)&lt;/font&gt;" vertex="1">
+          <mxGeometry x="95" y="420" width="170" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-left-1" edge="1" parent="1" source="proc_filter_select" target="dec_filter_type" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dec_filter_type" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Filter by Type?" vertex="1">
+          <mxGeometry x="105" y="500" width="150" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-left-2" edge="1" parent="1" source="dec_filter_type" target="proc_filter_feed" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="proc_filter_feed" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Filter Feed by Category" vertex="1">
+          <mxGeometry x="95" y="580" width="170" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-left-3" edge="1" parent="1" source="proc_filter_feed" target="io_display_filtered" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="io_display_filtered" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Filtered Cards" vertex="1">
+          <mxGeometry x="90" y="660" width="180" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-left-4" edge="1" parent="1" source="io_display_filtered" target="offpage_admin_left" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="offpage_admin_left" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="Admin&lt;br&gt;Dashboard" vertex="1">
+          <mxGeometry x="135" y="740" width="90" height="55" as="geometry" />
+        </mxCell>
+
+
+        <!-- ==================== CENTER COLUMN: CORE INTAKE PIPELINE ==================== -->
+        <mxCell id="hdr_center" value="CORE INTAKE PIPELINE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11.5;fontStyle=1;fontColor=#d97706;" vertex="1" parent="1">
+          <mxGeometry x="385" y="405" width="170" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="proc_open_modal" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Open &quot;New donation&quot; Form" vertex="1">
+          <mxGeometry x="375" y="430" width="190" height="44" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-cnt-1" edge="1" parent="1" source="proc_open_modal" target="io_input_name" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="io_input_name" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Enter Donor Name &amp;amp; Choose Type&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 9px;&quot;&gt;(Food, Water, Medical, Clothing, Other)&lt;/font&gt;" vertex="1">
+          <mxGeometry x="340" y="505" width="260" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-cnt-2" edge="1" parent="1" source="io_input_name" target="io_input_items" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="io_input_items" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Enter Items, Quantity, Unit,&lt;br&gt;&amp;amp; Optional Notes" vertex="1">
+          <mxGeometry x="340" y="580" width="260" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-cnt-3" edge="1" parent="1" source="io_input_items" target="dec_valid_name" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dec_valid_name" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Is Donor Name&lt;br&gt;provided?" vertex="1">
+          <mxGeometry x="385" y="655" width="170" height="66" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-cnt-valid-yes" edge="1" parent="1" source="dec_valid_name" target="proc_save_db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_cnt_valid_yes" value="Yes" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="475" y="725" width="30" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- No validation error alert -->
+        <mxCell id="e-cnt-valid-no" edge="1" parent="1" source="dec_valid_name" target="io_required_alert" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_cnt_valid_no" value="No" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="350" y="668" width="30" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="io_required_alert" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=9.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Show Required Alert" vertex="1">
+          <mxGeometry x="225" y="666" width="120" height="44" as="geometry" />
+        </mxCell>
+
+        <!-- Loop alert cleanly back to input -->
+        <mxCell id="e-cnt-err-loop" edge="1" parent="1" source="io_required_alert" target="io_input_name" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="285" y="528" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="proc_save_db" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Save Donation to Database" vertex="1">
+          <mxGeometry x="360" y="755" width="220" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-cnt-4" edge="1" parent="1" source="proc_save_db" target="io_celebrate" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="io_celebrate" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Show Success Confetti&lt;br&gt;&amp;amp; Close Modal Form" vertex="1">
+          <mxGeometry x="340" y="830" width="260" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-cnt-5" edge="1" parent="1" source="io_celebrate" target="proc_recalc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="proc_recalc" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" value="Recalculate Summary &amp;amp; Progress" vertex="1">
+          <mxGeometry x="350" y="905" width="240" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-cnt-6" edge="1" parent="1" source="proc_recalc" target="io_refresh_cards" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="io_refresh_cards" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Refresh Real-Time Donation Cards" vertex="1">
+          <mxGeometry x="345" y="980" width="250" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-cnt-7" edge="1" parent="1" source="io_refresh_cards" target="offpage_admin_center" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="offpage_admin_center" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="Admin&lt;br&gt;Dashboard" vertex="1">
+          <mxGeometry x="425" y="1055" width="90" height="60" as="geometry" />
+        </mxCell>
+
+
+        <!-- ==================== RIGHT COLUMN: CARD MAINTENANCE ==================== -->
+        <mxCell id="hdr_right" value="CARD MAINTENANCE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="680" y="395" width="140" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dec_card_action" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Select Action:&lt;br&gt;[Edit] or [Delete]?" vertex="1">
+          <mxGeometry x="670" y="420" width="160" height="66" as="geometry" />
+        </mxCell>
+
+        <!-- Edit Branch -->
+        <mxCell id="e-edit-branch" edge="1" parent="1" source="dec_card_action" target="proc_open_edit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="453" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_edit_b" value="Edit" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10.5;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="615" y="440" width="30" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="proc_open_edit" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Open Edit Form&lt;br&gt;&lt;font style=&quot;font-size: 9px; font-weight: normal;&quot;&gt;with Details&lt;/font&gt;" vertex="1">
+          <mxGeometry x="580" y="510" width="120" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-ed-1" edge="1" parent="1" source="proc_open_edit" target="io_edit_fields" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="io_edit_fields" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=9.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Update Quantity,&lt;br&gt;Items or Notes" vertex="1">
+          <mxGeometry x="575" y="585" width="130" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-ed-2" edge="1" parent="1" source="io_edit_fields" target="proc_save_edit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="proc_save_edit" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Save Changes&lt;br&gt;to Database" vertex="1">
+          <mxGeometry x="580" y="665" width="120" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-ed-3" edge="1" parent="1" source="proc_save_edit" target="io_update_card" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="io_update_card" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=9.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Update Screen Card" vertex="1">
+          <mxGeometry x="575" y="740" width="130" height="46" as="geometry" />
+        </mxCell>
+
+        <!-- Delete Branch -->
+        <mxCell id="e-del-branch" edge="1" parent="1" source="dec_card_action" target="dec_confirm_del" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="453" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_del_b" value="Delete" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10.5;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="850" y="440" width="40" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dec_confirm_del" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=9.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Confirm Delete?" vertex="1">
+          <mxGeometry x="805" y="510" width="110" height="58" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-del-yes" edge="1" parent="1" source="dec_confirm_del" target="proc_del_db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_del_yes" value="Yes" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="865" y="575" width="30" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="proc_del_db" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Delete Record&lt;br&gt;from Database" vertex="1">
+          <mxGeometry x="800" y="605" width="120" height="44" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-del-ui" edge="1" parent="1" source="proc_del_db" target="io_del_card" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="io_del_card" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=9.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Remove Card&lt;br&gt;&amp;amp; Recompute Totals" vertex="1">
+          <mxGeometry x="795" y="680" width="130" height="46" as="geometry" />
+        </mxCell>
+
+        <!-- Right Collector Connections to Admin Dashboard -->
+        <mxCell id="e-ed-exit" edge="1" parent="1" source="io_update_card" target="offpage_admin_right" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="820" />
+              <mxPoint x="750" y="820" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-del-exit" edge="1" parent="1" source="io_del_card" target="offpage_admin_right" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="820" />
+              <mxPoint x="750" y="820" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="offpage_admin_right" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="Admin&lt;br&gt;Dashboard" vertex="1">
+          <mxGeometry x="705" y="850" width="90" height="60" as="geometry" />
+        </mxCell>
+
+
+        <!-- Figure 18 Caption -->
+        <mxCell id="caption_fig18" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#000000;" value="Figure 18: ReliefTrack Donations Flowchart" vertex="1">
+          <mxGeometry x="270" y="1150" width="400" height="30" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

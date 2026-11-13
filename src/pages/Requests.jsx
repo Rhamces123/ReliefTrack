@@ -122,6 +122,21 @@ const CIVIL_STATUS_OPTIONS = [
   'Live-in / Common-law',
 ]
 
+const RELATION_OPTIONS = [
+  'Spouse',
+  'Son',
+  'Daughter',
+  'Mother',
+  'Father',
+  'Brother',
+  'Sister',
+  'Grandchild',
+  'Grandparent',
+  'In-law',
+  'Relative',
+  'Other',
+]
+
 function detectBarangayFromText(text) {
   if (!text) return ''
   const t = text.toLowerCase()
@@ -153,6 +168,7 @@ const EMPTY_FORM = {
   repCivilStatus: '',
   repOccupation: '',
   repMonthlyIncome: '',
+  familyMembersList: [],
   categories: {
     pregnantWomen: { count: '' },
     elders: { count: '' },
@@ -388,6 +404,45 @@ export default function Requests() {
     })
   }
 
+  const handleAddFamilyMember = () => {
+    setForm((f) => {
+      const nextList = [
+        ...(f.familyMembersList || []),
+        {
+          id: `mem-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          name: '',
+          relation: 'Son',
+          age: '',
+          sex: 'Male',
+        },
+      ]
+      const currentCount = parseInt(f.familyMembers, 10) || 0
+      const neededCount = nextList.length + 1
+      return {
+        ...f,
+        familyMembersList: nextList,
+        familyMembers: currentCount < neededCount ? String(neededCount) : f.familyMembers,
+      }
+    })
+  }
+
+  const handleUpdateFamilyMember = (index, field, value) => {
+    setForm((f) => {
+      const nextList = [...(f.familyMembersList || [])]
+      if (nextList[index]) {
+        nextList[index] = { ...nextList[index], [field]: value }
+      }
+      return { ...f, familyMembersList: nextList }
+    })
+  }
+
+  const handleRemoveFamilyMember = (index) => {
+    setForm((f) => {
+      const nextList = (f.familyMembersList || []).filter((_, i) => i !== index)
+      return { ...f, familyMembersList: nextList }
+    })
+  }
+
   const activeNeeds = (form.primaryNeeds && form.primaryNeeds.length > 0)
     ? form.primaryNeeds
     : (form.primaryNeed ? [form.primaryNeed] : [])
@@ -458,6 +513,7 @@ export default function Requests() {
           repCivilStatus: form.repCivilStatus,
           repOccupation: form.repOccupation,
           repMonthlyIncome: form.repMonthlyIncome,
+          familyMembersList: form.familyMembersList,
           lat: form.lat,
           lng: form.lng,
         },
@@ -927,6 +983,38 @@ export default function Requests() {
                 </div>
               )}
 
+              {detailRequest.familyMembersList && detailRequest.familyMembersList.length > 0 && (
+                <div className="requests-detail-section">
+                  <div className="requests-detail-section-title">
+                    Household Members ({detailRequest.familyMembersList.length})
+                  </div>
+                  <div className="requests-detail-members-table-wrap">
+                    <table className="requests-detail-members-table">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Name</th>
+                          <th>Relation</th>
+                          <th>Age</th>
+                          <th>Sex</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {detailRequest.familyMembersList.map((m, idx) => (
+                          <tr key={idx}>
+                            <td>{idx + 1}</td>
+                            <td style={{ fontWeight: 600 }}>{m.name || '—'}</td>
+                            <td>{m.relation || '—'}</td>
+                            <td>{m.age ? `${m.age} yrs` : '—'}</td>
+                            <td>{m.sex || '—'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
               {detailRequest.categories && Object.keys(detailRequest.categories).length > 0 && (
                 <div className="requests-detail-section">
                   <div className="requests-detail-section-title">Affected Vulnerable Groups</div>
@@ -1137,6 +1225,105 @@ export default function Requests() {
                   </div>
                 </div>
               </div>
+
+              {/* Household Family Members List */}
+              <div className="requests-subform-section requests-members-section">
+                <div className="requests-subform-title">
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Users size={14} />
+                    <span>Family Members (Household Roster)</span>
+                    <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 'normal' }}>
+                      ({form.familyMembersList?.length || 0} listed)
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    className="requests-add-member-btn"
+                    onClick={handleAddFamilyMember}
+                    disabled={saving}
+                    title="Add a family member"
+                  >
+                    <Plus size={13} />
+                    <span>Add Member</span>
+                  </button>
+                </div>
+
+                {(!form.familyMembersList || form.familyMembersList.length === 0) ? (
+                  <div className="requests-members-empty">
+                    <p>No family members listed yet. Click <strong>+ Add Member</strong> to record names, relationship, age, and sex.</p>
+                  </div>
+                ) : (
+                  <div className="requests-members-list">
+                    {form.familyMembersList.map((member, idx) => (
+                      <div key={member.id || idx} className="requests-member-card">
+                        <div className="requests-member-card-header">
+                          <span className="requests-member-num">#{idx + 1} Family Member</span>
+                          <button
+                            type="button"
+                            className="requests-member-remove-btn"
+                            onClick={() => handleRemoveFamilyMember(idx)}
+                            disabled={saving}
+                            title="Remove this member"
+                          >
+                            <Trash2 size={12} />
+                            <span>Remove</span>
+                          </button>
+                        </div>
+                        <div className="requests-member-card-grid">
+                          <div className="requests-form-field compact">
+                            <label>Full Name</label>
+                            <input
+                              type="text"
+                              placeholder="e.g. Maria Dela Cruz"
+                              value={member.name}
+                              onChange={(e) => handleUpdateFamilyMember(idx, 'name', e.target.value)}
+                              disabled={saving}
+                            />
+                          </div>
+                          <div className="requests-form-field compact">
+                            <label>Relationship</label>
+                            <select
+                              className="requests-form-select"
+                              value={member.relation}
+                              onChange={(e) => handleUpdateFamilyMember(idx, 'relation', e.target.value)}
+                              disabled={saving}
+                            >
+                              {RELATION_OPTIONS.map((rel) => (
+                                <option key={rel} value={rel}>{rel}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="requests-form-field compact">
+                            <label>Age</label>
+                            <input
+                              type="number"
+                              min="0"
+                              max="130"
+                              placeholder="e.g. 14"
+                              value={member.age}
+                              onChange={(e) => handleUpdateFamilyMember(idx, 'age', e.target.value)}
+                              disabled={saving}
+                            />
+                          </div>
+                          <div className="requests-form-field compact">
+                            <label>Sex</label>
+                            <select
+                              className="requests-form-select"
+                              value={member.sex}
+                              onChange={(e) => handleUpdateFamilyMember(idx, 'sex', e.target.value)}
+                              disabled={saving}
+                            >
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               <div className="requests-form-field">
                 <label htmlFor="rr-contact">Contact Number</label>
                 <input

@@ -152,6 +152,7 @@ export async function syncFamilyFromRequest(fields, user) {
     repCivilStatus: (fields.repCivilStatus || '').trim(),
     repOccupation: (fields.repOccupation || '').trim(),
     repMonthlyIncome: (fields.repMonthlyIncome || '').trim(),
+    familyMembersList: Array.isArray(fields.familyMembersList) ? fields.familyMembersList : [],
     latestRequestId: fields.requestId || '',
     updatedAt: serverTimestamp(),
   }

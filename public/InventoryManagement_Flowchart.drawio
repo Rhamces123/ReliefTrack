@@ -1,0 +1,243 @@
+<mxfile host="app.diagrams.net" agent="ReliefTrack">
+  <diagram id="page-inventory-clean" name="Inventory Management Flowchart (Sub-flowchart C)">
+    <mxGraphModel dx="980" dy="581" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1150" pageHeight="1120" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="offpage_c" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=13;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="C" vertex="1">
+          <mxGeometry height="55" width="50" x="525" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="e-top-1" edge="1" parent="1" source="offpage_c" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_main">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_main" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Inventory Management Page" vertex="1">
+          <mxGeometry height="46" width="240" x="430" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="e-top-2" edge="1" parent="1" source="proc_main" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_header">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_header" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Total Items and Low Stock Count" vertex="1">
+          <mxGeometry height="46" width="300" x="400" y="185" as="geometry" />
+        </mxCell>
+        <mxCell id="e-top-3" edge="1" parent="1" source="io_header" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_table">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_table" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Items Table &amp;amp; Category Tabs" vertex="1">
+          <mxGeometry height="46" width="300" x="400" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="e-bus-1" edge="1" parent="1" source="io_table" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_col1_header">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="325" />
+              <mxPoint x="150" y="325" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-bus-2" edge="1" parent="1" source="io_table" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_col2_header">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="325" />
+              <mxPoint x="410" y="325" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-bus-3" edge="1" parent="1" source="io_table" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_col3_header">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="325" />
+              <mxPoint x="690" y="325" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-bus-4" edge="1" parent="1" source="io_table" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_col4_header">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="325" />
+              <mxPoint x="950" y="325" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="proc_col1_header" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Filter by Category" vertex="1">
+          <mxGeometry height="46" width="170" x="65" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col1-1" edge="1" parent="1" source="proc_col1_header" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="dec_col1_filter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_col1_filter" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Select Category tab&lt;br&gt;(Food, Water, etc.)?" vertex="1">
+          <mxGeometry height="66" width="160" x="70" y="435" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col1-yes" edge="1" parent="1" source="dec_col1_filter" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_col1_filter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_col1_filter" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Filter Supplies List" vertex="1">
+          <mxGeometry height="46" width="160" x="70" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col1-3" edge="1" parent="1" source="proc_col1_filter" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_col1_display">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_col1_display" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Display Filtered Items" vertex="1">
+          <mxGeometry height="46" width="170" x="65" y="595" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col1-4" edge="1" parent="1" source="io_col1_display" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="offpage_col1_admin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="offpage_col1_admin" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="Admin&lt;br&gt;Dashboard" vertex="1">
+          <mxGeometry height="55" width="90" x="105" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_col2_header" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Add Item Workflow" vertex="1">
+          <mxGeometry height="46" width="180" x="320" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col2-1" edge="1" parent="1" source="proc_col2_header" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="dec_col2_click">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_col2_click" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Click &quot;+ Add item&quot;?" vertex="1">
+          <mxGeometry height="66" width="160" x="330" y="435" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col2-yes" edge="1" parent="1" source="dec_col2_click" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_col2_open">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col2-no" edge="1" parent="1" source="dec_col2_click" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="proc_col2_header">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="505" y="468" />
+              <mxPoint x="505" y="383" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="proc_col2_open" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Open Add Item Form" vertex="1">
+          <mxGeometry height="46" width="170" x="325" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col2-3" edge="1" parent="1" source="proc_col2_open" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_col2_input">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_col2_input" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Enter Item Name, Category,&lt;br&gt;Quantity, and Notes" vertex="1">
+          <mxGeometry height="48" width="190" x="315" y="595" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col2-4" edge="1" parent="1" source="io_col2_input" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="dec_col2_valid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_col2_valid" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Is input valid?&lt;br&gt;(Name filled &amp;amp; Qty &amp;ge; 0)" vertex="1">
+          <mxGeometry height="66" width="160" x="330" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col2-invalid" edge="1" parent="1" source="dec_col2_valid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="io_col2_error">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_col2_error" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=9.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Show Error Message" vertex="1">
+          <mxGeometry height="42" width="125" x="500" y="682" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col2-err-back" edge="1" parent="1" source="io_col2_error" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="io_col2_input">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="560" y="619" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-col2-save" edge="1" parent="1" source="dec_col2_valid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_col2_save">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_col2_save" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Save New Item to Database" vertex="1">
+          <mxGeometry height="46" width="180" x="320" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col2-6" edge="1" parent="1" source="proc_col2_save" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_col2_success">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_col2_success" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Show Success &amp;amp; Close Form" vertex="1">
+          <mxGeometry height="46" width="180" x="320" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col2-7" edge="1" parent="1" source="io_col2_success" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_col2_update">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_col2_update" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Update Table &amp;amp; Stock Totals" vertex="1">
+          <mxGeometry height="46" width="180" x="320" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_col3_header" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Edit Item Workflow" vertex="1">
+          <mxGeometry height="46" width="170" x="605" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col3-1" edge="1" parent="1" source="proc_col3_header" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="dec_col3_click">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_col3_click" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Click [Edit] Button?" vertex="1">
+          <mxGeometry height="66" width="160" x="610" y="435" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col3-yes" edge="1" parent="1" source="dec_col3_click" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_col3_open">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col3-no" edge="1" parent="1" source="dec_col3_click" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="proc_col3_header">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="785" y="468" />
+              <mxPoint x="785" y="383" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="proc_col3_open" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Open Edit Form" vertex="1">
+          <mxGeometry height="46" width="170" x="605" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col3-3" edge="1" parent="1" source="proc_col3_open" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_col3_modify">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_col3_modify" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Update Details or Quantity" vertex="1">
+          <mxGeometry height="48" width="180" x="600" y="595" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col3-4" edge="1" parent="1" source="io_col3_modify" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_col3_save">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_col3_save" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Save Changes to Database" vertex="1">
+          <mxGeometry height="46" width="170" x="605" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col3-5" edge="1" parent="1" source="proc_col3_save" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_col3_success">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_col3_success" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Show Success &amp;amp; Refresh Table" vertex="1">
+          <mxGeometry height="46" width="180" x="600" y="745" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_col4_header" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Delete &amp;amp; Report Actions" vertex="1">
+          <mxGeometry height="46" width="180" x="860" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col4-1" edge="1" parent="1" source="proc_col4_header" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="dec_col4_action">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_col4_action" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Delete or Report?" vertex="1">
+          <mxGeometry height="66" width="160" x="870" y="435" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col4-del" edge="1" parent="1" source="dec_col4_action" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="dec_col4_confirm">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="468" />
+              <mxPoint x="880" y="525" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dec_col4_confirm" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=9.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Confirm Delete?" vertex="1">
+          <mxGeometry height="56" width="130" x="815" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col4-del-yes" edge="1" parent="1" source="dec_col4_confirm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_col4_del">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_col4_del" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Delete from Database" vertex="1">
+          <mxGeometry height="44" width="130" x="815" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col4-rep" edge="1" parent="1" source="dec_col4_action" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_col4_rep_prep">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1015" y="468" />
+              <mxPoint x="1015" y="525" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="proc_col4_rep_prep" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" value="Prepare Report Data" vertex="1">
+          <mxGeometry height="46" width="130" x="955" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="e-col4-rep-res" edge="1" parent="1" source="proc_col4_rep_prep" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_col4_rep_view">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="io_col4_rep_view" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=9.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Display / Print Report" vertex="1">
+          <mxGeometry height="46" width="140" x="950" y="595" as="geometry" />
+        </mxCell>
+        <mxCell id="caption_c" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=13;fontStyle=1;fontColor=#000000;" value="Figure 16: ReliefTrack Inventory Management Flowchart" vertex="1">
+          <mxGeometry height="30" width="550" x="275" y="980" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

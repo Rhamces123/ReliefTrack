@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" content="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;mxfile host=&quot;app.diagrams.net&quot; agent=&quot;ReliefTrack&quot; version=&quot;24.0.0&quot; type=&quot;device&quot;&gt;
+  &lt;diagram id=&quot;page-admin-dashboard&quot; name=&quot;Admin Dashboard Flowchart&quot;&gt;
+    &lt;mxGraphModel dx=&quot;1920&quot; dy=&quot;750&quot; grid=&quot;1&quot; gridSize=&quot;10&quot; guides=&quot;1&quot; tooltips=&quot;1&quot; connect=&quot;1&quot; arrows=&quot;1&quot; fold=&quot;1&quot; page=&quot;1&quot; pageScale=&quot;1&quot; pageWidth=&quot;1920&quot; pageHeight=&quot;720&quot; math=&quot;0&quot; shadow=&quot;0&quot;&gt;
+      &lt;root&gt;
+        &lt;mxCell id=&quot;0&quot; /&gt;
+        &lt;mxCell id=&quot;1&quot; parent=&quot;0&quot; /&gt;
+        &lt;mxCell id=&quot;offpage_admin_top&quot; value=&quot;Admin&amp;lt;br&amp;gt;Dashboard&quot; style=&quot;shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;905&quot; y=&quot;40&quot; width=&quot;90&quot; height=&quot;65&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;proc_admin_dashboard&quot; value=&quot;Admin&amp;lt;br&amp;gt;Dashboard&quot; style=&quot;rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontColor=#000000;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;890&quot; y=&quot;145&quot; width=&quot;120&quot; height=&quot;48&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;proc_f1&quot; value=&quot;Relief Requests&quot; style=&quot;rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontColor=#000000;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;35&quot; y=&quot;265&quot; width=&quot;130&quot; height=&quot;48&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;offpage_a&quot; value=&quot;A&quot; style=&quot;shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;75&quot; y=&quot;365&quot; width=&quot;50&quot; height=&quot;55&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;proc_f2&quot; value=&quot;Priority Assessment&quot; style=&quot;rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontColor=#000000;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;245&quot; y=&quot;265&quot; width=&quot;130&quot; height=&quot;48&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;offpage_b&quot; value=&quot;B&quot; style=&quot;shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;285&quot; y=&quot;365&quot; width=&quot;50&quot; height=&quot;55&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;proc_f3&quot; value=&quot;Inventory&amp;lt;br&amp;gt;Management&quot; style=&quot;rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontColor=#000000;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;455&quot; y=&quot;265&quot; width=&quot;130&quot; height=&quot;48&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;offpage_c&quot; value=&quot;C&quot; style=&quot;shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;495&quot; y=&quot;365&quot; width=&quot;50&quot; height=&quot;55&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;proc_f4&quot; value=&quot;Beneficiaries&quot; style=&quot;rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontColor=#000000;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;665&quot; y=&quot;265&quot; width=&quot;130&quot; height=&quot;48&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;offpage_d&quot; value=&quot;D&quot; style=&quot;shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;705&quot; y=&quot;365&quot; width=&quot;50&quot; height=&quot;55&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;proc_f5&quot; value=&quot;Donations&quot; style=&quot;rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontColor=#000000;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;885&quot; y=&quot;265&quot; width=&quot;130&quot; height=&quot;48&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;offpage_e&quot; value=&quot;E&quot; style=&quot;shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;925&quot; y=&quot;365&quot; width=&quot;50&quot; height=&quot;55&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;proc_f6&quot; value=&quot;Map&quot; style=&quot;rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontColor=#000000;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;1105&quot; y=&quot;265&quot; width=&quot;130&quot; height=&quot;48&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;io_f6&quot; value=&quot;Display Naga&amp;lt;br&amp;gt;GIS Map&quot; style=&quot;shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;1095&quot; y=&quot;365&quot; width=&quot;150&quot; height=&quot;48&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;proc_f7&quot; value=&quot;Reports &amp;amp;amp;&amp;lt;br&amp;gt;Analytics&quot; style=&quot;rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontColor=#000000;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;1315&quot; y=&quot;265&quot; width=&quot;130&quot; height=&quot;48&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;offpage_f&quot; value=&quot;F&quot; style=&quot;shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;1355&quot; y=&quot;365&quot; width=&quot;50&quot; height=&quot;55&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;proc_f8&quot; value=&quot;Auto Suggest&quot; style=&quot;rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontColor=#000000;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;1525&quot; y=&quot;265&quot; width=&quot;130&quot; height=&quot;48&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;offpage_g&quot; value=&quot;G&quot; style=&quot;shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;1565&quot; y=&quot;365&quot; width=&quot;50&quot; height=&quot;55&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;proc_f9&quot; value=&quot;Settings&quot; style=&quot;rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontColor=#000000;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;1735&quot; y=&quot;265&quot; width=&quot;130&quot; height=&quot;48&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;io_f9&quot; value=&quot;Display Settings&quot; style=&quot;shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;1730&quot; y=&quot;365&quot; width=&quot;140&quot; height=&quot;48&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;dec_f9&quot; value=&quot;Save settings&amp;lt;br&amp;gt;changes?&quot; style=&quot;rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;spacingLeft=3;spacingRight=3;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;1730&quot; y=&quot;460&quot; width=&quot;140&quot; height=&quot;75&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;io_f9_success&quot; value=&quot;Successfully&amp;lt;br&amp;gt;saved&quot; style=&quot;shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;1565&quot; y=&quot;473.5&quot; width=&quot;130&quot; height=&quot;48&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;offpage_h&quot; value=&quot;H&quot; style=&quot;shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;1605&quot; y=&quot;570&quot; width=&quot;50&quot; height=&quot;55&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;lbl_figure_13&quot; value=&quot;Figure 13&quot; style=&quot;text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontFamily=Helvetica;fontColor=#000000;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;900&quot; y=&quot;650&quot; width=&quot;100&quot; height=&quot;35&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_top_to_admin&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;offpage_admin_top&quot; target=&quot;proc_admin_dashboard&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_bus_drop1&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_admin_dashboard&quot; target=&quot;proc_f1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;950&quot; y=&quot;225&quot; /&gt;
+              &lt;mxPoint x=&quot;100&quot; y=&quot;225&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_bus_drop2&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_admin_dashboard&quot; target=&quot;proc_f2&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;950&quot; y=&quot;225&quot; /&gt;
+              &lt;mxPoint x=&quot;310&quot; y=&quot;225&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_bus_drop3&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_admin_dashboard&quot; target=&quot;proc_f3&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;950&quot; y=&quot;225&quot; /&gt;
+              &lt;mxPoint x=&quot;520&quot; y=&quot;225&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_bus_drop4&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_admin_dashboard&quot; target=&quot;proc_f4&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;950&quot; y=&quot;225&quot; /&gt;
+              &lt;mxPoint x=&quot;730&quot; y=&quot;225&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_bus_drop5&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_admin_dashboard&quot; target=&quot;proc_f5&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;950&quot; y=&quot;225&quot; /&gt;
+              &lt;mxPoint x=&quot;950&quot; y=&quot;225&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_bus_drop6&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_admin_dashboard&quot; target=&quot;proc_f6&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;950&quot; y=&quot;225&quot; /&gt;
+              &lt;mxPoint x=&quot;1170&quot; y=&quot;225&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_bus_drop7&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_admin_dashboard&quot; target=&quot;proc_f7&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;950&quot; y=&quot;225&quot; /&gt;
+              &lt;mxPoint x=&quot;1380&quot; y=&quot;225&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_bus_drop8&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_admin_dashboard&quot; target=&quot;proc_f8&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;950&quot; y=&quot;225&quot; /&gt;
+              &lt;mxPoint x=&quot;1590&quot; y=&quot;225&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_bus_drop9&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_admin_dashboard&quot; target=&quot;proc_f9&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;950&quot; y=&quot;225&quot; /&gt;
+              &lt;mxPoint x=&quot;1800&quot; y=&quot;225&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_f1_to_a&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_f1&quot; target=&quot;offpage_a&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_f2_to_b&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_f2&quot; target=&quot;offpage_b&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_f3_to_c&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_f3&quot; target=&quot;offpage_c&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_f4_to_d&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_f4&quot; target=&quot;offpage_d&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_f5_to_e&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_f5&quot; target=&quot;offpage_e&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_f6_to_display&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_f6&quot; target=&quot;io_f6&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_f6_loopback&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;io_f6&quot; target=&quot;proc_f6&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;1265&quot; y=&quot;389&quot; /&gt;
+              &lt;mxPoint x=&quot;1265&quot; y=&quot;289&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_f7_to_f&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_f7&quot; target=&quot;offpage_f&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_f8_to_g&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_f8&quot; target=&quot;offpage_g&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_f9_to_display&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;proc_f9&quot; target=&quot;io_f9&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_f9_display_to_dec&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;io_f9&quot; target=&quot;dec_f9&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_dec_no_loop&quot; value=&quot;No&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=#ffffff;align=bottom;labelPosition=right;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;dec_f9&quot; target=&quot;proc_f9&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;1895&quot; y=&quot;497.5&quot; /&gt;
+              &lt;mxPoint x=&quot;1895&quot; y=&quot;289&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_dec_yes_to_saved&quot; value=&quot;Yes&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=#ffffff;align=bottom;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;dec_f9&quot; target=&quot;io_f9_success&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;e_saved_to_h&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; source=&quot;io_f9_success&quot; target=&quot;offpage_h&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+      &lt;/root&gt;
+    &lt;/mxGraphModel&gt;
+  &lt;/diagram&gt;
+&lt;/mxfile&gt;
+" viewBox="0 0 1920 700" width="1920" height="700" style="background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
+    </marker>
+  </defs>
+
+  <style>
+    .flow-rect { fill: #ffffff; stroke: #000000; stroke-width: 1.5; }
+    .flow-text { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #000000; text-anchor: middle; dominant-baseline: middle; }
+    .flow-edge { fill: none; stroke: #000000; stroke-width: 1.5; marker-end: url(#arrow); }
+    .flow-edge-no-arrow { fill: none; stroke: #000000; stroke-width: 1.5; }
+    .edge-label { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #000000; font-weight: normal; }
+    .caption-text { font-family: Helvetica, Arial, sans-serif; font-size: 15px; fill: #000000; text-anchor: middle; font-weight: normal; }
+  </style>
+
+  <!-- Connectors / Edges -->
+  <!-- Top Off-Page to Admin Dashboard box -->
+  <path d="M 950 105 L 950 145" class="flow-edge" />
+
+  <!-- Admin Dashboard to Horizontal Bus Line -->
+  <path d="M 950 193 L 950 225" class="flow-edge-no-arrow" />
+  <!-- Horizontal Bus Line across all 9 columns -->
+  <path d="M 100 225 L 1800 225" class="flow-edge-no-arrow" />
+
+  <!-- 9 Downward Drops to Columns -->
+  <path d="M 100 225 L 100 265" class="flow-edge" />
+  <path d="M 310 225 L 310 265" class="flow-edge" />
+  <path d="M 520 225 L 520 265" class="flow-edge" />
+  <path d="M 730 225 L 730 265" class="flow-edge" />
+  <path d="M 950 225 L 950 265" class="flow-edge" />
+  <path d="M 1170 225 L 1170 265" class="flow-edge" />
+  <path d="M 1380 225 L 1380 265" class="flow-edge" />
+  <path d="M 1590 225 L 1590 265" class="flow-edge" />
+  <path d="M 1800 225 L 1800 265" class="flow-edge" />
+
+  <!-- Col 1: Relief Requests to A -->
+  <path d="M 100 313 L 100 365" class="flow-edge" />
+
+  <!-- Col 2: Priority Assessment to B -->
+  <path d="M 310 313 L 310 365" class="flow-edge" />
+
+  <!-- Col 3: Inventory Management to C -->
+  <path d="M 520 313 L 520 365" class="flow-edge" />
+
+  <!-- Col 4: Beneficiaries to D -->
+  <path d="M 730 313 L 730 365" class="flow-edge" />
+
+  <!-- Col 5: Donations to E -->
+  <path d="M 950 313 L 950 365" class="flow-edge" />
+
+  <!-- Col 6: Map to Display Naga GIS Map -->
+  <path d="M 1170 313 L 1170 365" class="flow-edge" />
+  <!-- Map Feedback Loopback -->
+  <path d="M 1245 389 L 1275 389 L 1275 289 L 1235 289" class="flow-edge" />
+
+  <!-- Col 7: Reports & Analytics to F -->
+  <path d="M 1380 313 L 1380 365" class="flow-edge" />
+
+  <!-- Col 8: Auto Suggest to G -->
+  <path d="M 1590 313 L 1590 365" class="flow-edge" />
+
+  <!-- Col 9: Settings to Display Settings -->
+  <path d="M 1800 313 L 1800 365" class="flow-edge" />
+  <path d="M 1800 413 L 1800 460" class="flow-edge" />
+
+  <!-- Col 9: Decision No Loopback (Right tip to Settings) -->
+  <path d="M 1870 497.5 L 1895 497.5 L 1895 289 L 1865 289" class="flow-edge" />
+  <text x="1875" y="488" class="edge-label">No</text>
+
+  <!-- Col 9: Decision Yes (Left tip to Successfully saved) -->
+  <path d="M 1730 497.5 L 1695 497.5" class="flow-edge" />
+  <text x="1708" y="488" class="edge-label">Yes</text>
+
+  <!-- Successfully saved to H -->
+  <path d="M 1630 521.5 L 1630 570" class="flow-edge" />
+
+
+  <!-- SHAPES & LABELS -->
+
+  <!-- Top Off-Page Entry (Pentagon pointing down) -->
+  <polygon points="905,40 995,40 995,85 950,105 905,85" class="flow-rect" />
+  <text x="950" y="65" class="flow-text">
+    <tspan x="950" dy="-6">Admin</tspan>
+    <tspan x="950" dy="14">Dashboard</tspan>
+  </text>
+
+  <!-- Admin Dashboard Process Box -->
+  <rect x="890" y="145" width="120" height="48" class="flow-rect" />
+  <text x="950" y="169" class="flow-text">
+    <tspan x="950" dy="-6">Admin</tspan>
+    <tspan x="950" dy="14">Dashboard</tspan>
+  </text>
+
+
+  <!-- COL 1: Relief Requests -->
+  <rect x="35" y="265" width="130" height="48" class="flow-rect" />
+  <text x="100" y="289" class="flow-text">Relief Requests</text>
+
+  <polygon points="75,365 125,365 125,402 100,420 75,402" class="flow-rect" />
+  <text x="100" y="390" class="flow-text" style="font-weight: bold; font-size: 13px;">A</text>
+
+
+  <!-- COL 2: Priority Assessment -->
+  <rect x="245" y="265" width="130" height="48" class="flow-rect" />
+  <text x="310" y="289" class="flow-text">Priority Assessment</text>
+
+  <polygon points="285,365 335,365 335,402 310,420 285,402" class="flow-rect" />
+  <text x="310" y="390" class="flow-text" style="font-weight: bold; font-size: 13px;">B</text>
+
+
+  <!-- COL 3: Inventory Management -->
+  <rect x="455" y="265" width="130" height="48" class="flow-rect" />
+  <text x="520" y="289" class="flow-text">
+    <tspan x="520" dy="-6">Inventory</tspan>
+    <tspan x="520" dy="14">Management</tspan>
+  </text>
+
+  <polygon points="495,365 545,365 545,402 520,420 495,402" class="flow-rect" />
+  <text x="520" y="390" class="flow-text" style="font-weight: bold; font-size: 13px;">C</text>
+
+
+  <!-- COL 4: Beneficiaries -->
+  <rect x="665" y="265" width="130" height="48" class="flow-rect" />
+  <text x="730" y="289" class="flow-text">Beneficiaries</text>
+
+  <polygon points="705,365 755,365 755,402 730,420 705,402" class="flow-rect" />
+  <text x="730" y="390" class="flow-text" style="font-weight: bold; font-size: 13px;">D</text>
+
+
+  <!-- COL 5: Donations -->
+  <rect x="885" y="265" width="130" height="48" class="flow-rect" />
+  <text x="950" y="289" class="flow-text">Donations</text>
+
+  <polygon points="925,365 975,365 975,402 950,420 925,402" class="flow-rect" />
+  <text x="950" y="390" class="flow-text" style="font-weight: bold; font-size: 13px;">E</text>
+
+
+  <!-- COL 6: Map (Exact Fig 13 Col 4 pattern) -->
+  <rect x="1105" y="265" width="130" height="48" class="flow-rect" />
+  <text x="1170" y="289" class="flow-text">Map</text>
+
+  <polygon points="1110,365 1245,365 1230,413 1095,413" class="flow-rect" />
+  <text x="1170" y="389" class="flow-text">
+    <tspan x="1170" dy="-6">Display Naga</tspan>
+    <tspan x="1170" dy="14">GIS Map</tspan>
+  </text>
+
+
+  <!-- COL 7: Reports & Analytics -->
+  <rect x="1315" y="265" width="130" height="48" class="flow-rect" />
+  <text x="1380" y="289" class="flow-text">
+    <tspan x="1380" dy="-6">Reports &amp;</tspan>
+    <tspan x="1380" dy="14">Analytics</tspan>
+  </text>
+
+  <polygon points="1355,365 1405,365 1405,402 1380,420 1355,402" class="flow-rect" />
+  <text x="1380" y="390" class="flow-text" style="font-weight: bold; font-size: 13px;">F</text>
+
+
+  <!-- COL 8: Auto Suggest -->
+  <rect x="1525" y="265" width="130" height="48" class="flow-rect" />
+  <text x="1590" y="289" class="flow-text">Auto Suggest</text>
+
+  <polygon points="1565,365 1615,365 1615,402 1590,420 1565,402" class="flow-rect" />
+  <text x="1590" y="390" class="flow-text" style="font-weight: bold; font-size: 13px;">G</text>
+
+
+  <!-- COL 9: Settings (Exact Fig 13 Col 5 pattern) -->
+  <rect x="1735" y="265" width="130" height="48" class="flow-rect" />
+  <text x="1800" y="289" class="flow-text">Settings</text>
+
+  <polygon points="1745,365 1870,365 1855,413 1730,413" class="flow-rect" />
+  <text x="1800" y="389" class="flow-text">Display Settings</text>
+
+  <polygon points="1800,460 1870,497.5 1800,535 1730,497.5" class="flow-rect" />
+  <text x="1800" y="497.5" class="flow-text" style="font-size: 10px;">
+    <tspan x="1800" dy="-5">Save settings</tspan>
+    <tspan x="1800" dy="12">changes?</tspan>
+  </text>
+
+  <!-- Successfully saved (Left of Diamond) -->
+  <polygon points="1580,473.5 1695,473.5 1680,521.5 1565,521.5" class="flow-rect" />
+  <text x="1630" y="497.5" class="flow-text">
+    <tspan x="1630" dy="-6">Successfully</tspan>
+    <tspan x="1630" dy="14">saved</tspan>
+  </text>
+
+  <polygon points="1605,570 1655,570 1655,607 1630,625 1605,607" class="flow-rect" />
+  <text x="1630" y="595" class="flow-text" style="font-weight: bold; font-size: 13px;">H</text>
+
+
+  <!-- Caption -->
+  <text x="950" y="660" class="caption-text">Figure 13</text>
+</svg>

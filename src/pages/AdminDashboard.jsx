@@ -54,6 +54,9 @@ import {
   ChevronRight,
   Workflow,
   Download,
+  Heart,
+  BarChart3,
+  LayoutDashboard,
 } from 'lucide-react'
 
 const NAGA_CENTER = [10.2085, 123.7591]
@@ -1526,6 +1529,15 @@ export default function AdminDashboard() {
             <div style={{ display: 'flex', gap: '10px', marginBottom: '18px', borderBottom: '1px solid #e2e8f0', paddingBottom: '14px', flexWrap: 'wrap' }}>
               <button
                 type="button"
+                className={`btn-flowchart-action ${flowchartView === 'figure12' ? 'btn-primary' : ''}`}
+                onClick={() => setFlowchartView('figure12')}
+                style={{ cursor: 'pointer' }}
+              >
+                <LayoutDashboard size={15} />
+                <span>Figure 12: User Dashboard Flowchart</span>
+              </button>
+              <button
+                type="button"
                 className={`btn-flowchart-action ${flowchartView === 'figure13' ? 'btn-primary' : ''}`}
                 onClick={() => setFlowchartView('figure13')}
                 style={{ cursor: 'pointer' }}
@@ -1568,6 +1580,33 @@ export default function AdminDashboard() {
               >
                 <Users size={15} />
                 <span>Figure 17: Sub-flowchart D (Beneficiaries)</span>
+              </button>
+              <button
+                type="button"
+                className={`btn-flowchart-action ${flowchartView === 'figure18' ? 'btn-primary' : ''}`}
+                onClick={() => setFlowchartView('figure18')}
+                style={{ cursor: 'pointer' }}
+              >
+                <Heart size={15} />
+                <span>Figure 18: Sub-flowchart E (Donations)</span>
+              </button>
+              <button
+                type="button"
+                className={`btn-flowchart-action ${flowchartView === 'figure19' ? 'btn-primary' : ''}`}
+                onClick={() => setFlowchartView('figure19')}
+                style={{ cursor: 'pointer' }}
+              >
+                <Map size={15} />
+                <span>Figure 19: Interactive Map</span>
+              </button>
+              <button
+                type="button"
+                className={`btn-flowchart-action ${flowchartView === 'figure20' ? 'btn-primary' : ''}`}
+                onClick={() => setFlowchartView('figure20')}
+                style={{ cursor: 'pointer' }}
+              >
+                <BarChart3 size={15} />
+                <span>Figure 20: Reports &amp; Analytics</span>
               </button>
             </div>
 
@@ -2070,7 +2109,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </>
-            ) : (
+            ) : flowchartView === 'figure17' ? (
               <>
                 <div className="flowchart-header">
                   <div className="flowchart-title-area">
@@ -2183,6 +2222,413 @@ export default function AdminDashboard() {
                       Update existing household details or remove obsolete records with confirmation prompts.
                     </p>
                   </div>
+                </div>
+              </>
+            ) : flowchartView === 'figure18' ? (
+              <>
+                <div className="flowchart-header">
+                  <div className="flowchart-title-area">
+                    <h3>Donations Flowchart (Figure 18 - Sub-flowchart E)</h3>
+                    <p>
+                      Official sub-process specification for Off-Page Connector E (/donations) covering relief donations tracking from private agencies, category filtering (Food, Water, Medical, Clothing, Other), New Donation modal with validation and Firestore persistence, and Edit / Delete actions.
+                    </p>
+                  </div>
+                  <div className="flowchart-actions">
+                    <a
+                      href="/Open_In_Drawio.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      style={{ background: '#d97706', color: '#ffffff', borderColor: '#b45309', fontWeight: 600 }}
+                      title="Open online editor in Draw.io / diagrams.net"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Edit in Draw.io</span>
+                    </a>
+                    <a
+                      href="/Donations_Flowchart.drawio"
+                      download="ReliefTrack_Donations_Flowchart.drawio"
+                      className="btn-flowchart-action btn-primary"
+                      title="Download editable Draw.io XML file"
+                    >
+                      <Download size={15} />
+                      <span>Download Subflowchart .drawio</span>
+                    </a>
+                    <a
+                      href="/Donations_Flowchart.svg"
+                      download="ReliefTrack_Donations_Flowchart.svg"
+                      className="btn-flowchart-action"
+                      title="Download vector SVG"
+                    >
+                      <Download size={15} />
+                      <span>Download SVG</span>
+                    </a>
+                    <a
+                      href="/Donations_Flowchart.svg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      title="Open diagram in new tab"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Open Fullscreen</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Visual SVG Flowchart matching Sub-flowchart E */}
+                <div className="flowchart-viewer-wrap" style={{ justifyContent: 'center' }}>
+                  <img
+                    src="/Donations_Flowchart.svg"
+                    alt="ReliefTrack Donations Sub-Flowchart E - Figure 18"
+                    className="flowchart-svg-img"
+                    style={{ maxWidth: '950px' }}
+                  />
+                </div>
+
+                {/* Sub-Flowchart Steps Explanation */}
+                <div className="flowchart-modules-grid">
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">1. Donations Summary</span>
+                      <span className="module-connector-badge badge-a">Donation Stats</span>
+                    </div>
+                    <p className="module-desc">
+                      Displays overall statistics including Total Donations, Total Quantity, and Contributing Agencies.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">2. Category Filters</span>
+                      <span className="module-connector-badge badge-b">Filter Tabs</span>
+                    </div>
+                    <p className="module-desc">
+                      Filter donations by category: All, Food, Water, Medical, Clothing, or Other.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">3. New Donation Form</span>
+                      <span className="module-connector-badge badge-c">New Donation</span>
+                    </div>
+                    <p className="module-desc">
+                      Enter donor name, select category type, describe donated goods, enter quantity, and unit.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">4. Save to Database</span>
+                      <span className="module-connector-badge badge-d">Database</span>
+                    </div>
+                    <p className="module-desc">
+                      Saves donation records to the database and automatically updates donation cards and totals.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">5. Edit &amp; Delete Actions</span>
+                      <span className="module-connector-badge badge-e">Record Actions</span>
+                    </div>
+                    <p className="module-desc">
+                      Update donation details or remove obsolete donation records with confirmation alerts.
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : flowchartView === 'figure19' ? (
+              <>
+                <div className="flowchart-header">
+                  <div className="flowchart-title-area">
+                    <h3>Interactive Map Flowchart (Figure 19 - Map Operations)</h3>
+                    <p>
+                      Official system process specification for the GIS Map View (/map) covering Naga City boundary rendering, color-coded incident markers, location search, GPS positioning, satellite/street view layers, evacuation center overlays, and incident pin details.
+                    </p>
+                  </div>
+                  <div className="flowchart-actions">
+                    <a
+                      href="/Open_In_Drawio.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      style={{ background: '#0284c7', color: '#ffffff', borderColor: '#0369a1', fontWeight: 600 }}
+                      title="Open online editor in Draw.io / diagrams.net"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Edit in Draw.io</span>
+                    </a>
+                    <a
+                      href="/Map_Flowchart.drawio"
+                      download="ReliefTrack_Map_Flowchart.drawio"
+                      className="btn-flowchart-action btn-primary"
+                      title="Download editable Draw.io XML file"
+                    >
+                      <Download size={15} />
+                      <span>Download Flowchart .drawio</span>
+                    </a>
+                    <a
+                      href="/Map_Flowchart.svg"
+                      download="ReliefTrack_Map_Flowchart.svg"
+                      className="btn-flowchart-action"
+                      title="Download vector SVG"
+                    >
+                      <Download size={15} />
+                      <span>Download SVG</span>
+                    </a>
+                    <a
+                      href="/Map_Flowchart.svg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      title="Open diagram in new tab"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Open Fullscreen</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Visual SVG Flowchart matching Figure 19 */}
+                <div className="flowchart-viewer-wrap" style={{ justifyContent: 'center' }}>
+                  <img
+                    src="/Map_Flowchart.svg"
+                    alt="ReliefTrack Interactive Map Flowchart - Figure 19"
+                    className="flowchart-svg-img"
+                    style={{ maxWidth: '950px' }}
+                  />
+                </div>
+
+                {/* Sub-Flowchart Steps Explanation */}
+                <div className="flowchart-modules-grid">
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">1. Map Canvas &amp; Boundary</span>
+                      <span className="module-connector-badge badge-a">GIS Canvas</span>
+                    </div>
+                    <p className="module-desc">
+                      Renders the interactive Leaflet map canvas centered on Naga City with official green boundary lines.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">2. Search &amp; My GPS</span>
+                      <span className="module-connector-badge badge-b">Navigation</span>
+                    </div>
+                    <p className="module-desc">
+                      Search any community landmark or use the browser GPS to center the map on your exact coordinates.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">3. Layers &amp; Street View</span>
+                      <span className="module-connector-badge badge-c">Visual Modes</span>
+                    </div>
+                    <p className="module-desc">
+                      Switch between OpenStreetMap street tiles and Esri satellite imagery, or launch 360° Google Street View.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">4. Evacuation &amp; Schools</span>
+                      <span className="module-connector-badge badge-d">Facilities</span>
+                    </div>
+                    <p className="module-desc">
+                      Overlay evacuation centers within 5km radius or view all registered Naga City public schools.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">5. Incident Pin Inspection</span>
+                      <span className="module-connector-badge badge-e">Pin Details</span>
+                    </div>
+                    <p className="module-desc">
+                      Click color-coded incident markers (Red, Green, Blue) to view family details and open full requests.
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : flowchartView === 'figure20' ? (
+              <>
+                <div className="flowchart-header">
+                  <div className="flowchart-title-area">
+                    <h3>Reports &amp; Analytics Flowchart (Figure 20 - Sub-flowchart F)</h3>
+                    <p>
+                      Official sub-process specification for Off-Page Connector F (/reports) covering live operations data summary, visual donut breakdown charts, recent activity audit logs, and the report generator modal with scope options and dual export (Excel and PDF).
+                    </p>
+                  </div>
+                  <div className="flowchart-actions">
+                    <a
+                      href="/Open_In_Drawio.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      style={{ background: '#0284c7', color: '#ffffff', borderColor: '#0369a1', fontWeight: 600 }}
+                      title="Open online editor in Draw.io / diagrams.net"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Edit in Draw.io</span>
+                    </a>
+                    <a
+                      href="/Reports_Flowchart.drawio"
+                      download="ReliefTrack_Reports_Flowchart.drawio"
+                      className="btn-flowchart-action btn-primary"
+                      title="Download editable Draw.io XML file"
+                    >
+                      <Download size={15} />
+                      <span>Download Subflowchart .drawio</span>
+                    </a>
+                    <a
+                      href="/Reports_Flowchart.svg"
+                      download="ReliefTrack_Reports_Flowchart.svg"
+                      className="btn-flowchart-action"
+                      title="Download vector SVG"
+                    >
+                      <Download size={15} />
+                      <span>Download SVG</span>
+                    </a>
+                    <a
+                      href="/Reports_Flowchart.svg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      title="Open diagram in new tab"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Open Fullscreen</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Visual SVG Flowchart matching Sub-flowchart F */}
+                <div className="flowchart-viewer-wrap" style={{ justifyContent: 'center' }}>
+                  <img
+                    src="/Reports_Flowchart.svg"
+                    alt="ReliefTrack Reports Sub-Flowchart F - Figure 20"
+                    className="flowchart-svg-img"
+                    style={{ maxWidth: '950px' }}
+                  />
+                </div>
+
+                {/* Sub-Flowchart Steps Explanation */}
+                <div className="flowchart-modules-grid">
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">1. Live Data Summary</span>
+                      <span className="module-connector-badge badge-a">Metric Cards</span>
+                    </div>
+                    <p className="module-desc">
+                      Displays real-time counts for Total Requests, Total Warehouse Items, Supplies Stock, and Low Stock alerts.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">2. Visual Charts</span>
+                      <span className="module-connector-badge badge-b">Donut Charts</span>
+                    </div>
+                    <p className="module-desc">
+                      Presents interactive circular charts showing relief requests by status and inventory grouped by category.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">3. Recent Activity Log</span>
+                      <span className="module-connector-badge badge-c">Audit Table</span>
+                    </div>
+                    <p className="module-desc">
+                      Displays a detailed chronological list of recent operations and changes for accountability and review.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">4. Report Generator</span>
+                      <span className="module-connector-badge badge-d">Custom Scope</span>
+                    </div>
+                    <p className="module-desc">
+                      Configures report details by choosing scopes (Executive Summary, Requests, Inventory, Donations) and timeframes.
+                    </p>
+                  </div>
+
+                  <div className="flowchart-module-card">
+                    <div className="module-card-header">
+                      <span className="module-card-title">5. Dual File Export</span>
+                      <span className="module-connector-badge badge-e">Excel &amp; PDF</span>
+                    </div>
+                    <p className="module-desc">
+                      Generates instant downloadable Excel (.xlsx) spreadsheets or formatted CSWDO official PDF documents.
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flowchart-header">
+                  <div className="flowchart-title-area">
+                    <h3>User Dashboard Flowchart (Figure 12 - Community Portal)</h3>
+                    <p>
+                      Official system process specification for the Community Member Portal (/home) covering relief requests submission and live tracking, real-time dashboard metric cards, Naga City relief advisories &amp; emergency hotlines, community reports, and account settings.
+                    </p>
+                  </div>
+                  <div className="flowchart-actions">
+                    <a
+                      href="/Open_In_Drawio.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      style={{ background: '#0284c7', color: '#ffffff', borderColor: '#0369a1', fontWeight: 600 }}
+                      title="Open online editor in Draw.io / diagrams.net"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Edit in Draw.io</span>
+                    </a>
+                    <a
+                      href="/UserDashboard_Flowchart.drawio"
+                      download="ReliefTrack_User_Dashboard_Flowchart.drawio"
+                      className="btn-flowchart-action btn-primary"
+                      title="Download editable Draw.io XML file"
+                    >
+                      <Download size={15} />
+                      <span>Download Flowchart .drawio</span>
+                    </a>
+                    <a
+                      href="/UserDashboard_Flowchart.svg"
+                      download="ReliefTrack_User_Dashboard_Flowchart.svg"
+                      className="btn-flowchart-action"
+                      title="Download vector SVG"
+                    >
+                      <Download size={15} />
+                      <span>Download SVG</span>
+                    </a>
+                    <a
+                      href="/UserDashboard_Flowchart.svg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-flowchart-action"
+                      title="Open diagram in new tab"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Open Fullscreen</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Visual SVG Flowchart matching Figure 12 */}
+                <div className="flowchart-viewer-wrap" style={{ justifyContent: 'center' }}>
+                  <img
+                    src="/UserDashboard_Flowchart.svg"
+                    alt="ReliefTrack User Dashboard Flowchart - Figure 12"
+                    className="flowchart-svg-img"
+                    style={{ maxWidth: '950px' }}
+                  />
                 </div>
               </>
             )}

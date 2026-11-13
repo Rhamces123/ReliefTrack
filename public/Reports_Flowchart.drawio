@@ -1,0 +1,189 @@
+<mxfile host="Electron" agent="ReliefTrack">
+  <diagram id="page-reports-pipeline" name="Reports &amp; Analytics Flowchart (Sub-flowchart F)">
+    <mxGraphModel dx="1333" dy="893" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1080" pageHeight="1220" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Top Entry Off-Page Connector F -->
+        <mxCell id="offpage_f" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=13;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="F" vertex="1">
+          <mxGeometry height="50" width="50" x="515" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="e-top-1" edge="1" parent="1" source="offpage_f" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_main">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Main Page Process -->
+        <mxCell id="proc_main" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11.5;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Reports &amp;amp; Analytics Page (/reports)&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 9.5px; font-weight: normal;&quot;&gt;City of Naga Operations Active&lt;/font&gt;" vertex="1">
+          <mxGeometry height="48" width="300" x="390" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="e-top-2" edge="1" parent="1" source="proc_main" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_aggregate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Collect Live Data -->
+        <mxCell id="io_aggregate" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Aggregate Real-Time Operations Data&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 9.5px;&quot;&gt;(Relief Requests, Warehouse Supplies, &amp;amp; Inbound Donations)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="340" x="370" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="e-top-3" edge="1" parent="1" source="io_aggregate" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_kpis_charts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Display KPI Cards & Charts -->
+        <mxCell id="io_kpis_charts" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Display 4 KPI Metric Cards &amp;amp; Dual Donut Charts&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 9.5px;&quot;&gt;(Total Requests, Total Items, Supplies Stock &amp;amp; Status Breakdown)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="52" width="380" x="350" y="307" as="geometry" />
+        </mxCell>
+        <mxCell id="e-top-4" edge="1" parent="1" source="io_kpis_charts" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="dec_generate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Decision: Generate Report? -->
+        <mxCell id="dec_generate" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="&lt;b&gt;Click [Generate Report]&lt;/b&gt;&lt;br&gt;Button?" vertex="1">
+          <mxGeometry height="70" width="220" x="430" y="405" as="geometry" />
+        </mxCell>
+
+        <!-- Decision Yes: to Modal -->
+        <mxCell id="e-gen-yes" edge="1" parent="1" source="dec_generate" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_open_modal">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl-gen-yes" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10.5;fontColor=#000000;" value="Yes" vertex="1">
+          <mxGeometry height="20" width="40" x="550" y="485" as="geometry" />
+        </mxCell>
+
+        <!-- Decision No: to Activity Audit -->
+        <mxCell id="e-gen-no" edge="1" parent="1" source="dec_generate" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_recent_activity">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl-gen-no" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10.5;fontColor=#000000;" value="No (Browse Logs)" vertex="1">
+          <mxGeometry height="20" width="110" x="220" y="420" as="geometry" />
+        </mxCell>
+
+        <!-- LEFT BRANCH: RECENT ACTIVITY LOGS -->
+        <mxCell id="proc_recent_activity" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Recent Activity Table&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 9px; font-weight: normal;&quot;&gt;Review Logged Changes&lt;/font&gt;" vertex="1">
+          <mxGeometry height="48" width="160" x="60" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="e-act-1" edge="1" parent="1" source="proc_recent_activity" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_audit_logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="io_audit_logs" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=9.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Audit Timestamped Logs&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 8.5px;&quot;&gt;(IDs, Types, Locations)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="48" width="170" x="55" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="e-act-2" edge="1" parent="1" source="io_audit_logs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="offpage_admin_left">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="offpage_admin_left" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="Admin&lt;br&gt;&lt;font style=&quot;font-size: 9.5px; font-weight: normal;&quot;&gt;Dashboard&lt;/font&gt;" vertex="1">
+          <mxGeometry height="55" width="90" x="95" y="713" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 2: REPORT BUILDER SPINE -->
+        <mxCell id="proc_open_modal" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Open &amp;quot;Generate Operations Report&amp;quot; Dialog&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 9px; font-weight: normal;&quot;&gt;Executive Reporting Manifest Modal&lt;/font&gt;" vertex="1">
+          <mxGeometry height="48" width="280" x="400" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="e-modal-1" edge="1" parent="1" source="proc_open_modal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_scope">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="io_scope" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Select Report Scope Tab &amp;amp; Timeframe&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 9px;&quot;&gt;(Executive Summary, Requests, Inventory, Donations | All Time / 24h / 7d)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="350" x="365" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="e-modal-2" edge="1" parent="1" source="io_scope" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_preview">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="proc_preview" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Build Official Document Preview&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 9px; font-weight: normal;&quot;&gt;(Naga Seal, CSWDO Official Letterhead, Report Date &amp;amp; Operator)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="340" x="370" y="712" as="geometry" />
+        </mxCell>
+        <mxCell id="e-modal-3" edge="1" parent="1" source="proc_preview" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="dec_export">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Choose Export Format Decision -->
+        <mxCell id="dec_export" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontColor=#000000;align=center;verticalAlign=middle;" value="&lt;b&gt;Choose Export&lt;/b&gt;&lt;br&gt;Format:" vertex="1">
+          <mxGeometry height="70" width="220" x="430" y="810" as="geometry" />
+        </mxCell>
+
+        <!-- Excel Branch -->
+        <mxCell id="e-dec-excel" edge="1" parent="1" source="dec_export" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_export_excel">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="845" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl-excel" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10.5;fontColor=#000000;" value="Excel (.xlsx)" vertex="1">
+          <mxGeometry height="20" width="80" x="350" y="825" as="geometry" />
+        </mxCell>
+
+        <mxCell id="proc_export_excel" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Click [Export Excel]&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 9px; font-weight: normal;&quot;&gt;Format Tabular Worksheets&lt;/font&gt;" vertex="1">
+          <mxGeometry height="48" width="180" x="270" y="920" as="geometry" />
+        </mxCell>
+        <mxCell id="e-excel-1" edge="1" parent="1" source="proc_export_excel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_download_excel">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="io_download_excel" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=9.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Download .xlsx Spreadsheet&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 8.5px;&quot;&gt;(Formatted Columns &amp;amp; Manifest)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="48" width="180" x="270" y="1008" as="geometry" />
+        </mxCell>
+
+        <!-- PDF Branch -->
+        <mxCell id="e-dec-pdf" edge="1" parent="1" source="dec_export" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="proc_export_pdf">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="845" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl-pdf" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10.5;fontColor=#000000;" value="Print / PDF" vertex="1">
+          <mxGeometry height="20" width="80" x="650" y="825" as="geometry" />
+        </mxCell>
+
+        <mxCell id="proc_export_pdf" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Click [Print / Save as PDF]&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 9px; font-weight: normal;&quot;&gt;Apply Official CSWDO Stylesheet&lt;/font&gt;" vertex="1">
+          <mxGeometry height="48" width="180" x="630" y="920" as="geometry" />
+        </mxCell>
+        <mxCell id="e-pdf-1" edge="1" parent="1" source="proc_export_pdf" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="io_save_pdf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="io_save_pdf" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=9.5;fontColor=#000000;align=center;verticalAlign=middle;" value="Save / Print Official PDF&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size: 8.5px;&quot;&gt;(Consolidated CSWDO Document)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="48" width="180" x="630" y="1008" as="geometry" />
+        </mxCell>
+
+        <!-- Converge to Admin Dashboard Bottom -->
+        <mxCell id="e-excel-converge" edge="1" parent="1" source="io_download_excel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="offpage_admin_bottom">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="1085" />
+              <mxPoint x="540" y="1085" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-pdf-converge" edge="1" parent="1" source="io_save_pdf" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="offpage_admin_bottom">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="1085" />
+              <mxPoint x="540" y="1085" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- BOTTOM ADMIN DASHBOARD EXIT -->
+        <mxCell id="offpage_admin_bottom" parent="1" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" value="Admin&lt;br&gt;&lt;font style=&quot;font-size: 9.5px; font-weight: normal;&quot;&gt;Dashboard&lt;/font&gt;" vertex="1">
+          <mxGeometry height="55" width="90" x="495" y="1110" as="geometry" />
+        </mxCell>
+
+        <!-- Caption Figure 20 -->
+        <mxCell id="caption_fig20" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#000000;" value="Figure 20: ReliefTrack Reports &amp;amp; Analytics Flowchart" vertex="1">
+          <mxGeometry height="30" width="500" x="290" y="1185" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

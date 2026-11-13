@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 1190" width="940" height="1190" style="background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
+    </marker>
+  </defs>
+
+  <style>
+    .flow-rect { fill: #ffffff; stroke: #000000; stroke-width: 1.5; }
+    .flow-text { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #000000; text-anchor: middle; dominant-baseline: middle; }
+    .flow-edge { fill: none; stroke: #000000; stroke-width: 1.5; marker-end: url(#arrow); }
+    .edge-line { fill: none; stroke: #000000; stroke-width: 1.5; }
+    .edge-label { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #000000; font-weight: normal; }
+    .caption-text { font-family: Helvetica, Arial, sans-serif; font-size: 14px; fill: #000000; text-anchor: middle; font-weight: bold; }
+    .lane-label { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #475569; font-weight: bold; text-anchor: middle; }
+  </style>
+
+  <!-- ==================== HEADER ARROWS ==================== -->
+  <!-- offpage_e -> proc_main -->
+  <path d="M 470 80 L 470 110" class="flow-edge" />
+  <!-- proc_main -> io_stats -->
+  <path d="M 470 156 L 470 180" class="flow-edge" />
+  <!-- io_stats -> io_feed -->
+  <path d="M 470 230 L 470 255" class="flow-edge" />
+  <!-- io_feed -> dec_action -->
+  <path d="M 470 301 L 470 330" class="flow-edge" />
+
+  <!-- ==================== ACTION ROUTER ARROWS ==================== -->
+  <!-- Left branch (Filter) -->
+  <path d="M 370 365 L 180 365 L 180 420" class="flow-edge" />
+  <text x="260" y="355" class="edge-label">Filter by Type</text>
+
+  <!-- Center branch (New Donation Intake) -->
+  <path d="M 470 400 L 470 430" class="flow-edge" />
+  <text x="480" y="415" class="edge-label">+ New Donation</text>
+
+  <!-- Right branch (Card Actions) -->
+  <path d="M 570 365 L 750 365 L 750 420" class="flow-edge" />
+  <text x="660" y="355" class="edge-label">Card Actions</text>
+
+
+  <!-- ==================== LEFT STREAM: FILTER & VIEW ==================== -->
+  <path d="M 180 466 L 180 500" class="flow-edge" />
+  <!-- Filter Select -> Filter Cards -->
+  <path d="M 180 546 L 180 580" class="flow-edge" />
+  <!-- Filter Cards -> Display Filtered -->
+  <path d="M 180 626 L 180 660" class="flow-edge" />
+  <!-- Display Filtered -> Admin Dashboard -->
+  <path d="M 180 706 L 180 740" class="flow-edge" />
+
+
+  <!-- ==================== CENTER STREAM: MAIN DONATION INTAKE PIPELINE ==================== -->
+  <!-- Open Form -> Input Name & Type -->
+  <path d="M 470 474 L 470 505" class="flow-edge" />
+  <!-- Input Name & Type -> Input Items & Qty -->
+  <path d="M 470 551 L 470 580" class="flow-edge" />
+  <!-- Input Items & Qty -> Is Valid Decision -->
+  <path d="M 470 626 L 470 655" class="flow-edge" />
+
+  <!-- Is Valid: Yes -> Save to DB -->
+  <path d="M 470 721 L 470 755" class="flow-edge" />
+  <text x="482" y="736" class="edge-label">Yes</text>
+
+  <!-- Is Valid: No -> Show Error Alert -->
+  <path d="M 385 688 L 345 688" class="flow-edge" />
+  <text x="355" y="678" class="edge-label">No</text>
+  <!-- Error Alert loops cleanly back to Input Name -->
+  <path d="M 285 666 L 285 528 L 345 528" class="flow-edge" />
+
+  <!-- Save to DB -> Confetti & Close -->
+  <path d="M 470 801 L 470 830" class="flow-edge" />
+  <!-- Confetti -> Recalculate Metrics -->
+  <path d="M 470 876 L 470 905" class="flow-edge" />
+  <!-- Recalculate Metrics -> Refresh Real-Time Cards -->
+  <path d="M 470 951 L 470 980" class="flow-edge" />
+  <!-- Refresh Real-Time Cards -> Admin Dashboard -->
+  <path d="M 470 1026 L 470 1055" class="flow-edge" />
+
+
+  <!-- ==================== RIGHT STREAM: CARD ACTIONS ==================== -->
+  <!-- Decision Edit or Delete? -->
+  <!-- Left to Edit -->
+  <path d="M 670 453 L 640 453 L 640 510" class="flow-edge" />
+  <text x="625" y="445" class="edge-label">Edit</text>
+  <!-- Right to Delete -->
+  <path d="M 830 453 L 860 453 L 860 510" class="flow-edge" />
+  <text x="865" y="445" class="edge-label">Delete</text>
+
+  <!-- Edit Sub-branch -->
+  <path d="M 640 556 L 640 585" class="flow-edge" />
+  <path d="M 640 633 L 640 665" class="flow-edge" />
+  <path d="M 640 711 L 640 740" class="flow-edge" />
+  <!-- Edit exit to collector -->
+  <path d="M 640 786 L 640 820 L 720 820 L 720 850" class="flow-edge" />
+
+  <!-- Delete Sub-branch -->
+  <!-- Confirm Delete Yes -> Delete DB -->
+  <path d="M 860 568 L 860 605" class="flow-edge" />
+  <text x="872" y="585" class="edge-label">Yes</text>
+  <!-- Confirm Delete No -> Loop back -->
+  <path d="M 915 539 L 935 539 L 935 453 L 830 453" class="flow-edge" />
+  <text x="920" y="500" class="edge-label">No</text>
+  <!-- Delete DB -> Remove Card -->
+  <path d="M 860 649 L 860 680" class="flow-edge" />
+  <!-- Remove Card exit to collector -->
+  <path d="M 860 726 L 860 820 L 780 820 L 780 850" class="flow-edge" />
+
+
+  <!-- ==================== SHAPES & LABELS ==================== -->
+
+  <!-- Top Entry Off-Page Connector E -->
+  <polygon points="445,30 495,30 495,67 470,80 445,67" class="flow-rect" />
+  <text x="470" y="52" class="flow-text" style="font-weight: bold; font-size: 13px;">E</text>
+
+  <!-- Main Donations Interface -->
+  <rect x="340" y="110" width="260" height="46" class="flow-rect" />
+  <text x="470" y="133" class="flow-text" style="font-weight: bold;">Donations Management Page</text>
+
+  <!-- Display Metrics & Circular Progress -->
+  <polygon points="310,180 640,180 620,230 290,230" class="flow-rect" />
+  <text x="465" y="200" class="flow-text">Display Total Donations, Quantity, &amp; Agencies</text>
+  <text x="465" y="214" class="flow-text" style="font-size: 10px; fill: #475569;">(Circular Progress Meters &amp; Category Badges)</text>
+
+  <!-- Display Feed & Category Tabs -->
+  <polygon points="325,255 625,255 605,301 305,301" class="flow-rect" />
+  <text x="465" y="278" class="flow-text">Display Donations Feed &amp; Category Tabs</text>
+
+  <!-- Main Action Router Decision -->
+  <polygon points="470,330 570,365 470,400 370,365" class="flow-rect" />
+  <text x="470" y="360" class="flow-text" style="font-weight: bold;">Select Action</text>
+  <text x="470" y="374" class="flow-text">to Perform?</text>
+
+
+  <!-- ==================== LEFT COLUMN: FILTER & EXPLORE ==================== -->
+  <text x="180" y="405" class="lane-label">FEED FILTERING</text>
+
+  <rect x="95" y="420" width="170" height="46" class="flow-rect" />
+  <text x="180" y="438" class="flow-text">Select Category Tab</text>
+  <text x="180" y="452" class="flow-text" style="font-size: 9.5px; fill: #475569;">(Food, Water, Medical, Other)</text>
+
+  <polygon points="180,500 255,523 180,546 105,523" class="flow-rect" />
+  <text x="180" y="523" class="flow-text" style="font-size: 9.5px;">Filter by Type?</text>
+
+  <rect x="95" y="580" width="170" height="46" class="flow-rect" />
+  <text x="180" y="603" class="flow-text">Filter Feed by Category</text>
+
+  <polygon points="105,660 265,660 245,706 85,706" class="flow-rect" />
+  <text x="175" y="683" class="flow-text">Display Filtered Cards</text>
+
+  <polygon points="135,740 225,740 225,780 180,800 135,780" class="flow-rect" />
+  <text x="180" y="760" class="flow-text" style="font-weight: bold;">Admin</text>
+  <text x="180" y="774" class="flow-text">Dashboard</text>
+
+
+  <!-- ==================== CENTER COLUMN: INTAKE PIPELINE ==================== -->
+  <text x="470" y="420" class="lane-label" style="fill: #d97706;">CORE INTAKE PIPELINE</text>
+
+  <rect x="375" y="430" width="190" height="44" class="flow-rect" />
+  <text x="470" y="452" class="flow-text" style="font-weight: bold;">Open "New donation" Form</text>
+
+  <polygon points="350,505 600,505 580,551 330,551" class="flow-rect" />
+  <text x="465" y="523" class="flow-text">Enter Donor Name &amp; Choose Type</text>
+  <text x="465" y="537" class="flow-text" style="font-size: 9.5px; fill: #475569;">(Food, Water, Medical, Clothing, Other)</text>
+
+  <polygon points="345,580 605,580 585,626 325,626" class="flow-rect" />
+  <text x="465" y="598" class="flow-text">Enter Items, Quantity, Unit,</text>
+  <text x="465" y="612" class="flow-text">&amp; Optional Notes</text>
+
+  <polygon points="470,655 555,688 470,721 385,688" class="flow-rect" />
+  <text x="470" y="682" class="flow-text">Is Donor Name</text>
+  <text x="470" y="696" class="flow-text">provided?</text>
+
+  <polygon points="230,666 345,666 335,710 220,710" class="flow-rect" />
+  <text x="282" y="688" class="flow-text" style="font-size: 9.5px;">Show Required Alert</text>
+
+  <rect x="360" y="755" width="220" height="46" class="flow-rect" />
+  <text x="470" y="778" class="flow-text">Save Donation to Database</text>
+
+  <polygon points="345,830 605,830 585,876 325,876" class="flow-rect" />
+  <text x="465" y="848" class="flow-text">Show Success Confetti</text>
+  <text x="465" y="862" class="flow-text">&amp; Close Modal Form</text>
+
+  <rect x="350" y="905" width="240" height="46" class="flow-rect" />
+  <text x="470" y="928" class="flow-text">Recalculate Summary &amp; Progress</text>
+
+  <polygon points="350,980 600,980 580,1026 330,1026" class="flow-rect" />
+  <text x="465" y="1003" class="flow-text">Refresh Real-Time Donation Cards</text>
+
+  <polygon points="425,1055 515,1055 515,1095 470,1115 425,1095" class="flow-rect" />
+  <text x="470" y="1075" class="flow-text" style="font-weight: bold;">Admin</text>
+  <text x="470" y="1089" class="flow-text">Dashboard</text>
+
+
+  <!-- ==================== RIGHT COLUMN: CARD ACTIONS ==================== -->
+  <text x="750" y="405" class="lane-label">CARD MAINTENANCE</text>
+
+  <polygon points="750,420 830,453 750,486 670,453" class="flow-rect" />
+  <text x="750" y="448" class="flow-text" style="font-size: 10px;">Select Action:</text>
+  <text x="750" y="460" class="flow-text" style="font-size: 10px;">[Edit] or [Delete]?</text>
+
+  <!-- Edit Branch Shapes -->
+  <rect x="580" y="510" width="120" height="46" class="flow-rect" />
+  <text x="640" y="528" class="flow-text" style="font-weight: bold;">Open Edit Form</text>
+  <text x="640" y="542" class="flow-text" style="font-size: 9px;">with Details</text>
+
+  <polygon points="580,585 710,585 695,633 565,633" class="flow-rect" />
+  <text x="637" y="603" class="flow-text" style="font-size: 9.5px;">Update Quantity,</text>
+  <text x="637" y="617" class="flow-text" style="font-size: 9.5px;">Items or Notes</text>
+
+  <rect x="580" y="665" width="120" height="46" class="flow-rect" />
+  <text x="640" y="682" class="flow-text" style="font-size: 10px;">Save Changes</text>
+  <text x="640" y="696" class="flow-text" style="font-size: 10px;">to Database</text>
+
+  <polygon points="580,740 710,740 695,786 565,786" class="flow-rect" />
+  <text x="637" y="763" class="flow-text" style="font-size: 9.5px;">Update Screen Card</text>
+
+  <!-- Delete Branch Shapes -->
+  <polygon points="860,510 915,539 860,568 805,539" class="flow-rect" />
+  <text x="860" y="539" class="flow-text" style="font-size: 9px;">Confirm Delete?</text>
+
+  <rect x="800" y="605" width="120" height="44" class="flow-rect" />
+  <text x="860" y="621" class="flow-text" style="font-size: 10px;">Delete Record</text>
+  <text x="860" y="635" class="flow-text" style="font-size: 10px;">from Database</text>
+
+  <polygon points="800,680 930,680 915,726 785,726" class="flow-rect" />
+  <text x="857" y="697" class="flow-text" style="font-size: 9.5px;">Remove Card</text>
+  <text x="857" y="711" class="flow-text" style="font-size: 9.5px;">&amp; Recompute Totals</text>
+
+  <!-- Right Collector Connector -->
+  <polygon points="705,850 795,850 795,890 750,910 705,890" class="flow-rect" />
+  <text x="750" y="870" class="flow-text" style="font-weight: bold;">Admin</text>
+  <text x="750" y="884" class="flow-text">Dashboard</text>
+
+  <!-- Caption Figure 18 -->
+  <text x="470" y="1155" class="caption-text">Figure 18: ReliefTrack Donations Flowchart</text>
+</svg>

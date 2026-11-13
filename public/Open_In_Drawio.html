@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit ReliefTrack Flowcharts in Draw.io</title>
+  <style>
+    :root {
+      --primary: #1674d1;
+      --primary-hover: #125db0;
+      --dark: #0f172a;
+      --slate: #334155;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --bg: #f8fafc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--slate);
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+    .header h1 {
+      font-size: 28px;
+      color: var(--dark);
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .header p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card-badge {
+      display: inline-block;
+      align-self: flex-start;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .card-badge.badge-a { background: #fef3c7; color: #92400e; }
+    .card-badge.badge-b { background: #dcfce7; color: #166534; }
+    .card-badge.badge-master { background: #e0e7ff; color: #3730a3; }
+    .card h2 {
+      font-size: 19px;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+    .card p {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 11px 16px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 8px rgba(22, 116, 209, 0.25);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--slate);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      color: var(--dark);
+    }
+    .info-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 30px;
+    }
+    .info-card h3 {
+      font-size: 17px;
+      color: var(--dark);
+      margin-bottom: 12px;
+    }
+    .info-card ol {
+      padding-left: 20px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      color: var(--slate);
+    }
+    .info-card li { margin-bottom: 8px; }
+    .code-box {
+      position: relative;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      max-height: 220px;
+      overflow-y: auto;
+      white-space: pre;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #334155;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .copy-btn:hover { background: #475569; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>ReliefTrack Flowcharts in Draw.io</h1>
+      <p>Edit diagrams online directly in diagrams.net / Draw.io or download .drawio / .svg files.</p>
+    </div>
+
+    <div class="card-grid">
+      <!-- Figure 12: User Dashboard Flowchart Card (NEW) -->
+      <div class="card" style="border: 2px solid #0284c7;">
+        <div>
+          <span class="card-badge" style="background:#e0f2fe; color:#0369a1;">Figure 12: Citizen Portal</span>
+          <h2>Figure 12: User Dashboard Flowchart</h2>
+          <p>
+            Models <b>/home</b>: Community Member Portal workflow matching Capstone Figure 12, covering relief request submissions, live status tracking (Pending, In Progress, Completed), 4 summary metric cards, City of Naga Relief Operations Advisories, Community Reports, and Account Settings with persistence.
+          </p>
+        </div>
+        <div class="btn-group">
+          <a href="UserDashboard_Flowchart.drawio" download class="btn btn-primary" style="background:#0284c7;">
+            💾 Download User Flowchart .drawio
+          </a>
+          <a href="UserDashboard_Flowchart.svg" target="_blank" class="btn btn-secondary">
+            👁️ View Fullscreen Vector SVG
+          </a>
+          <a href="UserDashboard_Flowchart.html" class="btn btn-secondary">
+            📋 Open User Flowchart HTML Page
+          </a>
+        </div>
+      </div>
+
+      <!-- Figure 20: Reports & Analytics Card (NEW) -->
+      <div class="card" style="border: 2px solid #0284c7;">
+        <div>
+          <span class="card-badge" style="background:#e0f2fe; color:#0369a1;">Off-Page Connector F (Figure 20)</span>
+          <h2>Sub-flowchart F: Reports &amp; Analytics</h2>
+          <p>
+            Models <b>/reports</b>: Real-time operations summary metrics (Total Requests, Total Items, Supplies Stock, Low Stock count), dual interactive donut breakdown charts, Recent Activity audit logs, and the "Generate Operations Report" modal with scope selection (Executive Summary, Requests, Inventory, Donations), timeframe filters, and dual export pipeline (Excel .xlsx and CSWDO official PDF).
+          </p>
+        </div>
+        <div class="btn-group">
+          <a href="Reports_Flowchart.drawio" download class="btn btn-primary" style="background:#0284c7;">
+            💾 Download Reports Flowchart .drawio
+          </a>
+          <a href="Reports_Flowchart.svg" target="_blank" class="btn btn-secondary">
+            👁️ View Fullscreen Vector SVG
+          </a>
+          <a href="Reports_Flowchart.html" class="btn btn-secondary">
+            📋 Open Reports Flowchart HTML Page
+          </a>
+        </div>
+      </div>
+
+      <!-- Figure 19: Interactive Map Card (NEW) -->
+      <div class="card" style="border: 2px solid #0284c7;">
+        <div>
+          <span class="card-badge" style="background:#e0f2fe; color:#0369a1;">Figure 19: Map Operations</span>
+          <h2>Interactive Map Flowchart</h2>
+          <p>
+            Models <b>/map</b>: Real-time GIS operations for Naga City relief efforts, boundary polygons, color-coded incident markers, 4 operational clusters (Search &amp; GPS, Satellite &amp; 360° Street View, Evacuation Centers &amp; Schools, Incident Pin inspection).
+          </p>
+        </div>
+        <div class="btn-group">
+          <a href="ReliefTrack_Map_Flowchart.drawio" download class="btn btn-primary" style="background:#0284c7;">
+            💾 Download Map Flowchart .drawio
+          </a>
+          <a href="ReliefTrack_Map_Flowchart.svg" target="_blank" class="btn btn-secondary">
+            👁️ View Fullscreen Vector SVG
+          </a>
+          <a href="Map_Flowchart.html" class="btn btn-secondary">
+            📋 Open Map Flowchart HTML Page
+          </a>
+        </div>
+      </div>
+
+      <!-- Sub-flowchart E Card -->
+      <div class="card" style="border: 2px solid #f59e0b;">
+        <div>
+          <span class="card-badge" style="background:#fef3c7; color:#b45309;">Off-Page Connector E</span>
+          <h2>Sub-flowchart E: Donations Management</h2>
+          <p>
+            Models <b>/donations</b>: Private agencies relief donations, summary metrics (Total Donations, Quantity, Agencies), category filter tabs (Food, Water, Medical, Clothing, Other), New Donation modal dialog with validation and Firestore persistence, and Edit / Delete actions.
+          </p>
+        </div>
+        <div class="btn-group">
+          <a href="ReliefTrack_Donations_Flowchart.drawio" download class="btn btn-primary" style="background:#d97706;">
+            💾 Download Sub-flowchart E .drawio
+          </a>
+          <a href="ReliefTrack_Donations_Flowchart.svg" target="_blank" class="btn btn-secondary">
+            👁️ View Fullscreen Vector SVG
+          </a>
+          <a href="Donations_Flowchart.html" class="btn btn-secondary">
+            📋 Open Sub-flowchart E HTML Page
+          </a>
+        </div>
+      </div>
+
+      <!-- Sub-flowchart D Card -->
+      <div class="card" style="border: 2px solid #8b5cf6;">
+        <div>
+          <span class="card-badge" style="background:#ede9fe; color:#6d28d9;">Off-Page Connector D</span>
+          <h2>Sub-flowchart D: Beneficiaries</h2>
+          <p>
+            Models <b>/beneficiaries</b>: Family Registry summary metrics (Total Families, Total Members, Barangays), search and economic status filter (Lower-Middle, Middle, Upper-Middle), Add Family modal dialog with validation and Firestore persistence, and Edit / Delete actions.
+          </p>
+        </div>
+        <div class="btn-group">
+          <a href="ReliefTrack_Beneficiaries_Flowchart.drawio" download class="btn btn-primary" style="background:#7c3aed;">
+            💾 Download Sub-flowchart D .drawio
+          </a>
+          <a href="ReliefTrack_Beneficiaries_Flowchart.svg" target="_blank" class="btn btn-secondary">
+            👁️ View Fullscreen Vector SVG
+          </a>
+          <a href="Beneficiaries_Flowchart.html" class="btn btn-secondary">
+            📋 Open Sub-flowchart D HTML Page
+          </a>
+        </div>
+      </div>
+
+      <!-- Sub-flowchart C Card -->
+      <div class="card" style="border: 2px solid #3b82f6;">
+        <div>
+          <span class="card-badge" style="background:#dbeafe; color:#1d4ed8;">Off-Page Connector C</span>
+          <h2>Sub-flowchart C: Inventory Management</h2>
+          <p>
+            Models <b>/inventory</b>: Relief supplies real-time stock metrics (Total Items, Low Stock count &lt; 20 threshold), category filter pills (Food, Water, Medical, Shelter, Other), Add inventory item modal dialog with validation and Firestore persistence, and Edit / Delete / Report actions.
+          </p>
+        </div>
+        <div class="btn-group">
+          <a href="ReliefTrack_Inventory_Management_Flowchart.drawio" download class="btn btn-primary" style="background:#2563eb;">
+            💾 Download Sub-flowchart C .drawio
+          </a>
+          <a href="ReliefTrack_Inventory_Management_Flowchart.svg" target="_blank" class="btn btn-secondary">
+            👁️ View Fullscreen Vector SVG
+          </a>
+          <a href="InventoryManagement_Flowchart.html" class="btn btn-secondary">
+            📋 Open Sub-flowchart C HTML Page
+          </a>
+        </div>
+      </div>
+
+      <!-- Sub-flowchart B Card -->
+      <div class="card" style="border: 2px solid #22c55e;">
+        <div>
+          <span class="card-badge badge-b">Off-Page Connector B</span>
+          <h2>Sub-flowchart B: Priority Assessment</h2>
+          <p>
+            Models <b>/priority</b>: Summary metrics (5 cards), Firestore beneficiary grouping, economic ranking algorithm (Lower-Middle first), barangay filters, and emergency aid allocation.
+          </p>
+        </div>
+        <div class="btn-group">
+          <a href="https://app.diagrams.net/#R7Zxtc9uoFsc%2FjWaaF8kglMeXcVK3d6fpZuJ09%2FaVBosjmRskNAjH8X76HRCS9YCdZGsn3lxlMp3ogECCH4c%2FcCovuPKC8VPKPYweQRZMZF5w7WHsHyEPYw8jyCJBWZaU5h%2F348NznRCMveCzhy694Cp9ihkHD6OZKFSZjeT5EWUkkSQtjjJQZVEkgcxmuAPOIL6XJHoo01qV4%2BMjVNWvljmUVgqPLAJTuakZI%2F0bXNmKPIwYLXPmJIHDXDIhmVoekqKAokh13abEjKS2xFubxcPospEJjblYRDMi9d%2BfJvPpYdwwjA66j1A9SPr0RZJ8diMo6PakT7YpEbLvQpfW4leWRFbP7K8ME%2FYXVLda65xRKFoZlRBcsbxtjESWQaRaNiKlWLSzxYK3a9UN1jNMIsL71j8ZVbPSelG9hbZ%2FBZbMqprRqU1JSZXZGooZoWLRMPUbsmpOKYRam7xq8yvgvNH3th4Pj19%2Fb%2F2asgb1V4oTcaxbJlQiD6cWc8Lntk1HtkHUsmrlYkYM6yKOb0kCV2VnCukFo8WMKZjkJNLpC0lyLxjNVMq94Nr3glHMOL8SXGe99nAQmx8vGBVKigdopCDzU6dUnekfnehSRKbGJGVcY%2FoV%2BCMoFhGbYKH0sb12FUo4S%2FQQjiBToB%2F7EaQugl%2FahJRRqt92VJSloSOsK65dgIKntT3hb6KlNxBBpKCkHtm2xOPzk7JMOwYDe7lY8XxiO3vWQPnEZiN2BCV1wS%2FFwsNjS8arAcqliMLKj4UpYVmPonUu7EbQuXbKp1x5wWgqPXya6L9uTCHoP7qDYo0TRp88PK4qOehBKcU8o6AfCO0Vh%2F5WOHwT8oI2eT7uo%2Be72Ds%2Bf0f2mAgLRVQRRkTSwuG%2FrlmRc6LfczJPU2Le%2BAaUZFGhoTrxMLrStx54wWWfw3uhiK7O9DODwsNXem4lkmQJWdrL70KjPNH6QV%2F%2ByHOQhzdl3xlL9Te64qQo1jrUnEjCOXBhdEIwykGyFAwa7bTbVcLzqD9BNVO%2FMfroX4N%2BcIZa6ONKMTTQx%2Bcut4ve2%2B3GoKJZGNd4dugf62QPoztIWKFAAtX4QgYxi1g5GFZod%2BH38ClJNU%2Flvx5GX6SY5x5GU33jd5KQxmAYXPL2XbLf4fLcwSXaN5dsuJQkewghEplIWdTD8o5kDy30SqI%2B1%2FnRRBE11wm1cnC5529i0XC16JMt1z8wT2fptSyjXjbszNZ233XmYNAcO3C8F12129ccONg3x8tESEtVESbaIfbd7kp0rLxj7TyN3CgFbeBrwiFilFgt4eFAl%2FWbKOCgz%2FuCqVl7nIwITcwA6jvrMeO6izG6liKnYpENymP%2FBsBZewAcO9Z7%2BGzfBgCFKIwNXWEBXO%2FkdAfAxJqb%2FAvZB7pBclmg3rHr%2BdmZSKfzYq987HYQK3ISsSz5BrHu1mBlubM9HbyV0sBtpXHiOxZ%2FLgV89u4bDxZEShTpy9%2FKBa4kb0NulJBqSdzFskFt3686VMogDLbMox90eMTnRy8k8r23I%2BY5JQoslkDDRwaLHpg%2FTCY9N5dKwazLvlgx8fw6zPY0Rl%2BB0EjMqzODYWrfI4SP0bNTu3%2B6j1M74VxEmmESKX3Y1YX30qZ7GElzQKYfltE1U3zJP4orZCkowngxTPR7MdGfunZ593OijyQYKBkNc076WH6BDGSJ5T2RCZiZHd1VhN6aQ1x0a27tQmp3Gdhf%2BggZo68smR3%2BMee6wCnj5cHFuLXJNkz3O9zoOnMtg%2FZuo4tOw5hJKJSQ4Dh5GFdpepofOaf10lIZVru4DtVZetpQSAqy1ggeHk9Xxa1RANGSs4yCDJ6Hc1qS%2FG1aG0j0kBi%2Bf58rzrJqxi%2Bax6yvJtrlXyf2wf3XEt8j%2BU2APW0De%2B5aL7mAPX1PN8pENbczkYXFPIqg2LR5dVln1ttWIouZTKvLe0EK9RKtWkvdxqLqGjh7BNOgk2gG5RnwIGD3zCmjNuMXvuP0Ae%2BbgK2iWSSoucxCQlOWOZzzpbb38b0mxWwqiKRrcRyiXnaA2llnrXTqmP8v9s2b8ikPI5IbX5rX8S09EZDMjQLwT8wJFmqFFKJfCO1r0angSbWpa9OVCT11t1C0ppdj4cK8LX2bKB4%2Fx%2BxaYdAQAm%2FBHu4c%2Fl9c9Nk7dq2IgveED6YmXk%2BJRrxVgwegCVQNKaSaiURkhH9eWTs9t8rzTYjctv7%2FQKml7U8yV2ITYM%2B5L8jopY7w1KTpIBgWlcYx41WB8MTUf43fObFXPxsp10%2F2Uc3FsrrIlFw2btKXP5tpq9vMVXXfWrAKMZcRtKeSRmCkMgvLxqLUEfa2RTZ1F8UsA9oitGNtcNpJadLaSXovaHUzaWpN0NaA7S6wXcdlk1132NxA7gZyy%2FZSogy5GtDdBbpuLHtO1xX0NrC7gd2ywZQwYVkDujvzui4we%2FQ6QuMGeDfAa9pL1TFXA747w9dBZkc0uOLeBng3wFs1mOa3jpoaEN6ReHDh2SR4TeDaQPAm7VC219Lxvwt%2BOg5D%2F40oczIFPqqPulybtTXtDdZX5D9Du99ifYX%2Br9C%2BBuW%2BVu6Gxw2wPw%2B7qsK4PgTebk%2BN%2FpGn9rcmNnpgdqTG%2Bji6geANBNtm%2B6B62f8n7hftwP1uBHQQzVvxwpnoKY7v4kPg%2FBrBsS%2Fy%2BgWCY23w6ED7BtrrFhsk9v4R78S5J7KdoakD9Bug181kRMr0Q%2BC9d%2Byux7LlsB0RrAO2G7ClOuwiVGXs48DtDnyug8iOnF4XwjqAuwFcg2zIhcin9cfsPgq7W1gTnm1rUbgOzmFJuCWRPCwK92kb5EUSeVNI9v899CbPmm9I2vsbn%2Btsf1LUw%2BPqq6LVV07NDeZDp8HnvwE%3D" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="background:#16a34a;">
+            🚀 1-Click Open Sub-flowchart B
+          </a>
+          <a href="ReliefTrack_Priority_Assessment_Flowchart.drawio" download class="btn btn-secondary">
+            💾 Download .drawio
+          </a>
+          <a href="ReliefTrack_Priority_Assessment_Flowchart.svg" target="_blank" class="btn btn-secondary">
+            👁️ View Fullscreen Vector SVG
+          </a>
+        </div>
+      </div>
+
+      <!-- Sub-flowchart A Card -->
+      <div class="card">
+        <div>
+          <span class="card-badge badge-a">Off-Page Connector A</span>
+          <h2>Sub-flowchart A: Relief Requests</h2>
+          <p>
+            Models <b>/requests</b>: 5 stat cards, filter chips, requests table, and the multi-step <b>+ New Relief Request</b> modal with demographic priority and Firestore persistence.
+          </p>
+        </div>
+        <div class="btn-group">
+          <a href="https://app.diagrams.net/#R7Z1bb9u4EoB%2FjYD2oQEl2U7y6Nhxu9hegrpne%2Fok0NJY5iklaikqiffXH5AirRudpN0kVmIFRRGRFClT3wxnhpzY8WeOv7hNqOOha%2BA5Yanjzx3Pc0%2BQ43mOhyANWUTSuCz%2Bz7fFuzNZ4S8c%2F9JBU8efJbdrQsHx0IblomyGs%2BwkIjjmOMlPUhBlVziGVDf4CpTA%2BhvH4c%2ByrjG4NzpBZnyxzaAsjeCahKAGVyN7SP7zZ3ogx0MkKltmOIZ3XA3xjsPfBeQiL3tLcQL1J3A89HXXAC0ouwk3mAvHQ2%2BWxerdulYwfdse2jxAcvue42zziUUg5zG61VOIkP4M0VaXjExJzM2zulXBkvwD5lZdWpAI8kZDwRgVJGsWhixNIRSNMsw5u2k2WzPaHFVOVKdgGWLaLf1OIrEpS8%2FMp5DlH4DEGzOyP9E1CTaNdUG%2BwRG7qRV1J9JMJ2dM7K2u5nwGlNbeuR7H8Ra%2Ffu%2FuY%2FIdoP%2BmO7Zey5kJBMsCrPHGtNBzOtUTIrZmlvMNVoyz9foKxzArXybjjn9xsyEClhkOZf0Nx5njX2xEQh1%2F7jr%2BxZpQOmNUNp07nr9WP45%2FkQvOfkKtBqmfXY15me7JWPbCUrHACaES0w9Ar0GQEOsKDaXr6Wtbp5iSWIpuCKkA%2BdjXwGUXdKorEhJF8tNe5GVv6MSTA%2B9EX8Dt3jfh3kVLRxCBJSD41vGQ7nF0Ni771DLo68ubiuexftmbGspj3QxrCYp3HT8UC8dbaDJ%2BGaCMszAwiitIMEk7FNnU1ycWFVIRT6hw%2FIsVd7xJLH%2F7pDpAf8iXs8alCm0AyFmRRiAHR71izn0U5p6FMr9Jmet1MXNtnI3ODsgZYUEusMiDEPMo7zA2J3lG8baCzPHQUmBBckFCCdybseOhmbz3reNPu%2BB9YwLTBqMzuZCu1xAKiBwPXQHLJLGyWNPgoU%2BQrIDrxpfXOCwA9NUVpMoW2adBM8wxpUCZMgj8iww4SUDx0ay7qiru5%2F0WzNL8zPyjF8O%2Ff9rk3zMmQo1%2F79SmZ9Fh%2Bd9pWYFXFO4XAYn9t7IpcrwJTiQt5f%2BSYULly%2FDQFaE0t8qEFKBCCc9UPkuD6pnS0rKEs5hDrqmfsSSjICB6ax10DolkOtuQUD1cnA%2Fy0Xv5OHsJ8hFBGBQ58ACHQjpnbemYUSL9N8nk34U02i8cTxL5GW6UxDRNlHqrtlSsCiGk97fo2iYblqyKvFd2yeNwl2c4JGn8EdbyXftVyVf9%2Bv3nMl6Mt2NM5EkXTvfMAufpIY1kCWcOmIebgPEAbono8LlU1Y6HmNTJa62c2%2BxVEQJEiYxgDBAeAEJ39AAIbRb0QSEkLCixCjjkBRV3GdGlcaDsXgNmG8WvphOkPLZvlU0yLOb9Wcxd%2F%2F7F3J30zdkzUSmpKQMcJZagwrQsbVM5x%2FlmxTCPhsjVc0au3NOmRhyddmMK5xbKJgcPXbEM0iBhkXT%2BW4h9ySBtWIy%2Fbiv%2BkWaFKMNdZoAhlvWEsazR5IXEsjhkQQQCE9pdhg00XyHjkEMqw1jXe5x4E4ia675sbvxnuZG0J26FZqxIRVl7QbiQFugcC91%2BGutflnCr%2FXtyTaiOrRXa5%2F8ShkWGS69rplwqoYIDIUsGi6B3IuO3VPV4ZHHvbR7U2DusyIQsFTgUAWUhtrr4Rm5mZUOrwLyHWvzpo%2BnJJjVVL58LKSxaRjDHaaxsZPmJpSBwULxPo6gKg70HVj0muiLprv2MMR6RFAsYQl%2B9l42J90JkIwWI8iDfQBk26MQWKJQkA0TKqdvZMH8S5cJ1BeUDK3J1lMIiGgvG1I6IOhEhcf%2BwjQmkeq34k4hwA3otWFKAbBcw%2Fo6FEaSleVbZXq82eS63a9RSN1cHKMwCc5MCzzckKy%2FnOJFnATz0Ea6ha1UNUtQzKTq1bbD0UYquC5oCl4GMIOasyPabZn%2FtWjY3NeyyNLqyG2ay3EMXkMKahASrOZxtwEiV2k80a8isfLVNy%2BuKQ5xiab%2Bh7ywxMndJI%2BC0tkRBSpjZpLz6PteW3IbQiJcezqXnnJ0705HjodNBnnovT7YNmT7KU8oE5EFerBJLwNuI0jSKiGRc7b4vidgR%2F5kpGwm9%2BZKV9W%2B7EtSVtX37PDMOyq25030fyO83%2BWeWQLud%2FENvRV5jSiK7myK5I2VsfU2AysMsKNTb5g8hXHWtTkjyBA9bQP3Yhzy3eNH924eUNs4OzAA4Z11nobYJxLg8qfxXDeU2nZdlF2hKQR08%2FgR5juPBte2fKm3vWZ6PvRNLrNS2FXRQZaqC9CGmYZBxwjgR2%2B7RDkzDgpare%2FOAkTHTCVX3dU3zNs%2FTQrB30g%2BNy6NNZkS0DBkfDqM%2BvR510chCpU2RHjSCH62CNeGQix0VNR4XVQ2aWyDblVSnOqRJGlSHO8p6x1usqnv2KNRwS0kaAffvB3BV0vpxtSvA4c9YMfylEJSkRoHm9d3IX6bWph%2BX%2BsHdX6W6Q%2BuzQDlpQel6ltUd9W0%2FUx6RLsIQ8jwQDOddl6ta2pdlO3luo2wpvS2yJuGedd7mZ7Ecqp1N9J2kMmlmWPf7pmDdFsue21Wwno3lgypYuqJBiJXjHzTT4hqKNi6UlnVHKr6GGql6HU%2F%2FgWlzDX4F3IomdU2aUia1ZgM9XfRwDGyYNy2LOnqj%2Bxjdq5NrOvg5yPNO2%2BSdd8kb2ZZ2%2F5BaFLBKhhOslsxUAwKiGMxMMi42LJahqcuqtPXqqjYfGcv09P8PhNjqF4oLwe4i7D59BWk0lemTEjWK85yEZeGCUNOhPEb1X3UgaKyvftRq5rf6UdXF1lykgm9rN8nLH%2FW66jZ1Ze4rJ0zOUoOrnBU81EWWnEOBeQyiZvFbMsoeA00OtDxMUX82G2YP61thtuv%2BaaGUEyGpVFlQA5aPj%2BU%2B7ups2rLQjpzLcj4Eq2clDWA%2BJpg26FpQ2lLDjpxLNROSywjCgconodJGXR1Ma07WkWMp5yRlaiHXiRUtp%2BYzexW0UrwCerELMNn8cuMhrZgQLKkTXuO7ov0ewt0G3xXuv0%2B4Fd8237a0riNHXE%2FJFvLA5LG1GP9h2SF65ZDz0r3do8XRb2lx93EYtyHcsi9siWNHTrmekldp%2BLq%2Fo4DRoyvgPeANtu8DNXDK7LnGx2di3K19D2ZDP0T77suFPHLE5dRJC%2BOO%2FL0jtDKoOhjVR8zvNKStmZhHDriaCeUnuq%2BC4p4xaUWuY1m0kjSPHMncVTx6A49PFE5r4dbC0Z4AeexMeopJf2DySZi0M9cC05J9eOxU%2BorK0UDlk1BpAa6F5J5UvmPHcqSwHA9YPgmWe6Bra8tOVtyxUzmWVF5jOmzVPp3G7EDX3shqZ6wdOZQSx5QNodNe7862mW0bAdZctyMHGzgPKGPZavd9Ji%2Bc5X%2B3o%2FoUm1Z27l5ccMmMMOVcJY2YfjJG0nIv7uG9VE97Je%2BunRL3Wn%2BOajJxHnjMuyMV5YP2T%2BTkWrKFbv7CsEHREwPpvrVkXxJq70T2eblWMyJPWK5eBcY9g3IfdA3DvZOHeuRIRit1IqdKfxyYfFRF2eGtnR3RTUA9ciLVTOyOiSnT%2B1WR%2BVtnxR7fHbSz9xKPipkRntTs3v1Nvl1ypn%2F%2BO3b3gwfw0fhF2vWqzZ6veTSjVd%2BoWW%2Bjas0XfpYV%2Bgb1HaSq5P8%3D" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            🚀 1-Click Open Sub-flowchart A
+          </a>
+          <a href="ReliefTrack_Relief_Requests_Flowchart.drawio" download class="btn btn-secondary">
+            💾 Download .drawio
+          </a>
+          <a href="ReliefTrack_Relief_Requests_Flowchart.svg" target="_blank" class="btn btn-secondary">
+            👁️ View Fullscreen Vector SVG
+          </a>
+        </div>
+      </div>
+
+      <!-- Master Multi-Page Diagram Card -->
+      <div class="card">
+        <div>
+          <span class="card-badge badge-master">3-in-1 Master Diagram</span>
+          <h2>Master Multi-Page Diagram</h2>
+          <p>
+            Includes <b>Page 1: Figure 13 (Admin Dashboard)</b>, <b>Page 2: Sub-flowchart A (Requests)</b>, and <b>Page 3: Sub-flowchart B (Priority)</b> in a single tabbed file.
+          </p>
+        </div>
+        <div class="btn-group">
+          <a href="https://app.diagrams.net/#R7Z1Zj9s6soB%2FjYDkoQMtXh%2FddpycO1ka6ZzJPU8GLVEyb2RRQ9G9zK%2B%2FIEVtJOV2EsuW2zwYDGJqbeqrYhXJqrK8ueUtn7ax5doPkGQIJ5a3sFzXeWdbrmu5Nkx8HKAkypv%2F%2Fr68mbAD3tLy3lv2zPLm26cQxdBy7Q3OaH4aSNN3AQIRAdvsXQJpfisQwUSc8A3GCIbfCfB%2F5scaD3cH7%2Bzi%2BfQ5hXlrAB%2BQD%2FnD%2BZNdm%2F3Pm4sHWa6NgvzMFETwBgRblNwEINusMSBBfrcEbMXdZuyw5dqL6gR7GeNHfwMItVz7zRJFO8L%2BLMd7Kz%2B0ePT26QMB6eYzDiDrweBJdN7UFW8fPOct46FoiEjxkk7VcI%2F%2BK97KKU7boQBmjRMpxjFFabPRx0kCfdpoA4Tgx%2BZpIY6bT2U9pDTc%2ByBWW3%2BggG7kv4sd%2BAhRtBGPHhcHtqA4WTRkGxDgx1qT2o9FbxKMaevhqsvnMI5rH1s8x3KXv35t%2BWeSksw%2FuR0OQ9YxK47eiuJUsA3iXZO6UUwt73ZNLHcUsX8tmpRm9Ln4ENkGcP5xGN6BCM7z742J5d0%2BbhCF9ynw2fFHAlLLu93QbWx5C8fybkMUx3Mcs1MXluuF%2FD%2FLu80owT9h7YjN%2FyuPFN%2FbeTdkd8EJXYItihnIH2H8ACnygTgguHVc8Vt3UxCjiIm1DxMK2Ws%2FQMJuEc%2FEgS0KAvbX3mb53ex3LntwqRYofGr9WM4%2BoBRRhXgLKXm2XFvccWoP83sKKR2Ij%2F9YIT8VTZsa7CNxFRBCFpU3PpQcy10KeH6ZsZRgXwAm6bY%2FwYzgXRJA9gi7V2RVp%2F4ZW6egaVKwImhyBkMFJ8fV8DSYnJun0FEQykdoy7W%2Fwf%2FsYEYzw0wHzHhNBVSqljoyXt%2BQKYc5Ve%2BY8euU49e4SY%2BnoWeogWd49vErdBV07gjCBFH2182yDGbZlvWS0TnHp8YdXLLSWSvk3Bqlc0ql404uVut4Cjt%2FJQ8woZi9hWwsfwYJiKDRQh1hNBheshbyFZLmRgudUgsNpherhQbqCAYTGCIfAYKg8bO6wGU0umRto07wLIy2OamjZV%2Bsthmq7OAEUIQTo2k6mQWcXLKmgQot742mOemShHuxmmaksPMZpEbHdACJ49iXqGQQ1kGyQFkaA%2FbXfQERUP3wD3%2FdW66tQ6lQRCkgII5hjPk2AO82hQRtIf9OzWN31YGXyXuCxbr8iUm0L4lE%2BwA%2FzNEprB4seo01i14pJmypy7bcEdgyJvL%2FV7GcJSB%2Bpsg3VlQnXHnOJWq4wowKFbKWxow6pRnleMOLtaMmCjyzHcWWa9%2FvoghmZjq6E2CG7iUrnEhh5oNROCdVOMPRxSqcqQLPPaQUJZGxbTpBZXyRu36Y96aSUnlvrcwYN60PyNkvaidn0DfkAqjXTuCB7cvPSuBk38zfgCRi2%2BdVq5ts8Ha9y3qlvOzjjHkp8FESfYIh%2B3Re1fJNfE3vXLANRuq%2Bai1s43OOhVy%2FrbKd78MsU5nL28NdHGv2imTgAbbv3TeK74xmvWSWDcbeu0sYbQvDfqOQ%2BNEY9ic17EfSXPtwrGqz3hn28TpehTyAbeWou95qoW0KTBQ%2B0SYkTRgSnECJHNF0%2BFfUUdn0LOrkDF5CTIfUSdbq7OY4Nxpqxjlbg4Z3TjQgC0xbUZwHESnfHwYRvBc%2FMaEbHOEExO%2BrVulLVed8wjgVyPwfpPRZfD%2FAJq%2F2APWSdoFJMGMRjYysGGQZ8vPGJYqLG8InRP%2BXq4Wh%2BPVP7cjiSbwq%2F%2FFc%2FEgoea5dxH7%2BUz9WXcZ%2FFdflHcZ6qYFVhnfEh03dLYUBUkAiSGuOtzaK6xh8EhgDih6ab6iD7bB7c9jK23eK5nqXrQKCU8dweXwu26FT0AyPqC2PSmPxhBkhfNahuE%2BKUZLHqB1%2Bl%2Bpt79jVNcU%2BbCp2t5gbflk1H3R%2Fxz7K%2Fbms5R3RW0F2jSCfV5BdI8jdCbLnXI0gq56CEeSTCrJnBLk7QR66VyPIAyPI5xXkgRHk7gRZXnt4xYI8NIJ8XkEeGkHuTpCPdP9LEOSREeTzCvLICHKHk13O%2BGokeWwk%2BbySPDaS3KEke5OrkeSJkeTzSvLESHKHkjycXo0kT40kn1eSp0aSO5TkyetfSw4dvl3JyHFHclxs9qiLrpTjtXfCe1oAXQbg2gDYFYBuO4BrAyBchR4D0DcAdgWg1w6gbwCEq3DAAFRDXAyARwJw0A6g2RjMABwyAKEBsCsAh%2B0AQgMgXIUjrgGLcGeDYTcYjlQMa2nDrh7BGON0XRZNeyUAOjX8KhhfANBp4FfR%2BPsA1jgzS8TNSSZXTm4ymR53Fkt%2BgPt7D%2Bj1LNaYDSDhq5LcXg0d43YLJuyp9J4WwAkDMDIAdgXgpB3AyAAIWXoNY0J3j%2BFUb0L3dRnu1AgK%2FjiK0EypdoBhjbY6hPVsTtdNIeuJBHNnLn%2FrWm6OL%2FhVIBmDNYxvgf8z4u%2BmSzJT5AtZY0rxtrjmDmeI5pXASZ4xo29%2BYp1js9tB2o0gpQMfTMfvjr3hYfrqXUVG2DPM2BBVyyxWUxL%2FaMpEXYuWKAe7fmsDTTq53umEk0LNSWZIb14Fun20uZq46fzQzdWQyM8hGFPNGcXTCEg3n3EAm3fhRwME8myNjQNFay2DMojgDeG10m9Io1J6AraibzSl1O1ljB%2F9DSBsZHtzv1vfhLWG2Vt9v%2FEvUL20awdVQhmxCzAoi88XLREp3tWpGoSc8EtF6w4FMGucSDGOKUqbjX6eXbD51ZmsNE8Lcdx8KusopeHeB7Ha%2BqNKn1bubmTtH2sp1ByvSCq6BcXJoiHbgICLbtHUjkgLHy%2FoMvtQe0NzrSav0p%2FcrpBrltLNlGM%2Fd01SuTLypWSALxTXaguKjICNojiq%2BvqMg10MdUWT2Q3sv9jHCRlKMoC9TSB%2FMSltB1L2eMdVMetfxSWEVxkFNFv5gARqeuUqjbyAjCWUp4CiLC%2BxZL8ZWq49Z9e%2BtbyZCt53TEHcYHTOBtIwhD5lDpR9B3HKiGXNggbX%2Fgy3a0jEye8fgL%2BDUPy6g0mAEnW15LUmdb4Y%2Fr2x5P%2FbatZVd6zTs%2FZ5%2BS%2B1LAXrWC20qYgAw%2F57fqpajsxeoph9DNe%2BQ3GcaWWCCdCOC8%2BMvUuD6jnX0qyF4Ihwn4E1zfE2jSGFwVvtQxdwy5hON8jnL3dF1R4uVz4mlyAfbBpll0GyAj6f%2FZWlYx4jtuuJMfmfHTPaby2XEfkFPnKJaZoo9bNkqVjvKGXTy6Y2xBlqQwzcZrSapysNMdHAedbSEAzODALib1aYrNiUjsLnPT9suTZmOjkUyllmr5ohsGOUUQPheQqUDA6AUGdBn70%2BCcdqRWC2i%2Bk%2BIzo3DrjdW4Apo%2FituInNPbbvlU1iBvP%2BDOaOXCpMM5g7o745e2XgwBOi9TID9ampvFWmctEMJjczV6cq2SRVbBqrcwpTDWWjs09d4RQmqy0OmPMvIfY1hUnDYvx1W%2FGvJN3RfLqreICZy%2BpwLmtwEdXDuS%2BfrgJIAYrVYbiA5htMCcxgQvNlMlfnxBcTUQtxL50b%2F4UtJLXMW9lzvGO7I9jRW0Qos0AXgIrzZ5H4xz18Ev49ekCxmFvbCZ%2F%2Fq%2B%2FvUpB7XXPuUlE%2BOeDjrbEIeicynqSqhwONe6%2FzoIbueUXGxwkFPl3F2AdaF7%2BQm3l%2BolZgPsDa%2FNOn4k46qanu8mXHhEXICCAgibiNzP5iJggEct5nQVBNg32AuHpN%2Bw4l5flzjEmAEkA1O3CMbPRMNkbuhchGAmGQrbINzKcNlLmFGOYkQxhwp660Yf6FuAunCspHvMvYRK9ONJYY8xURHkfIcP%2F4HCGYiLHiX4j6GyjGgvsYwrScMP4BaCFI98W7svPFaJNlbLmGD3UL%2BID8Yinl62MCSbZBaf5zAbZsL4Brf4IPULWqjBT1TIrGugWWPkrRwy5OIGETGSu2nzBtN83%2BXZ7ZXNTQy9LgTm%2BYsXbXvoUJDJGPAO%2FD%2BQYWUsXXE4sxZJ5%2F2qbldUdglAC%2Bu%2FUH3hYy9z4OIIlrQxRMEC4WKe9%2BLIQlt0FxQHIP571rTabWbGC5tpqB1shT3%2BRJtyDTR3lKMIXZKtutt5oJ70KUZkHA9%2Bvz1fd7REviv2BuI9lvvqb58beqBKmy1rbOMyeQuzV73XdDfr%2FJn2gm2vXkn3sp8gHEKNC7KYw7lM%2BthwjGbDOL7Ytl80MI57fmOyTJFpgloH6sQ041XnT%2F1iGZjVOCuYKEYNVZqC0CYcJ2Kv%2B7hrJM5%2Fv8FvYshnzj8WeYZSAyrm3%2FVKm8Zjkduro69rqloLMqUz5J74PYX6UEYYLos7q1A8T%2BLs5H9%2BYGo8JMRzG%2FTjXNZZ5nO4pvmB8a5Vubiifa9z4mZjNq93rUsQcaKnWK9Kwz%2BMF6FSICM1pSUeNxWR2xFxrIypZqVwczSVfV5o78uOUu19U1LQrVf45REkDivQzgOqf107psKAPnvu5ojJJCgWb11chfplanH4vgLOdXqVZoPQmUIwlKx9WM7nbf1jPZFuk8fmtFMchUl6sa2u%2BLOC%2F7e34m87ZQiPyWcV7nZ%2BEMViub9g%2BUsKAZM%2B73TcFKFYYd11EVrKtj%2BawKNl7HKx9wx3%2FVDItrKNpox7WsM%2BDza8K3%2F074xLTi6R8YNtfgl8Inui8QNMFMazbQE02HY6DDvGlZ1NEbvMRoq06u6eBTkOeOZfKmKnkD3dDunVOLQsCD4SiuBTOZUONjhhprYg6VNBiaiLIriDneByXrCJ7QgUVBGSw7Sn6l4U5KyqBEoV05l3l%2FUFyPSjJgHjk1gwKdBKUuNOzKueQ9YZK0dUmljjo5YZsSk3XlWIrUbWwgF4EVklNzxfnbepiZScFX5lsX1nXliIsuYQnIijg2ifErTD8m5yJsanH7t7S4cxzGdQjLmcg0gWNXTrnokldp%2BP5Wokz76Aq4BTxj%2Bx6ogROsjzW%2BPhNjv%2FY9mw19iPZti4W8csSLFKd74veu0MqI%2BcaoPmK%2B15DWRmJeOeC8J7if6LwKinvGpBY5xbKQgjSvHMmM19HOXMNjR9NpEm4SjvoAyGtnkpfWzjzDZCdM6pmTwNREH147lbzedjYwVHZCpQY4CcmWUL5rx5JX4c6GBstOsGyBTtaWSlTctVPJS3M%2FgNgs1XanMRXo5IUsOWLtyqFkOCbYTJ32enVWZlY2ArSxblcONiTkdVYB%2F70V1S4WrfTcXdzkUvGETiu%2BleVLinRUI1Ep%2FdVUY8vHkmeoxi%2BYBYqeGEgvjSVtQai9E9nTcs17hO2wXL8KjHsGZRt0DcNdiUO9ciSDNd%2BRU4U%2FGiaPqigV3uToCDUA9cqJ5D1RbhOr1Wx%2BJWT%2B1l6x47uDevYucatY8YROze4yJ18ZnOn9VhXkgx%2Fg2b9Vxvnsdv1Ry4C2FgAtRvgbkGUwy7aMSN5bVRHQWjKSWe2k%2FRHNt0coBOq8ikKg09ZCoLYpBCoF5a4VT7U9%2F4gpp2AKgVbuSqHH9IVA21TY4cVA7TeWuyweomZrMPmYTHHQINPor3rmm%2B02z7T7GVLya7VB%2BXdGRVbqIhW8%2BPkF85qjUCSz%2FjtNIbn5nH873lL8254zi7pVoZpMOT1JNqqtC9q7ZKNc7YaQ%2BptVWOIp0b9kh3kenAhlRV2vZtrpCu2XUz99YHsbLNdeswu%2FgAg06iIYlXxslSxlcNLW4%2BxdAqc8mwZIfq6gjxO8Rb6C5TeQ%2FGyglxP1vjy%2FzHVeZWLUqedP%2BLGmau034r5OowStYNlWTnO1pzXVd3myZ2yODhTvVLZ2NRnKvL4pXoRXQW5VtBULqIyOWtWYQnnO81wezKD1HF5Y2UcBELaE5XrsXv%2BDM6hJev6IeJmmmpzcgoAn3d1X5nlBcBrgx8RYHv0TAKni8kDj7%2FWz4rIIz81EgRlJAMq6MzX%2BsaaqbY1kkTDAJDXvQ1LzoSZVZP%2BSmucWcA5iAChQzd9CBVYmb83cyCFlJrGMZaPWl6xXNVaKMQyOzKPjSTy6E13O8t5lh0Z4tUsDQKHAEgarBwQfFTD%2F5iexsTm3FLhf9kEYEy%2F7YWU1x48QBH5ex9EM7T1DWEq7rxva%2B5d0nw3tIOYxX7ARtF0vwCyO58ufeaJdwAuT6Ib4nH87LJAtdj6agb4PA%2F1IN8vbz4He53WcVgAFqzQGKpYfIAvB4Vh%2B54v%2FzXqHec1C%2B45fKkMqZhnQf3nBQvsjijY3cgmJZWOSzQz3HU50jXVuUO8muupbojQrD79cDKKaxdVYnaJSBCYBr95s6kT0qk7EROcv9bFMhBjbWYBCVlSCaJ28msW1UsZznISI1R3Lf4rqES%2FbqqWpW3OqFjBGD5Dk5XU2MF8DNgZsz5SytI9r6mhWH9y%2BGbDFbhYC6Y4kedosjXKe5em0ZHwXINusMSBBK45m10sHqI0lX2mkGf%2BnfdOm9UIlrRXKqkIlQ12hkj%2FY2meKlXRTrGR6GbVK1qZWyR8HPGjAaqtWIkYQJTRMs%2B3tiGyyTxSiBAYNQqXWGqfSkTqt0qFzQWtqmXSObRuX7dVMCroNuXvILaudhPmeKoPu8dHVY6koXd2mN8PuHnbzDqOYb8sy6HamdXVgqgXO1K1xBt498PL%2BouWeK4NvZ%2FhqyJSMBt2%2BNwPvHniLDsurUTWqohiEj2486PCUs51pNq4ZgvfZDnl%2FXXkWm9OnQHuB9haUVVtZ3h5nYH8Zdlps43oVeJ%2B%2B8NRBtrIMpmRqtO%2BjMwTvIVh02yu1l09XnuplY6MdUGM0H0ULX3US1t6Z1wcYHK2bRw3te2gve8yY2P0jXouzmiBStzXVQL8HetZNJoFkx%2FN5WizbkkiaRcADsDVJJrvWuRoiJXO6bQurAXcPuHkuyteZ%2Ff0IPuH4WE5hG5zGJTySkWycwj5NgxxkIu%2Fbkn310B85yyi%2FIEQMcdby%2Fw%3D%3D" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="background:#4f46e5;">
+            🚀 1-Click Open 3-Page Master
+          </a>
+          <a href="ReliefTrack_Admin_Dashboard_Flowchart.drawio" download class="btn btn-secondary">
+            💾 Download Multi-Page .drawio
+          </a>
+          <a href="ReliefTrack_Admin_Dashboard_Flowchart.svg" target="_blank" class="btn btn-secondary">
+            👁️ View Figure 13 Vector SVG
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manual Import Instructions -->
+    <div class="info-card">
+      <h3>Alternative Ways to Open &amp; Edit in Draw.io:</h3>
+      <ol>
+        <li><b>Drag and Drop:</b> Open <a href="https://app.diagrams.net/" target="_blank" style="color:var(--primary); font-weight:600;">app.diagrams.net</a> in any browser and drag any <code>.drawio</code> or <code>.svg</code> file directly onto the canvas.</li>
+        <li><b>File &gt; Open From &gt; Device:</b> In Draw.io, choose <b>File &gt; Open From &gt; Device</b> and select the downloaded file.</li>
+        <li><b>Copy-Paste XML:</b> In Draw.io, click <b>Arrange &gt; Insert &gt; Advanced &gt; XML</b> (or <b>Extras &gt; Edit Diagram</b>) and paste the raw XML below:</li>
+      </ol>
+
+      <div style="position:relative;">
+        <button class="copy-btn" onclick="copyXml()">Copy Subflowchart B XML</button>
+        <pre class="code-box" id="xmlBox">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;mxfile host="app.diagrams.net" agent="ReliefTrack" version="24.0.0" type="device"&gt;
+  &lt;diagram id="page-priority-assessment" name="Priority Assessment Flowchart (Sub-flowchart B)"&gt;
+    &lt;mxGraphModel dx="1000" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="1060" math="0" shadow="0"&gt;
+      &lt;root&gt;
+        &lt;mxCell id="0" /&gt;
+        &lt;mxCell id="1" parent="0" /&gt;
+        &lt;mxCell id="offpage_top_b" value="B" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="485" y="35" width="50" height="55" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="proc_priority_main" value="Priority Assessment Module&amp;lt;br&amp;gt;Main Interface (/priority)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="435" y="125" width="150" height="48" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="io_stats_cards_b" value="Display Summary Metrics (5 Cards):&amp;lt;br&amp;gt;Total Families, Barangays, Not Set, Upper-Middle, Middle Class" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="370" y="200" width="280" height="50" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="proc_fetch_families" value="Fetch Registered Beneficiary Families&amp;lt;br&amp;gt;&amp;amp;amp; Group by Naga Barangay" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="410" y="280" width="200" height="48" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="proc_rank_economic" value="Rank Families by Economic Status Priority:&amp;lt;br&amp;gt;Lower-Middle (Rank 1) &amp;amp;gt; Middle (Rank 2) &amp;amp;gt; Upper-Middle (Rank 3)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="395" y="355" width="230" height="50" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="io_display_groups" value="Display Barangay Group Cards (#1 Pecidas, #2 Jose)&amp;lt;br&amp;gt;with Economic Badges &amp;amp;amp; Filter Dropdowns" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="375" y="435" width="270" height="50" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="dec_filter_select" value="Select Barangay or&amp;lt;br&amp;gt;Economic filter?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;spacingLeft=3;spacingRight=3;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="420" y="515" width="180" height="75" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="proc_filter_data" value="Filter Beneficiaries by Selected&amp;lt;br&amp;gt;Barangay &amp;amp;amp; Economic Status" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="130" y="528.5" width="180" height="48" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="io_update_filtered_view" value="Update Displayed Groups&amp;lt;br&amp;gt;&amp;amp;amp; Family Headcount" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="140" y="435" width="160" height="50" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="dec_allocate_action" value="Allocate relief aid or&amp;lt;br&amp;gt;view family details?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;spacingLeft=3;spacingRight=3;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="420" y="625" width="180" height="75" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="proc_create_aid_plan" value="Generate Targeted Relief Pack Plan&amp;lt;br&amp;gt;Prioritizing High-Vulnerability Families" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="410" y="735" width="200" height="48" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="db_firestore_b" value="Firestore DB&amp;lt;br&amp;gt;&amp;lt;b&amp;gt;families &amp;amp;amp; relief_orders&amp;lt;/b&amp;gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#ffffff;strokeColor=#000000;fontSize=10;fontStyle=1;strokeWidth=1.5;fontFamily=Helvetica;align=center;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="460" y="815" width="100" height="65" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="io_allocation_success" value="Display Allocation Confirmation Toast&amp;lt;br&amp;gt;&amp;amp;amp; Update Barangay Delivery Schedule" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=10;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="400" y="910" width="220" height="50" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="offpage_return_admin_b" value="Admin&amp;lt;br&amp;gt;Dashboard" style="shape=offPageConnector;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;verticalAlign=middle;size=0.25;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="740" y="635" width="90" height="65" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="lbl_caption_priority" value="Figure 15: ReliefTrack Priority Assessment Flowchart (Sub-flowchart B)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontFamily=Helvetica;fontColor=#000000;fontStyle=1;" vertex="1" parent="1"&gt;
+          &lt;mxGeometry x="270" y="995" width="480" height="35" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_top_to_main" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" vertex="1" source="offpage_top_b" target="proc_priority_main" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_main_to_stats" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" vertex="1" source="proc_priority_main" target="io_stats_cards_b" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_stats_to_fetch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" vertex="1" source="io_stats_cards_b" target="proc_fetch_families" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_fetch_to_rank" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" vertex="1" source="proc_fetch_families" target="proc_rank_economic" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_rank_to_display" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" vertex="1" source="proc_rank_economic" target="io_display_groups" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_display_to_dec_filter" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" vertex="1" source="io_display_groups" target="dec_filter_select" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_filter_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" vertex="1" source="dec_filter_select" target="proc_filter_data" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_filter_to_update" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" vertex="1" source="proc_filter_data" target="io_update_filtered_view" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_update_to_display" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" vertex="1" source="io_update_filtered_view" target="io_display_groups" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_filter_no" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" vertex="1" source="dec_filter_select" target="dec_allocate_action" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_allocate_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" vertex="1" source="dec_allocate_action" target="proc_create_aid_plan" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_plan_to_db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" vertex="1" source="proc_create_aid_plan" target="db_firestore_b" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_db_to_toast" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" vertex="1" source="db_firestore_b" target="io_allocation_success" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_toast_loopback" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" vertex="1" source="io_allocation_success" target="io_display_groups" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id="eb_allocate_no" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" vertex="1" source="dec_allocate_action" target="offpage_return_admin_b" parent="1"&gt;
+          &lt;mxGeometry x="undefined" y="undefined" width="undefined" height="undefined" as="geometry" /&gt;
+        &lt;/mxCell&gt;
+      &lt;/root&gt;
+    &lt;/mxGraphModel&gt;
+  &lt;/diagram&gt;
+&lt;/mxfile&gt;</pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function copyXml() {
+      const text = document.getElementById('xmlBox').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.innerText = '✓ Copied!';
+        setTimeout(() => { btn.innerText = 'Copy Subflowchart B XML'; }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

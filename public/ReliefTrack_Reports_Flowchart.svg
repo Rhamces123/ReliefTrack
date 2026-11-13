@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1220" width="1080" height="1220" style="background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
+    </marker>
+  </defs>
+
+  <style>
+    .flow-rect { fill: #ffffff; stroke: #000000; stroke-width: 1.5; }
+    .flow-text { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #000000; text-anchor: middle; dominant-baseline: middle; }
+    .flow-edge { fill: none; stroke: #000000; stroke-width: 1.5; marker-end: url(#arrow); }
+    .edge-label { font-family: Helvetica, Arial, sans-serif; font-size: 10.5px; fill: #000000; font-weight: normal; }
+    .caption-text { font-family: Helvetica, Arial, sans-serif; font-size: 14px; fill: #000000; text-anchor: middle; font-weight: bold; }
+    .lane-label { font-family: Helvetica, Arial, sans-serif; font-size: 11.5px; fill: #0284c7; font-weight: bold; text-anchor: middle; }
+  </style>
+
+  <!-- ==================== TIER 1: SPINE ARROWS ==================== -->
+  <!-- offpage_f -> proc_main -->
+  <path d="M 540 80 L 540 125" class="flow-edge" />
+  <!-- proc_main -> io_aggregate -->
+  <path d="M 540 173 L 540 215" class="flow-edge" />
+  <!-- io_aggregate -> io_kpis_charts -->
+  <path d="M 540 265 L 540 307" class="flow-edge" />
+  <!-- io_kpis_charts -> dec_generate -->
+  <path d="M 540 359 L 540 405" class="flow-edge" />
+
+  <!-- Decision: Generate Report? -->
+  <!-- Yes (Center down) -->
+  <path d="M 540 475 L 540 530" class="flow-edge" />
+  <text x="552" y="495" class="edge-label">Yes</text>
+
+  <!-- No (Left to Activity Audit) -->
+  <path d="M 430 440 L 140 440 L 140 530" class="flow-edge" />
+  <text x="280" y="430" class="edge-label">No (Browse Logs)</text>
+
+
+  <!-- ==================== LEFT BRANCH: RECENT ACTIVITY LOGS ==================== -->
+  <path d="M 140 578 L 140 620" class="flow-edge" />
+  <path d="M 140 668 L 140 713" class="flow-edge" />
+
+
+  <!-- ==================== TIER 2: REPORT BUILDER SPINE ==================== -->
+  <!-- Open Modal -> Scope & Timeframe -->
+  <path d="M 540 578 L 540 620" class="flow-edge" />
+  <!-- Scope & Timeframe -> Build Document Preview -->
+  <path d="M 540 670 L 540 712" class="flow-edge" />
+  <!-- Build Document Preview -> Export Format Decision -->
+  <path d="M 540 762 L 540 810" class="flow-edge" />
+
+  <!-- Export Format Decision -->
+  <!-- Left to Excel -->
+  <path d="M 430 845 L 360 845 L 360 920" class="flow-edge" />
+  <text x="390" y="835" class="edge-label">Excel (.xlsx)</text>
+
+  <!-- Right to PDF -->
+  <path d="M 650 845 L 720 845 L 720 920" class="flow-edge" />
+  <text x="690" y="835" class="edge-label">Print / PDF</text>
+
+
+  <!-- ==================== DUAL EXPORT BRANCHES ==================== -->
+  <!-- Excel: Click -> Download -->
+  <path d="M 360 968 L 360 1008" class="flow-edge" />
+  <!-- PDF: Click -> Save PDF -->
+  <path d="M 720 968 L 720 1008" class="flow-edge" />
+
+  <!-- Converge Excel & PDF to Bottom Collector -->
+  <path d="M 360 1056 L 360 1085 L 540 1085" class="flow-edge" />
+  <path d="M 720 1056 L 720 1085 L 540 1085" class="flow-edge" />
+  <!-- Collector to Admin Dashboard -->
+  <path d="M 540 1085 L 540 1110" class="flow-edge" />
+
+
+  <!-- ==================== SHAPES & LABELS ==================== -->
+
+  <!-- Top Entry Off-Page Connector F -->
+  <polygon points="515,30 565,30 565,67 540,80 515,67" class="flow-rect" />
+  <text x="540" y="52" class="flow-text" style="font-weight: bold; font-size: 13px;">F</text>
+
+  <!-- Main Page Process -->
+  <rect x="390" y="125" width="300" height="48" class="flow-rect" />
+  <text x="540" y="142" class="flow-text" style="font-weight: bold; font-size: 11.5px;">Reports &amp; Analytics Page (/reports)</text>
+  <text x="540" y="157" class="flow-text" style="font-size: 9.5px; fill: #475569;">City of Naga Operations Active</text>
+
+  <!-- Collect Live Data -->
+  <polygon points="380,215 720,215 700,265 360,265" class="flow-rect" />
+  <text x="540" y="234" class="flow-text">Aggregate Real-Time Operations Data</text>
+  <text x="540" y="248" class="flow-text" style="font-size: 9.5px; fill: #475569;">(Relief Requests, Warehouse Supplies, &amp; Inbound Donations)</text>
+
+  <!-- Display KPI Cards & Charts -->
+  <polygon points="360,307 740,307 720,359 340,359" class="flow-rect" />
+  <text x="540" y="326" class="flow-text">Display 4 KPI Metric Cards &amp; Dual Donut Charts</text>
+  <text x="540" y="340" class="flow-text" style="font-size: 9.5px; fill: #475569;">(Total Requests, Total Items, Supplies Stock &amp; Status Breakdown)</text>
+
+  <!-- Generate Report Decision -->
+  <polygon points="540,405 650,440 540,475 430,440" class="flow-rect" />
+  <text x="540" y="434" class="flow-text" style="font-weight: bold;">Click "[Generate Report]"</text>
+  <text x="540" y="448" class="flow-text">Button?</text>
+
+
+  <!-- ==================== LEFT BRANCH SHAPES (ACTIVITY AUDIT) ==================== -->
+  <rect x="60" y="530" width="160" height="48" class="flow-rect" />
+  <text x="140" y="548" class="flow-text" style="font-weight: bold; font-size: 10px;">Recent Activity Table</text>
+  <text x="140" y="562" class="flow-text" style="font-size: 9px; fill: #475569;">Review Logged Changes</text>
+
+  <polygon points="65,620 225,620 215,668 55,668" class="flow-rect" />
+  <text x="140" y="638" class="flow-text" style="font-size: 9.5px;">Audit Timestamped Logs</text>
+  <text x="140" y="652" class="flow-text" style="font-size: 8.5px; fill: #475569;">(IDs, Types, Locations)</text>
+
+  <polygon points="95,713 185,713 185,750 140,768 95,750" class="flow-rect" />
+  <text x="140" y="734" class="flow-text" style="font-weight: bold; font-size: 10px;">Admin</text>
+  <text x="140" y="746" class="flow-text" style="font-size: 9.5px;">Dashboard</text>
+
+
+  <!-- ==================== TIER 2 SHAPES (REPORT BUILDER) ==================== -->
+  <rect x="400" y="530" width="280" height="48" class="flow-rect" />
+  <text x="540" y="548" class="flow-text" style="font-weight: bold; font-size: 11px;">Open "Generate Operations Report" Dialog</text>
+  <text x="540" y="562" class="flow-text" style="font-size: 9px; fill: #475569;">Executive Reporting Manifest Modal</text>
+
+  <polygon points="375,620 725,620 705,670 355,670" class="flow-rect" />
+  <text x="540" y="639" class="flow-text">Select Report Scope Tab &amp; Timeframe</text>
+  <text x="540" y="653" class="flow-text" style="font-size: 9px; fill: #475569;">(Executive Summary, Requests, Inventory, Donations | All Time / 24h / 7d)</text>
+
+  <rect x="370" y="712" width="340" height="50" class="flow-rect" />
+  <text x="540" y="730" class="flow-text" style="font-weight: bold; font-size: 11px;">Build Official Document Preview</text>
+  <text x="540" y="744" class="flow-text" style="font-size: 9px; fill: #475569;">(Naga Seal, CSWDO Official Letterhead, Report Date &amp; Operator)</text>
+
+  <!-- Export Choice Decision -->
+  <polygon points="540,810 650,845 540,880 430,845" class="flow-rect" />
+  <text x="540" y="839" class="flow-text" style="font-weight: bold;">Choose Export</text>
+  <text x="540" y="853" class="flow-text">Format:</text>
+
+
+  <!-- ==================== EXCEL BRANCH SHAPES ==================== -->
+  <rect x="270" y="920" width="180" height="48" class="flow-rect" />
+  <text x="360" y="938" class="flow-text" style="font-weight: bold; font-size: 10.5px;">Click [Export Excel]</text>
+  <text x="360" y="952" class="flow-text" style="font-size: 9px; fill: #475569;">Format Tabular Worksheets</text>
+
+  <polygon points="280,1008 455,1008 440,1056 265,1056" class="flow-rect" />
+  <text x="360" y="1026" class="flow-text" style="font-size: 9.5px;">Download .xlsx Spreadsheet</text>
+  <text x="360" y="1040" class="flow-text" style="font-size: 8.5px; fill: #475569;">(Formatted Columns &amp; Manifest)</text>
+
+
+  <!-- ==================== PDF BRANCH SHAPES ==================== -->
+  <rect x="630" y="920" width="180" height="48" class="flow-rect" />
+  <text x="720" y="938" class="flow-text" style="font-weight: bold; font-size: 10.5px;">Click [Print / Save as PDF]</text>
+  <text x="720" y="952" class="flow-text" style="font-size: 9px; fill: #475569;">Apply Official CSWDO Stylesheet</text>
+
+  <polygon points="640,1008 815,1008 800,1056 625,1056" class="flow-rect" />
+  <text x="720" y="1026" class="flow-text" style="font-size: 9.5px;">Save / Print Official PDF</text>
+  <text x="720" y="1040" class="flow-text" style="font-size: 8.5px; fill: #475569;">(Consolidated CSWDO Document)</text>
+
+
+  <!-- ==================== BOTTOM ADMIN DASHBOARD EXIT ==================== -->
+  <polygon points="495,1110 585,1110 585,1146 540,1165 495,1146" class="flow-rect" />
+  <text x="540" y="1131" class="flow-text" style="font-weight: bold; font-size: 10.5px;">Admin</text>
+  <text x="540" y="1143" class="flow-text" style="font-size: 9.5px;">Dashboard</text>
+
+  <!-- Caption Figure 20 -->
+  <text x="540" y="1200" class="caption-text">Figure 20: ReliefTrack Reports &amp; Analytics Flowchart</text>
+</svg>
