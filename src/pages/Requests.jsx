@@ -1254,6 +1254,48 @@ export default function Requests() {
                 </div>
               </div>
 
+              {/* Household Number (Unique per Family & Duplicate Detection) */}
+              <div className="requests-form-field">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <label htmlFor="rr-household" style={{ margin: 0 }}>
+                    Household Number
+                  </label>
+                  {duplicateRequest && (
+                    <span className="requests-duplicate-badge">
+                      ⚠️ Duplicate Household Request Detected
+                    </span>
+                  )}
+                </div>
+                <input
+                  id="rr-household"
+                  type="text"
+                  className={hhInvalid || duplicateRequest ? 'requests-field-invalid' : ''}
+                  placeholder="e.g. HH-2026-0014"
+                  value={form.householdNumber}
+                  onChange={(e) => setForm((f) => ({ ...f, householdNumber: e.target.value }))}
+                  disabled={saving}
+                />
+                {hhInvalid && !duplicateRequest && (
+                  <span className="requests-field-error-text">Please enter the household number</span>
+                )}
+                {duplicateRequest && (
+                  <div className="requests-duplicate-alert">
+                    <div className="requests-duplicate-alert-header">
+                      <AlertTriangle size={15} />
+                      <span>This Family has an Existing Request ({duplicateRequest.requestId})</span>
+                    </div>
+                    <p>
+                      Household Number <strong>{form.householdNumber}</strong> is already registered to{' '}
+                      <strong>{duplicateRequest.requesterName || 'a family'}</strong> in{' '}
+                      <strong>{duplicateRequest.location || duplicateRequest.barangay || 'City of Naga'}</strong>.
+                    </p>
+                    <div className="requests-duplicate-action-note">
+                      ⚠️ <strong>Repeated request blocked:</strong> An administrator must delete their previous active request (<strong>{duplicateRequest.requestId}</strong>) before this family can request relief again.
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Household Family Members List */}
               <div className="requests-subform-section requests-members-section">
                 <div className="requests-subform-title" style={{ flexWrap: 'wrap', gap: '8px' }}>
@@ -1547,48 +1589,6 @@ export default function Requests() {
                     </label>
                   </div>
                 </div>
-              </div>
-
-              {/* Household Number (Unique per Family & Duplicate Detection) */}
-              <div className="requests-form-field">
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <label htmlFor="rr-household" style={{ margin: 0 }}>
-                    Household Number
-                  </label>
-                  {duplicateRequest && (
-                    <span className="requests-duplicate-badge">
-                      ⚠️ Duplicate Household Request Detected
-                    </span>
-                  )}
-                </div>
-                <input
-                  id="rr-household"
-                  type="text"
-                  className={hhInvalid || duplicateRequest ? 'requests-field-invalid' : ''}
-                  placeholder="e.g. HH-2026-0014"
-                  value={form.householdNumber}
-                  onChange={(e) => setForm((f) => ({ ...f, householdNumber: e.target.value }))}
-                  disabled={saving}
-                />
-                {hhInvalid && !duplicateRequest && (
-                  <span className="requests-field-error-text">Please enter the household number</span>
-                )}
-                {duplicateRequest && (
-                  <div className="requests-duplicate-alert">
-                    <div className="requests-duplicate-alert-header">
-                      <AlertTriangle size={15} />
-                      <span>This Family has an Existing Request ({duplicateRequest.requestId})</span>
-                    </div>
-                    <p>
-                      Household Number <strong>{form.householdNumber}</strong> is already registered to{' '}
-                      <strong>{duplicateRequest.requesterName || 'a family'}</strong> in{' '}
-                      <strong>{duplicateRequest.location || duplicateRequest.barangay || 'City of Naga'}</strong>.
-                    </p>
-                    <div className="requests-duplicate-action-note">
-                      ⚠️ <strong>Repeated request blocked:</strong> An administrator must delete their previous active request (<strong>{duplicateRequest.requestId}</strong>) before this family can request relief again.
-                    </div>
-                  </div>
-                )}
               </div>
 
               <div className="requests-section-header-row">
