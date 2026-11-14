@@ -37,7 +37,6 @@ import {
   Accessibility,
   ChevronLeft,
   ChevronRight,
-  Workflow,
 } from 'lucide-react'
 
 const STATUS_FILTERS = [
@@ -570,36 +569,10 @@ export default function Requests() {
           <h2>Relief Requests</h2>
           <p>Create, manage, and monitor community relief aid requests across City of Naga.</p>
         </div>
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <a
-            href="/Open_In_Drawio.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="requests-btn-secondary"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '9px 14px',
-              borderRadius: '8px',
-              border: '1px solid #d1d5db',
-              background: '#ffffff',
-              color: '#1674d1',
-              textDecoration: 'none',
-              fontWeight: 600,
-              fontSize: '13px',
-              cursor: 'pointer',
-            }}
-            title="Open and edit Relief Requests Flowchart in Draw.io"
-          >
-            <Workflow size={16} />
-            <span>Edit in Draw.io (A)</span>
-          </a>
-          <button type="button" className="requests-btn-primary" onClick={openForm}>
-            <Plus size={18} />
-            <span>New Relief Request</span>
-          </button>
-        </div>
+        <button type="button" className="requests-btn-primary" onClick={openForm}>
+          <Plus size={18} />
+          <span>New Relief Request</span>
+        </button>
       </div>
 
       {error && <div className="requests-error">{error}</div>}
