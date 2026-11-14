@@ -37,6 +37,7 @@ import {
   Accessibility,
   ChevronLeft,
   ChevronRight,
+  AlertTriangle,
 } from 'lucide-react'
 
 const STATUS_FILTERS = [
@@ -157,6 +158,7 @@ const EMPTY_FORM = {
   is4PsBeneficiary: false,
   houseOwnership: 'owner',
   shelterDamage: 'none',
+  householdNumber: '',
   description: '',
   primaryNeed: '',
   primaryNeeds: [],
@@ -271,7 +273,9 @@ export default function Requests() {
       const q = search.trim().toLowerCase()
       result = result.filter((r) =>
         (r.requesterName || '').toLowerCase().includes(q) ||
-        (r.location || '').toLowerCase().includes(q)
+        (r.location || '').toLowerCase().includes(q) ||
+        (r.householdNumber || '').toLowerCase().includes(q) ||
+        (r.requestId || '').toLowerCase().includes(q)
       )
     }
     return result
@@ -451,10 +455,20 @@ export default function Requests() {
     ? form.primaryNeeds
     : (form.primaryNeed ? [form.primaryNeed] : [])
 
+  const normHH = (form.householdNumber || '').trim().toLowerCase()
+  const duplicateRequest = useMemo(() => {
+    if (!normHH) return null
+    return requests.find((r) => {
+      const existingHH = (r.householdNumber || '').trim().toLowerCase()
+      return existingHH && existingHH === normHH
+    })
+  }, [normHH, requests])
+
   const nameInvalid = submitted && !form.requesterName.trim()
   const familyInvalid = submitted && (!form.familyMembers || Number(form.familyMembers) <= 0)
   const contactInvalid = submitted && !form.contactNumber.trim()
   const locationInvalid = submitted && !form.location.trim()
+  const hhInvalid = submitted && !form.householdNumber.trim()
   const needsInvalid = submitted && activeNeeds.length === 0
 
   const handleCreate = async (e) => {
@@ -467,9 +481,17 @@ export default function Requests() {
       !form.familyMembers ||
       Number(form.familyMembers) <= 0 ||
       !form.contactNumber.trim() ||
+      !form.householdNumber.trim() ||
       activeNeeds.length === 0
     ) {
       setError('Please fill in the highlighted required fields.')
+      return
+    }
+
+    if (duplicateRequest) {
+      setError(
+        `Household Number "${form.householdNumber}" already has an active relief request (${duplicateRequest.requestId}). An admin must delete their previous request first before they can request again.`
+      )
       return
     }
 
@@ -511,6 +533,7 @@ export default function Requests() {
           is4PsBeneficiary: form.is4PsBeneficiary,
           houseOwnership: form.houseOwnership,
           shelterDamage: form.shelterDamage,
+          householdNumber: form.householdNumber,
           description: form.description,
           requesterName: form.requesterName,
           familyMembers: form.familyMembers,
@@ -722,7 +745,14 @@ export default function Requests() {
                       className="requests-row-clickable"
                       onClick={() => setDetailRequest(row)}
                     >
-                      <td className="requests-id-cell">{row.requestId}</td>
+                      <td className="requests-id-cell">
+                        <div>{row.requestId}</div>
+                        {row.householdNumber && (
+                          <span className="requests-table-hh" title="Household Number">
+                            HH: {row.householdNumber}
+                          </span>
+                        )}
+                      </td>
                       <td><span className="requests-name-cell">{row.requesterName || '—'}</span></td>
                       <td className="requests-loc-cell">{row.location}</td>
                       <td>{row.familyMembers || '—'}</td>
@@ -853,6 +883,14 @@ export default function Requests() {
                   <span className="requests-detail-label">Request ID</span>
                   <span className="requests-detail-value">{detailRequest.requestId}</span>
                 </div>
+                {detailRequest.householdNumber && (
+                  <div className="requests-detail-row">
+                    <span className="requests-detail-label">Household No.</span>
+                    <span className="requests-detail-value" style={{ fontWeight: 700, color: '#1674D1' }}>
+                      {detailRequest.householdNumber}
+                    </span>
+                  </div>
+                )}
                 <div className="requests-detail-row">
                   <span className="requests-detail-label">Location</span>
                   <span className="requests-detail-value">{detailRequest.location}</span>
@@ -1509,6 +1547,48 @@ export default function Requests() {
                     </label>
                   </div>
                 </div>
+              </div>
+
+              {/* Household Number (Unique per Family & Duplicate Detection) */}
+              <div className="requests-form-field">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <label htmlFor="rr-household" style={{ margin: 0 }}>
+                    Household Number
+                  </label>
+                  {duplicateRequest && (
+                    <span className="requests-duplicate-badge">
+                      ⚠️ Duplicate Household Request Detected
+                    </span>
+                  )}
+                </div>
+                <input
+                  id="rr-household"
+                  type="text"
+                  className={hhInvalid || duplicateRequest ? 'requests-field-invalid' : ''}
+                  placeholder="e.g. HH-2026-0014"
+                  value={form.householdNumber}
+                  onChange={(e) => setForm((f) => ({ ...f, householdNumber: e.target.value }))}
+                  disabled={saving}
+                />
+                {hhInvalid && !duplicateRequest && (
+                  <span className="requests-field-error-text">Please enter the household number</span>
+                )}
+                {duplicateRequest && (
+                  <div className="requests-duplicate-alert">
+                    <div className="requests-duplicate-alert-header">
+                      <AlertTriangle size={15} />
+                      <span>This Family has an Existing Request ({duplicateRequest.requestId})</span>
+                    </div>
+                    <p>
+                      Household Number <strong>{form.householdNumber}</strong> is already registered to{' '}
+                      <strong>{duplicateRequest.requesterName || 'a family'}</strong> in{' '}
+                      <strong>{duplicateRequest.location || duplicateRequest.barangay || 'City of Naga'}</strong>.
+                    </p>
+                    <div className="requests-duplicate-action-note">
+                      ⚠️ <strong>Repeated request blocked:</strong> An administrator must delete their previous active request (<strong>{duplicateRequest.requestId}</strong>) before this family can request relief again.
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="requests-section-header-row">

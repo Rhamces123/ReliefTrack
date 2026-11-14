@@ -74,7 +74,8 @@ export default function Beneficiaries() {
         (f) =>
           f.familyName?.toLowerCase().includes(q) ||
           f.barangay?.toLowerCase().includes(q) ||
-          f.headOfFamily?.toLowerCase().includes(q)
+          f.headOfFamily?.toLowerCase().includes(q) ||
+          f.householdNumber?.toLowerCase().includes(q)
       )
     }
     return list
@@ -223,6 +224,12 @@ export default function Beneficiaries() {
                   <div className="benef-card-members">{f.members} member{f.members > 1 ? 's' : ''}</div>
                 </div>
                 <div className="benef-card-body">
+                  {f.householdNumber && (
+                    <div className="benef-card-row">
+                      <span className="benef-label">Household No.</span>
+                      <span style={{ fontWeight: 600, color: '#1674D1' }}>{f.householdNumber}</span>
+                    </div>
+                  )}
                   <div className="benef-card-row">
                     <span className="benef-label">Barangay</span>
                     <span>{f.barangay}</span>

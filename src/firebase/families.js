@@ -117,7 +117,16 @@ export async function syncFamilyFromRequest(fields, user) {
   else if (Number(fields.categories?.childrenBelow7?.count) > 0) classification = 'child'
 
   let existingId = null
-  if (normBrgy && (normHead || normFamily)) {
+  if (fields.householdNumber && fields.householdNumber.trim()) {
+    try {
+      const q = query(collection(db, COLLECTION), where('householdNumber', '==', fields.householdNumber.trim()))
+      const snap = await getDocs(q)
+      if (!snap.empty) existingId = snap.docs[0].id
+    } catch (err) {
+      console.warn('Household lookup error:', err)
+    }
+  }
+  if (!existingId && normBrgy && (normHead || normFamily)) {
     try {
       const q = query(collection(db, COLLECTION), where('barangay', '==', normBrgy))
       const snap = await getDocs(q)
@@ -146,6 +155,7 @@ export async function syncFamilyFromRequest(fields, user) {
     is4PsBeneficiary: !!fields.is4PsBeneficiary,
     houseOwnership: fields.houseOwnership || 'owner',
     shelterDamage: fields.shelterDamage || 'none',
+    householdNumber: (fields.householdNumber || '').trim(),
     repBirthDate: (fields.repBirthDate || '').trim(),
     repAge: fields.repAge ? (Number(fields.repAge) || fields.repAge) : '',
     repSex: (fields.repSex || '').trim(),
