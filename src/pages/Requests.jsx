@@ -404,8 +404,20 @@ export default function Requests() {
   }
 
   const handleAddFamilyMember = () => {
-    setForm((f) => {
-      const nextList = [
+    const totalCount = parseInt(form.familyMembers, 10) || 0
+    if (totalCount <= 0) {
+      setError('Please enter the Number of Family Members first.')
+      return
+    }
+    const maxRoster = Math.max(0, totalCount - 1)
+    if ((form.familyMembersList || []).length >= maxRoster) {
+      setError(`Cannot add more than ${maxRoster} additional members (Total family: ${totalCount}, including Head of Family).`)
+      return
+    }
+    setError('')
+    setForm((f) => ({
+      ...f,
+      familyMembersList: [
         ...(f.familyMembersList || []),
         {
           id: `mem-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -414,15 +426,8 @@ export default function Requests() {
           age: '',
           sex: 'Male',
         },
-      ]
-      const currentCount = parseInt(f.familyMembers, 10) || 0
-      const neededCount = nextList.length + 1
-      return {
-        ...f,
-        familyMembersList: nextList,
-        familyMembers: currentCount < neededCount ? String(neededCount) : f.familyMembers,
-      }
-    })
+      ],
+    }))
   }
 
   const handleUpdateFamilyMember = (index, field, value) => {
@@ -475,6 +480,14 @@ export default function Requests() {
     if (hasFamilyLimit && totalVuln > familyCount) {
       setError(`Total vulnerable count (${totalVuln}) cannot exceed total family members (${familyCount}).`)
       return
+    }
+
+    if (hasFamilyLimit) {
+      const maxRoster = Math.max(0, familyCount - 1)
+      if ((form.familyMembersList || []).length > maxRoster) {
+        setError(`Household roster has ${form.familyMembersList.length} members, but maximum allowed is ${maxRoster} additional members for a family size of ${familyCount} (including Head of Family).`)
+        return
+      }
     }
 
     if (hasFamilyLimit) {
@@ -555,12 +568,16 @@ export default function Requests() {
 
   const modalFamilyCount = parseInt(form.familyMembers, 10)
   const hasFamilyLimit = !isNaN(modalFamilyCount) && modalFamilyCount > 0
+  const maxRosterMembers = hasFamilyLimit ? Math.max(0, modalFamilyCount - 1) : 0
+  const currentRosterCount = form.familyMembersList?.length || 0
+  const isRosterFull = hasFamilyLimit && currentRosterCount >= maxRosterMembers
+  const isRosterExceeded = hasFamilyLimit && currentRosterCount > maxRosterMembers
   const totalVulnCount = totalAffected(form.categories)
   const isTotalExceeded = hasFamilyLimit && totalVulnCount > modalFamilyCount
   const hasAnyIndividualExceeded = hasFamilyLimit && Object.values(form.categories).some(
     (c) => (parseInt(c.count, 10) || 0) > modalFamilyCount
   )
-  const isFormExceeded = isTotalExceeded || hasAnyIndividualExceeded
+  const isFormExceeded = isTotalExceeded || hasAnyIndividualExceeded || isRosterExceeded
 
   return (
     <DashboardLayout title="Requests" userLabel={displayName} userEmail={email}>
@@ -1201,29 +1218,62 @@ export default function Requests() {
 
               {/* Household Family Members List */}
               <div className="requests-subform-section requests-members-section">
-                <div className="requests-subform-title">
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div className="requests-subform-title" style={{ flexWrap: 'wrap', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                     <Users size={14} />
                     <span>Family Members (Household Roster)</span>
-                    <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 'normal' }}>
-                      ({form.familyMembersList?.length || 0} listed)
-                    </span>
-                  </span>
+                    {hasFamilyLimit ? (
+                      <span
+                        className={`vuln-counter-badge ${
+                          isRosterExceeded ? 'exceeded' : 'neutral'
+                        }`}
+                        style={
+                          isRosterFull && !isRosterExceeded
+                            ? { background: '#ecfdf5', color: '#047857', borderColor: '#a7f3d0' }
+                            : {}
+                        }
+                      >
+                        {isRosterExceeded
+                          ? `⚠️ Exceeds limit (${currentRosterCount} / ${maxRosterMembers} max)`
+                          : isRosterFull
+                          ? `✓ Full roster (${currentRosterCount} / ${maxRosterMembers} + 1 Head = ${modalFamilyCount})`
+                          : `${currentRosterCount} / ${maxRosterMembers} added (Total: ${modalFamilyCount})`}
+                      </span>
+                    ) : (
+                      <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 'normal' }}>
+                        (Enter family count above)
+                      </span>
+                    )}
+                  </div>
                   <button
                     type="button"
                     className="requests-add-member-btn"
                     onClick={handleAddFamilyMember}
-                    disabled={saving}
-                    title="Add a family member"
+                    disabled={saving || !hasFamilyLimit || modalFamilyCount <= 1 || isRosterFull}
+                    title={
+                      !hasFamilyLimit
+                        ? 'Please enter Number of Family Members first'
+                        : modalFamilyCount <= 1
+                        ? 'Single person household (1 Head, no additional members)'
+                        : isRosterFull
+                        ? `Maximum limit reached (${maxRosterMembers} additional members for family of ${modalFamilyCount})`
+                        : `Add a family member (${currentRosterCount}/${maxRosterMembers})`
+                    }
                   >
                     <Plus size={13} />
-                    <span>Add Member</span>
+                    <span>{isRosterFull ? 'Roster Full' : 'Add Member'}</span>
                   </button>
                 </div>
 
                 {(!form.familyMembersList || form.familyMembersList.length === 0) ? (
                   <div className="requests-members-empty">
-                    <p>No family members listed yet. Click <strong>+ Add Member</strong> to record names, relationship, age, and sex.</p>
+                    {!hasFamilyLimit ? (
+                      <p>Please enter the <strong>Number of Family Members</strong> above to add household members.</p>
+                    ) : modalFamilyCount === 1 ? (
+                      <p>Single-member household (Head of family only). No additional household members needed.</p>
+                    ) : (
+                      <p>No additional family members listed yet (<strong>{maxRosterMembers}</strong> slots available for this family). Click <strong>+ Add Member</strong> to record names, relationship, age, and sex.</p>
+                    )}
                   </div>
                 ) : (
                   <div className="requests-members-list">

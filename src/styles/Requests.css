@@ -1059,8 +1059,11 @@
 }
 
 .requests-add-member-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.65;
+  background: #94A3B8;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .requests-members-empty {
