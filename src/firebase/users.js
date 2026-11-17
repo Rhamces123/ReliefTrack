@@ -1,6 +1,6 @@
 import {
   doc, getDoc, setDoc, deleteDoc, serverTimestamp,
-  collection, onSnapshot,
+  collection, onSnapshot, query, where, getDocs,
 } from 'firebase/firestore'
 import { initializeApp, getApps } from 'firebase/app'
 import { getAuth, createUserWithEmailAndPassword, updateProfile, signOut } from 'firebase/auth'
@@ -193,14 +193,28 @@ export async function ensureUserProfile(user) {
       createdAt: existingMeta.createdAt || serverTimestamp(),
     })
   } else {
+    const snapData = snap.data() || {}
+    let resolvedStatus = snapData.status || 'Active'
+    if (resolvedStatus !== 'On Hold' && user.email) {
+      const placeholderId = `user_${user.email.replace(/[^a-zA-Z0-9]/g, '_')}`
+      try {
+        const placeholderRef = doc(db, 'users', placeholderId)
+        const pSnap = await getDoc(placeholderRef)
+        if (pSnap.exists() && pSnap.data().status === 'On Hold') {
+          resolvedStatus = 'On Hold'
+        }
+      } catch {
+        // ignore
+      }
+    }
     const isAdminEmail =
       user.email &&
       import.meta.env.VITE_ADMIN_EMAIL &&
       user.email.toLowerCase() === import.meta.env.VITE_ADMIN_EMAIL.toLowerCase()
     await setDoc(ref, {
-      status: snap.data().status || 'Active',
-      role: isAdminEmail ? 'Admin' : (snap.data().role || 'Member'),
-      isOnline: true,
+      status: resolvedStatus,
+      role: isAdminEmail ? 'Admin' : (snapData.role || 'Member'),
+      isOnline: resolvedStatus !== 'On Hold',
       lastActiveAt: serverTimestamp(),
     }, { merge: true })
   }
@@ -381,8 +395,32 @@ export async function updateUserProfile(uid, data) {
   await setDoc(doc(db, 'users', uid), data, { merge: true })
 }
 
-export async function setUserStatus(uid, status) {
-  await setDoc(doc(db, 'users', uid), { status }, { merge: true })
+export async function setUserStatus(uid, status, email = null) {
+  const updatePayload = { status }
+  if (status === 'On Hold') {
+    updatePayload.isOnline = false
+  }
+  if (uid) {
+    await setDoc(doc(db, 'users', uid), updatePayload, { merge: true })
+  }
+  const cleanEmail = (email || '').toLowerCase().trim()
+  if (cleanEmail) {
+    const placeholderId = `user_${cleanEmail.replace(/[^a-zA-Z0-9]/g, '_')}`
+    if (placeholderId !== uid) {
+      await setDoc(doc(db, 'users', placeholderId), updatePayload, { merge: true }).catch(() => {})
+    }
+    try {
+      const q = query(collection(db, 'users'), where('email', '==', cleanEmail))
+      const snap = await getDocs(q)
+      for (const d of snap.docs) {
+        if (d.id !== uid) {
+          await setDoc(doc(db, 'users', d.id), updatePayload, { merge: true })
+        }
+      }
+    } catch (err) {
+      console.warn('Error querying users by email during setUserStatus:', err)
+    }
+  }
 }
 
 export async function updateUserLocation(uid, location) {

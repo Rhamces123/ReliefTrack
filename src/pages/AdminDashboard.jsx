@@ -556,7 +556,7 @@ export default function AdminDashboard() {
     if (!holdTarget) return
     setIsHolding(true)
     try {
-      await setUserStatus(holdTarget.docId, holdTarget.nextStatus)
+      await setUserStatus(holdTarget.docId, holdTarget.nextStatus, holdTarget.email)
       showToast(
         `Account ${holdTarget.nextStatus === 'On Hold' ? 'placed On Hold' : 'Reactivated'} for ${holdTarget.displayName || holdTarget.email}`
       )
@@ -2986,6 +2986,26 @@ export default function AdminDashboard() {
                 <strong>{holdTarget.nextStatus}</strong> for user{' '}
                 <strong>{holdTarget.displayName || holdTarget.email}</strong>?
               </p>
+              <div style={{
+                marginTop: '12px',
+                padding: '10px 12px',
+                borderRadius: '8px',
+                fontSize: '12.5px',
+                lineHeight: '1.5',
+                background: holdTarget.nextStatus === 'On Hold' ? '#FEF2F2' : '#EFF6FF',
+                border: holdTarget.nextStatus === 'On Hold' ? '1px solid #FECACA' : '1px solid #BFDBFE',
+                color: holdTarget.nextStatus === 'On Hold' ? '#991B1B' : '#1E40AF',
+              }}>
+                {holdTarget.nextStatus === 'On Hold' ? (
+                  <>
+                    ⏸️ <strong>What this does:</strong> Immediately suspends this user's active session and prevents them from logging in or modifying relief operations. All their existing data and assignment records are safely preserved until an administrator clicks <strong>Reactivate</strong>.
+                  </>
+                ) : (
+                  <>
+                    ▶️ <strong>What this does:</strong> Re-enables this account, allowing the user to log back in and participate in relief operations with their previous role and location.
+                  </>
+                )}
+              </div>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn-outline" onClick={() => setHoldTarget(null)}>
