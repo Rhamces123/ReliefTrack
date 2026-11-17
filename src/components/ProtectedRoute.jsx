@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { signOutUser } from '../firebase/auth'
@@ -5,6 +6,18 @@ import { signOutUser } from '../firebase/auth'
 export default function ProtectedRoute({ children }) {
   const { user, loading, deviceChecked, deviceBlocked, isAccountOnHold, isAccountDeleted, userProfile } = useAuth()
   const navigate = useNavigate()
+  const [isSigningOut, setIsSigningOut] = useState(false)
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true)
+    try {
+      await signOutUser()
+    } catch (err) {
+      console.error('Sign out error:', err)
+    }
+    // Hard navigate to /login to cleanly wipe in-memory state and avoid route bounce
+    window.location.href = '/login'
+  }
 
   if (loading) {
     return <div style={{ minHeight: '100vh', background: '#0a0828' }} />
@@ -16,11 +29,6 @@ export default function ProtectedRoute({ children }) {
 
   // Account deleted check: if account was deleted by admin, immediately revoke access
   if (isAccountDeleted) {
-    const handleSignOut = async () => {
-      await signOutUser()
-      navigate('/login')
-    }
-
     return (
       <div
         style={{
@@ -74,6 +82,7 @@ export default function ProtectedRoute({ children }) {
           <button
             type="button"
             onClick={handleSignOut}
+            disabled={isSigningOut}
             style={{
               width: '100%',
               padding: '12px 20px',
@@ -82,10 +91,11 @@ export default function ProtectedRoute({ children }) {
               background: '#dc2626',
               color: '#ffffff',
               fontWeight: 600,
-              cursor: 'pointer',
+              cursor: isSigningOut ? 'not-allowed' : 'pointer',
+              opacity: isSigningOut ? 0.7 : 1,
             }}
           >
-            Return to Login
+            {isSigningOut ? 'Signing out...' : 'Return to Login'}
           </button>
         </div>
       </div>
@@ -94,11 +104,6 @@ export default function ProtectedRoute({ children }) {
 
   // Account hold check: if account is held by admin, block access
   if (isAccountOnHold) {
-    const handleSignOut = async () => {
-      await signOutUser()
-      navigate('/login')
-    }
-
     return (
       <div
         style={{
@@ -165,6 +170,7 @@ export default function ProtectedRoute({ children }) {
           <button
             type="button"
             onClick={handleSignOut}
+            disabled={isSigningOut}
             style={{
               width: '100%',
               padding: '12px 20px',
@@ -174,11 +180,12 @@ export default function ProtectedRoute({ children }) {
               color: '#fff',
               fontSize: '14px',
               fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'opacity 0.2s',
+              cursor: isSigningOut ? 'not-allowed' : 'pointer',
+              opacity: isSigningOut ? 0.7 : 1,
+              transition: 'all 0.2s ease',
             }}
           >
-            Sign Out
+            {isSigningOut ? 'Signing out...' : 'Sign Out'}
           </button>
         </div>
       </div>

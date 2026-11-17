@@ -50,13 +50,18 @@ export async function signOutUser() {
   const currentUid = auth.currentUser?.uid
   if (currentUid) {
     try {
-      await setDoc(doc(db, 'users', currentUid), {
+      setDoc(doc(db, 'users', currentUid), {
         isOnline: false,
         lastActiveAt: serverTimestamp(),
-      }, { merge: true })
+      }, { merge: true }).catch(() => {})
     } catch {
       // non-fatal
     }
+  }
+  try {
+    sessionStorage.clear()
+  } catch {
+    // non-fatal
   }
   await signOut(auth)
 }

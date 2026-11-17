@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function PublicRoute({ children }) {
-  const { user, loading } = useAuth()
+  const { user, loading, isAccountOnHold, isAccountDeleted } = useAuth()
 
   if (loading) {
     return null
@@ -13,6 +13,11 @@ export default function PublicRoute({ children }) {
     typeof window !== 'undefined' &&
     sessionStorage.getItem('relieftrack_signup_success') === 'true'
   if (isSignupSuccess) {
+    return children
+  }
+
+  // If the account is placed on hold or deleted, allow viewing public auth pages without looping back
+  if (isAccountOnHold || isAccountDeleted) {
     return children
   }
 
