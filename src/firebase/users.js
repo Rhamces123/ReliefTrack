@@ -195,13 +195,16 @@ export async function ensureUserProfile(user) {
   } else {
     const snapData = snap.data() || {}
     let resolvedStatus = snapData.status || 'Active'
-    if (resolvedStatus !== 'On Hold' && user.email) {
+    if (resolvedStatus !== 'On Hold' && resolvedStatus !== 'Deleted' && user.email) {
       const placeholderId = `user_${user.email.replace(/[^a-zA-Z0-9]/g, '_')}`
       try {
         const placeholderRef = doc(db, 'users', placeholderId)
         const pSnap = await getDoc(placeholderRef)
-        if (pSnap.exists() && pSnap.data().status === 'On Hold') {
-          resolvedStatus = 'On Hold'
+        if (pSnap.exists()) {
+          const pStatus = pSnap.data().status
+          if (pStatus === 'Deleted' || pStatus === 'On Hold') {
+            resolvedStatus = pStatus
+          }
         }
       } catch {
         // ignore
@@ -214,7 +217,7 @@ export async function ensureUserProfile(user) {
     await setDoc(ref, {
       status: resolvedStatus,
       role: isAdminEmail ? 'Admin' : (snapData.role || 'Member'),
-      isOnline: resolvedStatus !== 'On Hold',
+      isOnline: resolvedStatus !== 'On Hold' && resolvedStatus !== 'Deleted',
       lastActiveAt: serverTimestamp(),
     }, { merge: true })
   }
@@ -447,16 +450,40 @@ export async function updateUserLocation(uid, location) {
   }, { merge: true })
 }
 
-export async function deleteUserProfile(uid) {
-  try {
-    await setDoc(doc(db, 'users', uid), { status: 'Deleted' }, { merge: true })
-  } catch {
-    // ignore
+export async function deleteUserProfile(uid, email = null) {
+  const updatePayload = {
+    status: 'Deleted',
+    isOnline: false,
+    deletedAt: serverTimestamp(),
   }
-  try {
-    await deleteDoc(doc(db, 'users', uid))
-  } catch {
-    // ignore
+  if (uid) {
+    try {
+      await setDoc(doc(db, 'users', uid), updatePayload, { merge: true })
+    } catch (err) {
+      console.warn('Error setting deleted status on UID doc:', err)
+    }
+  }
+  const cleanEmail = (email || '').toLowerCase().trim()
+  if (cleanEmail) {
+    const placeholderId = `user_${cleanEmail.replace(/[^a-zA-Z0-9]/g, '_')}`
+    if (placeholderId !== uid) {
+      try {
+        await setDoc(doc(db, 'users', placeholderId), updatePayload, { merge: true })
+      } catch (err) {
+        console.warn('Error setting deleted status on placeholder doc:', err)
+      }
+    }
+    try {
+      const q = query(collection(db, 'users'), where('email', '==', cleanEmail))
+      const snap = await getDocs(q)
+      for (const d of snap.docs) {
+        if (d.id !== uid && d.id !== placeholderId) {
+          await setDoc(doc(db, 'users', d.id), updatePayload, { merge: true })
+        }
+      }
+    } catch (err) {
+      console.warn('Error querying users by email during deleteUserProfile:', err)
+    }
   }
 }
 

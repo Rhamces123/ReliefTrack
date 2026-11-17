@@ -38,6 +38,11 @@ export default function Login() {
       }
       await ensureUserProfile(user)
       const profile = await getUserProfile(user.uid)
+      if (profile?.status === 'Deleted') {
+        await signOutUser()
+        setError('This account has been deleted by an administrator. Please contact admin@relieftrack.com.')
+        return
+      }
       if (profile?.status === 'On Hold' && profile?.role !== 'Admin') {
         await signOutUser()
         setError('Your account has been placed on hold by the administrator. Please contact admin@relieftrack.com.')

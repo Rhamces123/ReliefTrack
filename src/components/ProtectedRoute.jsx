@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { signOutUser } from '../firebase/auth'
 
 export default function ProtectedRoute({ children }) {
-  const { user, loading, deviceChecked, deviceBlocked, isAccountOnHold, userProfile } = useAuth()
+  const { user, loading, deviceChecked, deviceBlocked, isAccountOnHold, isAccountDeleted, userProfile } = useAuth()
   const navigate = useNavigate()
 
   if (loading) {
@@ -12,6 +12,84 @@ export default function ProtectedRoute({ children }) {
 
   if (!user) {
     return <Navigate to="/login" replace />
+  }
+
+  // Account deleted check: if account was deleted by admin, immediately revoke access
+  if (isAccountDeleted) {
+    const handleSignOut = async () => {
+      await signOutUser()
+      navigate('/login')
+    }
+
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'linear-gradient(135deg, #1f0b0b 0%, #17103a 50%, #001e32 100%)',
+          color: '#fff',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+          padding: '24px',
+          boxSizing: 'border-box',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '480px',
+            width: '100%',
+            background: 'rgba(255, 255, 255, 0.08)',
+            backdropFilter: 'blur(24px)',
+            border: '1px solid rgba(239, 68, 68, 0.4)',
+            borderRadius: '20px',
+            padding: '36px 32px',
+            textAlign: 'center',
+            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.4)',
+          }}
+        >
+          <div
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              background: 'rgba(239, 68, 68, 0.15)',
+              border: '2px solid rgba(239, 68, 68, 0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '28px',
+              margin: '0 auto 20px',
+            }}
+          >
+            🗑️
+          </div>
+          <h2 style={{ fontSize: '24px', fontWeight: 600, margin: '0 0 12px', color: '#fee2e2' }}>
+            Account Removed
+          </h2>
+          <p style={{ fontSize: '14px', lineHeight: 1.6, color: 'rgba(255, 255, 255, 0.75)', margin: '0 0 20px' }}>
+            Your ReliefTrack account ({user.email}) has been deleted by an administrator. Access to relief operations has been terminated.
+          </p>
+          <button
+            type="button"
+            onClick={handleSignOut}
+            style={{
+              width: '100%',
+              padding: '12px 20px',
+              borderRadius: '10px',
+              border: 'none',
+              background: '#dc2626',
+              color: '#ffffff',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            Return to Login
+          </button>
+        </div>
+      </div>
+    )
   }
 
   // Account hold check: if account is held by admin, block access

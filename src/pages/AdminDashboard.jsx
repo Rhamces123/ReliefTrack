@@ -573,7 +573,7 @@ export default function AdminDashboard() {
     if (!deleteTarget) return
     setIsDeleting(true)
     try {
-      await deleteUserProfile(deleteTarget.docId)
+      await deleteUserProfile(deleteTarget.docId, deleteTarget.email)
       showToast(`Account removed for ${deleteTarget.displayName || deleteTarget.email}`)
       setDeleteTarget(null)
     } catch (err) {

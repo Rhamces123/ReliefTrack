@@ -293,6 +293,7 @@ export function AuthProvider({ children }) {
   }, [user?.uid])
 
   const isAccountOnHold = !!(userProfile && userProfile.status === 'On Hold' && userProfile.role !== 'Admin')
+  const isAccountDeleted = !!(userProfile && userProfile.status === 'Deleted' && userProfile.role !== 'Admin')
 
   return (
     <AuthContext.Provider
@@ -300,6 +301,7 @@ export function AuthProvider({ children }) {
         user,
         userProfile,
         isAccountOnHold,
+        isAccountDeleted,
         loading,
         deviceStatus,
         deviceId,
