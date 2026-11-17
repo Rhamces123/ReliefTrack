@@ -364,9 +364,25 @@ export function subscribeUsers(onData, onError) {
       const list = Array.from(userMap.values()).filter((u) => u.status !== 'Deleted')
 
       list.sort((a, b) => {
-        const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt ? new Date(a.createdAt).getTime() : 0)
-        const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt ? new Date(b.createdAt).getTime() : 0)
-        if (timeA && timeB) return timeB - timeA
+        // Pinned: Administrators always stay at the top
+        const aIsAdmin = a.role === 'Admin' || a.email === 'admin@relieftrack.com'
+        const bIsAdmin = b.role === 'Admin' || b.email === 'admin@relieftrack.com'
+        if (aIsAdmin && !bIsAdmin) return -1
+        if (!aIsAdmin && bIsAdmin) return 1
+
+        const getMillis = (obj) => {
+          if (!obj) return Date.now()
+          if (typeof obj.toMillis === 'function') return obj.toMillis()
+          if (typeof obj.getTime === 'function') return obj.getTime()
+          if (typeof obj === 'number') return obj
+          const parsed = new Date(obj).getTime()
+          return isNaN(parsed) ? Date.now() : parsed
+        }
+
+        const timeA = getMillis(a.createdAt)
+        const timeB = getMillis(b.createdAt)
+        if (timeA !== timeB) return timeB - timeA
+
         return (a.displayName || a.email || '').localeCompare(b.displayName || b.email || '')
       })
 
