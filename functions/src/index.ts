@@ -177,3 +177,72 @@ export const registerDevice = functions
 
     return { isNewDevice, deviceId };
   });
+
+export const deleteUserAccount = functions
+  .region("asia-southeast1")
+  .https.onCall(async (data: { uid?: string; email?: string }, context: functions.https.CallableContext) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError("unauthenticated", "Must be logged in as an administrator.");
+    }
+    const callerUid = context.auth.uid;
+    const callerDoc = await admin.firestore().doc(`users/${callerUid}`).get();
+    const callerRole = callerDoc.get("role");
+    const callerEmail = callerDoc.get("email");
+    const isAdmin = callerRole === "Admin" || callerEmail === "admin@relieftrack.com";
+    if (!isAdmin) {
+      throw new functions.https.HttpsError("permission-denied", "Only administrators can delete user accounts.");
+    }
+
+    const { uid, email } = data || {};
+    let targetUid = uid;
+
+    if (!targetUid && email) {
+      try {
+        const userRecord = await admin.auth().getUserByEmail(email);
+        targetUid = userRecord.uid;
+      } catch (err: any) {
+        console.warn("Could not find user by email in auth:", err?.message);
+      }
+    }
+
+    // 1. Delete from Firebase Authentication
+    if (targetUid) {
+      try {
+        await admin.auth().deleteUser(targetUid);
+      } catch (authErr: any) {
+        console.warn("Error deleting from Firebase Auth:", authErr?.message);
+      }
+    } else if (email) {
+      try {
+        const userRecord = await admin.auth().getUserByEmail(email);
+        await admin.auth().deleteUser(userRecord.uid);
+      } catch (authErr: any) {
+        console.warn("Error deleting by email from Firebase Auth:", authErr?.message);
+      }
+    }
+
+    // 2. Delete from Cloud Firestore
+    if (targetUid) {
+      try {
+        await admin.firestore().doc(`users/${targetUid}`).delete();
+      } catch (err) {}
+    }
+    if (email) {
+      const cleanEmail = email.toLowerCase().trim();
+      const placeholderId = `user_${cleanEmail.replace(/[^a-zA-Z0-9]/g, "_")}`;
+      try {
+        await admin.firestore().doc(`users/${placeholderId}`).delete();
+      } catch (err) {}
+      const snap = await admin.firestore().collection("users").where("email", "==", cleanEmail).get();
+      for (const d of snap.docs) {
+        await d.ref.delete();
+      }
+      // Record in deletedUsers tracking collection so seeded mock list never recreates it
+      await admin.firestore().doc(`deletedUsers/${cleanEmail.replace(/[^a-zA-Z0-9]/g, "_")}`).set({
+        email: cleanEmail,
+        deletedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    }
+
+    return { success: true };
+  });

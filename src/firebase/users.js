@@ -4,7 +4,8 @@ import {
 } from 'firebase/firestore'
 import { initializeApp, getApps } from 'firebase/app'
 import { getAuth, createUserWithEmailAndPassword, updateProfile, signOut } from 'firebase/auth'
-import { db, firebaseConfig } from '../firebase.js'
+import { httpsCallable } from 'firebase/functions'
+import { db, firebaseConfig, functions } from '../firebase.js'
 
 export const INITIAL_AUTH_USERS = [
   {
@@ -314,94 +315,119 @@ export async function addUserAccount(data) {
 }
 
 export function subscribeUsers(onData, onError) {
-  const colRef = collection(db, 'users')
-  return onSnapshot(
-    colRef,
-    (snap) => {
-      const firestoreDocs = snap.docs.map((d) => {
-        const data = d.data()
-        return {
-          docId: d.id,
-          status: data.status || 'Active',
-          role: data.role || 'Member',
-          ...data,
-        }
-      })
+  let deletedEmails = new Set()
+  let cachedSnap = null
 
-      // Start with all accounts from Firebase Authentication
-      const userMap = new Map()
-      for (const account of INITIAL_AUTH_USERS) {
-        const key = account.email.toLowerCase().trim()
-        userMap.set(key, {
-          docId: `user_${account.email.replace(/[^a-zA-Z0-9]/g, '_')}`,
-          ...account,
-        })
+  const emitList = () => {
+    if (!cachedSnap) return
+
+    const firestoreDocs = cachedSnap.docs.map((d) => {
+      const data = d.data()
+      return {
+        docId: d.id,
+        status: data.status || 'Active',
+        role: data.role || 'Member',
+        ...data,
       }
+    })
 
-      // Merge Firestore documents (overrides defaults with live state & includes admin)
-      for (const fDoc of firestoreDocs) {
-        const docEmail = (fDoc.email || '').toLowerCase().trim()
-        const key = docEmail || fDoc.docId.toLowerCase().trim()
+    // Start with pre-seeded accounts, skipping any that were deleted
+    const userMap = new Map()
+    for (const account of INITIAL_AUTH_USERS) {
+      const key = account.email.toLowerCase().trim()
+      if (deletedEmails.has(key)) continue
+      userMap.set(key, {
+        docId: `user_${account.email.replace(/[^a-zA-Z0-9]/g, '_')}`,
+        ...account,
+      })
+    }
 
-        let targetKey = key
-        if (!userMap.has(targetKey) && docEmail) {
-          for (const [mKey, existing] of userMap.entries()) {
-            if (existing.email && existing.email.toLowerCase().trim() === docEmail) {
-              targetKey = mKey
-              break
-            }
+    // Merge Firestore documents (overrides defaults with live state & includes new accounts)
+    for (const fDoc of firestoreDocs) {
+      const docEmail = (fDoc.email || '').toLowerCase().trim()
+      if (docEmail && deletedEmails.has(docEmail)) continue
+      if (fDoc.status === 'Deleted') continue
+
+      const key = docEmail || fDoc.docId.toLowerCase().trim()
+
+      let targetKey = key
+      if (!userMap.has(targetKey) && docEmail) {
+        for (const [mKey, existing] of userMap.entries()) {
+          if (existing.email && existing.email.toLowerCase().trim() === docEmail) {
+            targetKey = mKey
+            break
           }
         }
-
-        if (userMap.has(targetKey)) {
-          const existing = userMap.get(targetKey)
-          // Real auth UID doc takes precedence over placeholder docId
-          const realDocId = !fDoc.docId.startsWith('user_') ? fDoc.docId : existing.docId
-          userMap.set(targetKey, { ...existing, ...fDoc, docId: realDocId })
-        } else {
-          userMap.set(key, fDoc)
-        }
       }
 
-      // Filter out deleted accounts
-      const list = Array.from(userMap.values()).filter((u) => u.status !== 'Deleted')
+      if (userMap.has(targetKey)) {
+        const existing = userMap.get(targetKey)
+        const realDocId = !fDoc.docId.startsWith('user_') ? fDoc.docId : existing.docId
+        userMap.set(targetKey, { ...existing, ...fDoc, docId: realDocId })
+      } else {
+        userMap.set(key, fDoc)
+      }
+    }
 
-      list.sort((a, b) => {
-        // Pinned: Administrators always stay at the top
-        const aIsAdmin = a.role === 'Admin' || a.email === 'admin@relieftrack.com'
-        const bIsAdmin = b.role === 'Admin' || b.email === 'admin@relieftrack.com'
-        if (aIsAdmin && !bIsAdmin) return -1
-        if (!aIsAdmin && bIsAdmin) return 1
+    // Filter out deleted accounts
+    const list = Array.from(userMap.values()).filter((u) => u.status !== 'Deleted')
 
-        const getMillis = (obj) => {
-          if (!obj) return Date.now()
-          if (typeof obj.toMillis === 'function') return obj.toMillis()
-          if (typeof obj.getTime === 'function') return obj.getTime()
-          if (typeof obj === 'number') return obj
-          const parsed = new Date(obj).getTime()
-          return isNaN(parsed) ? Date.now() : parsed
-        }
+    list.sort((a, b) => {
+      // Pinned: Administrators always stay at the top
+      const aIsAdmin = a.role === 'Admin' || a.email === 'admin@relieftrack.com'
+      const bIsAdmin = b.role === 'Admin' || b.email === 'admin@relieftrack.com'
+      if (aIsAdmin && !bIsAdmin) return -1
+      if (!aIsAdmin && bIsAdmin) return 1
 
-        const timeA = getMillis(a.createdAt)
-        const timeB = getMillis(b.createdAt)
-        if (timeA !== timeB) return timeB - timeA
+      const getMillis = (obj) => {
+        if (!obj) return Date.now()
+        if (typeof obj.toMillis === 'function') return obj.toMillis()
+        if (typeof obj.getTime === 'function') return obj.getTime()
+        if (typeof obj === 'number') return obj
+        const parsed = new Date(obj).getTime()
+        return isNaN(parsed) ? Date.now() : parsed
+      }
 
-        return (a.displayName || a.email || '').localeCompare(b.displayName || b.email || '')
-      })
+      const timeA = getMillis(a.createdAt)
+      const timeB = getMillis(b.createdAt)
+      if (timeA !== timeB) return timeB - timeA
 
-      onData(list)
+      return (a.displayName || a.email || '').localeCompare(b.displayName || b.email || '')
+    })
+
+    onData(list)
+  }
+
+  const unsubDeleted = onSnapshot(collection(db, 'deletedUsers'), (delSnap) => {
+    deletedEmails = new Set(delSnap.docs.map((d) => (d.data()?.email || d.id).toLowerCase().trim()))
+    emitList()
+  }, (err) => {
+    console.warn('Error reading deletedUsers tracking:', err)
+  })
+
+  const unsubUsers = onSnapshot(
+    collection(db, 'users'),
+    (snap) => {
+      cachedSnap = snap
+      emitList()
     },
     (err) => {
       console.error('Error in subscribeUsers:', err)
-      // Fallback: guarantee all accounts are provided even if Firestore offline
-      const fallbackList = INITIAL_AUTH_USERS.map((a) => ({
-        docId: `user_${a.email.replace(/[^a-zA-Z0-9]/g, '_')}`,
-        ...a,
-      }))
+      const fallbackList = INITIAL_AUTH_USERS
+        .filter((a) => !deletedEmails.has(a.email.toLowerCase().trim()))
+        .map((a) => ({
+          docId: `user_${a.email.replace(/[^a-zA-Z0-9]/g, '_')}`,
+          ...a,
+        }))
       onData(fallbackList)
       onError?.(err)
     }
   )
+
+  return () => {
+    unsubDeleted()
+    unsubUsers()
+  }
 }
 
 export async function getUserProfile(uid) {
@@ -451,38 +477,53 @@ export async function updateUserLocation(uid, location) {
 }
 
 export async function deleteUserProfile(uid, email = null) {
-  const updatePayload = {
-    status: 'Deleted',
-    isOnline: false,
-    deletedAt: serverTimestamp(),
+  const cleanEmail = (email || '').toLowerCase().trim()
+
+  // 1. Request deletion from Firebase Authentication (via Cloud Function)
+  try {
+    const deleteFn = httpsCallable(functions, 'deleteUserAccount')
+    await deleteFn({ uid, email: cleanEmail })
+  } catch (fnErr) {
+    console.warn('deleteUserAccount Cloud Function error (proceeding with Firestore cleanup):', fnErr?.message)
   }
-  if (uid) {
+
+  // 2. Add to deletedUsers tracking collection so seeded mock accounts never revive
+  if (cleanEmail) {
+    const delDocId = cleanEmail.replace(/[^a-zA-Z0-9]/g, '_')
     try {
-      await setDoc(doc(db, 'users', uid), updatePayload, { merge: true })
+      await setDoc(doc(db, 'deletedUsers', delDocId), {
+        email: cleanEmail,
+        deletedAt: serverTimestamp(),
+      })
     } catch (err) {
-      console.warn('Error setting deleted status on UID doc:', err)
+      console.warn('Error recording to deletedUsers:', err)
     }
   }
-  const cleanEmail = (email || '').toLowerCase().trim()
+
+  // 3. Actually delete document(s) from Cloud Firestore users collection
+  if (uid) {
+    try {
+      await deleteDoc(doc(db, 'users', uid))
+    } catch (err) {
+      console.warn('Error deleting user doc from Firestore by UID:', err)
+    }
+  }
+
   if (cleanEmail) {
     const placeholderId = `user_${cleanEmail.replace(/[^a-zA-Z0-9]/g, '_')}`
     if (placeholderId !== uid) {
       try {
-        await setDoc(doc(db, 'users', placeholderId), updatePayload, { merge: true })
-      } catch (err) {
-        console.warn('Error setting deleted status on placeholder doc:', err)
-      }
+        await deleteDoc(doc(db, 'users', placeholderId))
+      } catch (err) {}
     }
     try {
       const q = query(collection(db, 'users'), where('email', '==', cleanEmail))
       const snap = await getDocs(q)
       for (const d of snap.docs) {
-        if (d.id !== uid && d.id !== placeholderId) {
-          await setDoc(doc(db, 'users', d.id), updatePayload, { merge: true })
-        }
+        await deleteDoc(doc(db, 'users', d.id)).catch(() => {})
       }
     } catch (err) {
-      console.warn('Error querying users by email during deleteUserProfile:', err)
+      console.warn('Error querying users by email during deleteDoc:', err)
     }
   }
 }

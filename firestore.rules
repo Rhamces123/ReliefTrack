@@ -4,6 +4,9 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, create, update, delete: if request.auth != null;
     }
+    match /deletedUsers/{emailId} {
+      allow read, create, update, delete: if request.auth != null;
+    }
     match /reliefRequests/{requestId} {
       allow read, create, update, delete: if request.auth != null;
     }
