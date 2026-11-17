@@ -1474,14 +1474,6 @@ export default function AdminDashboard() {
                             <div className="table-actions-group">
                               <button
                                 type="button"
-                                className="btn-table-action"
-                                onClick={() => toggleRole(u)}
-                                title="Toggle Administrator / Member role"
-                              >
-                                Make {u.role === 'Admin' ? 'Member' : 'Admin'}
-                              </button>
-                              <button
-                                type="button"
                                 className={`btn-table-action ${
                                   u.status === 'On Hold' ? 'reactivate' : 'hold'
                                 }`}
