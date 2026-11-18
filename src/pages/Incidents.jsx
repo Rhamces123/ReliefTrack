@@ -98,6 +98,7 @@ export default function Incidents() {
 
   // Delete Confirm Modal
   const [deleteTarget, setDeleteTarget] = useState(null)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     if (!user?.uid) return
@@ -117,33 +118,6 @@ export default function Incidents() {
     )
     return unsub
   }, [])
-
-  // Auto-seed sample incident if collection is completely empty
-  useEffect(() => {
-    if (!loading && incidents.length === 0 && user) {
-      createDisasterIncident(
-        {
-          title: 'Typhoon Inundation & Coastal Storm Surge',
-          disasterType: 'Typhoon',
-          incidentDate: new Date().toISOString().slice(0, 10),
-          incidentTime: '08:30',
-          severity: 'Critical',
-          status: 'Active',
-          affectedBarangays: ['Tinaan', 'Inoburan', 'Langtad', 'Colon'],
-          casualties: 0,
-          injured: 4,
-          missing: 0,
-          displacedFamilies: 38,
-          displacedIndividuals: 165,
-          evacuationCentersActive: 3,
-          description:
-            'Severe coastal water rise and low-lying flash flood caused by heavy torrential rains. Evacuees relocated to barangay covered gym and designated central schools.',
-          immediateNeeds: 'Ready-to-eat food packs, potable drinking water, hygiene kits, blankets, and flashlights.',
-        },
-        user
-      ).catch(() => {})
-    }
-  }, [loading, incidents.length, user])
 
   // Filtered incidents
   const filteredIncidents = useMemo(() => {
@@ -266,16 +240,20 @@ export default function Incidents() {
 
   // Delete
   const handleConfirmDelete = async () => {
-    if (!deleteTarget) return
+    if (!deleteTarget?.docId) return
+    setDeleting(true)
     try {
       await deleteDisasterIncident(deleteTarget.docId)
+      setIncidents((prev) => prev.filter((i) => i.docId !== deleteTarget.docId))
       setDeleteTarget(null)
       if (selectedIncident?.docId === deleteTarget.docId) {
         setSelectedIncident(null)
       }
     } catch (err) {
       console.error('Error deleting incident:', err)
-      alert('Failed to delete incident.')
+      alert(`Failed to delete incident: ${err.message || 'Please try again.'}`)
+    } finally {
+      setDeleting(false)
     }
   }
 
@@ -893,6 +871,19 @@ export default function Incidents() {
                 <div className="details-footer-actions">
                   <button
                     type="button"
+                    className="btn-action-icon delete"
+                    style={{ width: 'auto', padding: '8px 14px', gap: '6px' }}
+                    onClick={() => {
+                      const target = selectedIncident
+                      setSelectedIncident(null)
+                      setDeleteTarget(target)
+                    }}
+                    title="Delete this incident"
+                  >
+                    <Trash2 size={15} /> <span>Delete Incident</span>
+                  </button>
+                  <button
+                    type="button"
                     className="btn-edit-secondary"
                     onClick={() => {
                       const inc = selectedIncident
@@ -900,7 +891,7 @@ export default function Incidents() {
                       handleOpenEdit(inc)
                     }}
                   >
-                    <Pencil size={15} /> Edit Incident
+                    <Pencil size={15} /> <span>Edit Incident</span>
                   </button>
                   <button
                     type="button"
@@ -917,7 +908,7 @@ export default function Incidents() {
 
         {/* Delete Confirmation Modal */}
         {deleteTarget && (
-          <div className="incident-modal-overlay" onClick={() => setDeleteTarget(null)}>
+          <div className="incident-modal-overlay" onClick={() => !deleting && setDeleteTarget(null)}>
             <div className="incident-modal-content delete-confirm" onClick={(e) => e.stopPropagation()}>
               <div className="delete-icon-wrap">
                 <AlertTriangle size={32} />
@@ -931,6 +922,7 @@ export default function Incidents() {
                   type="button"
                   className="btn-cancel"
                   onClick={() => setDeleteTarget(null)}
+                  disabled={deleting}
                 >
                   Cancel
                 </button>
@@ -938,8 +930,9 @@ export default function Incidents() {
                   type="button"
                   className="btn-confirm-delete"
                   onClick={handleConfirmDelete}
+                  disabled={deleting}
                 >
-                  Yes, Delete Incident
+                  {deleting ? 'Deleting Incident...' : 'Yes, Delete Incident'}
                 </button>
               </div>
             </div>
