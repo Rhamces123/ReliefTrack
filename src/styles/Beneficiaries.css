@@ -515,3 +515,317 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   FAMILY DETAILS MODAL & CLICKABLE CARD STYLES
+   ========================================================= */
+
+.benef-card {
+  cursor: pointer;
+  user-select: none;
+}
+
+.benef-card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(15, 45, 80, 0.12);
+}
+
+.benef-card-actions .benef-view-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #c8ddf0;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex: 1;
+  text-align: center;
+}
+
+.benef-card-actions .benef-view-btn:hover {
+  background: #e2e8f0;
+  color: #1e3a8a;
+  border-color: #94a3b8;
+}
+
+.benef-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2100;
+  padding: 20px;
+}
+
+.benef-details-modal {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalPopIn 0.2s ease;
+}
+
+.benef-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.benef-details-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.benef-details-title-wrap h3 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.benef-hh-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1d4ed8;
+  background: #dbeafe;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  letter-spacing: 0.3px;
+}
+
+.benef-details-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.benef-details-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.benef-details-body {
+  padding: 22px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.benef-details-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.benef-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.benef-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #1e40af;
+  margin: 0;
+}
+
+.benef-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  background: #f8fafc;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+@media (max-width: 600px) {
+  .benef-details-grid {
+    grid-template-columns: 1fr;
+  }
+  .benef-detail-field.full-width {
+    grid-column: span 1;
+  }
+}
+
+.benef-detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.benef-detail-field.full-width {
+  grid-column: span 2;
+}
+
+.benef-detail-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #64748b;
+}
+
+.benef-detail-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  word-break: break-word;
+}
+
+.benef-vulnerable-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.benef-vulnerable-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.benef-members-table-wrap {
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  overflow-x: auto;
+}
+
+.benef-members-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+.benef-members-table th {
+  background: #f1f5f9;
+  color: #475569;
+  font-weight: 600;
+  padding: 10px 14px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.benef-members-table td {
+  padding: 10px 14px;
+  border-top: 1px solid #e2e8f0;
+  color: #0f172a;
+}
+
+.benef-members-table tr:hover td {
+  background: #f8fafc;
+}
+
+.benef-details-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+/* Dark theme overrides for Details Modal */
+.dashboard.theme-dark .benef-details-modal {
+  background: #14112e;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .benef-details-header,
+.dashboard.theme-dark .benef-details-footer {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard.theme-dark .benef-details-title-wrap h3 {
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .benef-section-title {
+  color: #93c5fd;
+}
+
+.dashboard.theme-dark .benef-details-grid {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.dashboard.theme-dark .benef-detail-val {
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .benef-detail-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.dashboard.theme-dark .benef-members-table th {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dashboard.theme-dark .benef-members-table td {
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .benef-members-table tr:hover td {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dashboard.theme-dark .benef-card-actions .benef-view-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.dashboard.theme-dark .benef-card-actions .benef-view-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
