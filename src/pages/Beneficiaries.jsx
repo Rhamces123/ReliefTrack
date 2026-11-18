@@ -68,6 +68,7 @@ export default function Beneficiaries() {
   const [saving, setSaving] = useState(false)
   const [actionId, setActionId] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [barangayFilter, setBarangayFilter] = useState('all')
 
   const isAdmin = profile?.role === 'Admin'
   const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
@@ -89,8 +90,16 @@ export default function Beneficiaries() {
     return unsub
   }, [user?.uid, profile?.role])
 
-  const filtered = useMemo(() => {
+  const barangayList = useMemo(() => {
+    const set = new Set(families.map((f) => f.barangay?.trim()).filter(Boolean))
+    return ['all', ...[...set].sort()]
+  }, [families])
+
+  const groupedFamilies = useMemo(() => {
     let list = families
+    if (barangayFilter !== 'all') {
+      list = list.filter((f) => (f.barangay || '').trim() === barangayFilter)
+    }
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase()
       list = list.filter(
@@ -101,13 +110,32 @@ export default function Beneficiaries() {
           f.householdNumber?.toLowerCase().includes(q)
       )
     }
-    return list
-  }, [families, searchQuery])
+
+    const map = {}
+    for (const f of list) {
+      const bg = f.barangay?.trim() || 'Unassigned Barangay'
+      if (!map[bg]) map[bg] = []
+      map[bg].push(f)
+    }
+
+    return Object.entries(map)
+      .map(([barangay, items]) => ({
+        barangay,
+        items,
+        count: items.length,
+      }))
+      .sort((a, b) => a.barangay.localeCompare(b.barangay))
+  }, [families, barangayFilter, searchQuery])
+
+  const totalFilteredCount = useMemo(
+    () => groupedFamilies.reduce((sum, g) => sum + g.items.length, 0),
+    [groupedFamilies]
+  )
 
   const stats = useMemo(() => {
     const total = families.length
     const totalMembers = families.reduce((s, f) => s + (Number(f.members) || 0), 0)
-    const barangays = new Set(families.map((f) => f.barangay)).size
+    const barangays = new Set(families.map((f) => f.barangay?.trim()).filter(Boolean)).size
     return { total, totalMembers, barangays }
   }, [families])
 
@@ -193,6 +221,15 @@ export default function Beneficiaries() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+        <select
+          className="benef-filter"
+          value={barangayFilter}
+          onChange={(e) => setBarangayFilter(e.target.value)}
+        >
+          {barangayList.map((b) => (
+            <option key={b} value={b}>{b === 'all' ? 'All Barangays' : b}</option>
+          ))}
+        </select>
       </div>
 
       <div className="dashboard-activity">
@@ -200,127 +237,139 @@ export default function Beneficiaries() {
           <p className="requests-loading">Loading families...</p>
         ) : error && families.length === 0 ? (
           <p className="dashboard-empty">Unable to load. Check connection and try again.</p>
-        ) : filtered.length === 0 ? (
+        ) : totalFilteredCount === 0 ? (
           <p className="dashboard-empty">
             {families.length === 0 ? 'No families registered yet.' : 'No families match your filters.'}
           </p>
         ) : (
-          <div className="benef-grid">
-            {filtered.map((f) => (
-              <div
-                key={f.docId}
-                className="benef-card"
-                onClick={() => setSelectedFamily(f)}
-                title="Click card to view full family details"
-              >
-                <div className="benef-card-header">
-                  <div className="benef-card-title">
-                    <h3>{f.familyName}</h3>
-                    <span className={`benef-class-badge ${f.classification}`}>
-                      {getClassLabel(f.classification)}
-                    </span>
-                    {getEconLabel(f.economicStatus) && (
-                      <span className={`benef-econ-badge ${f.economicStatus}`}>
-                        {getEconLabel(f.economicStatus)}
-                      </span>
-                    )}
-                    {f.is4PsBeneficiary && (
-                      <span className="benef-4ps-badge">4Ps Beneficiary</span>
-                    )}
-                  </div>
-                  <div className="benef-card-members">{f.members} member{f.members > 1 ? 's' : ''}</div>
+          <div className="benef-barangay-groups">
+            {groupedFamilies.map((group) => (
+              <div key={group.barangay} className="benef-barangay-group">
+                <div className="benef-barangay-header">
+                  <h3>📍 {group.barangay}</h3>
+                  <span className="benef-barangay-count">
+                    {group.items.length} {group.items.length === 1 ? 'FAMILY' : 'FAMILIES'}
+                  </span>
                 </div>
-                <div className="benef-card-body">
-                  {f.householdNumber && (
-                    <div className="benef-card-row">
-                      <span className="benef-label">Household No.</span>
-                      <span style={{ fontWeight: 600, color: '#1674D1' }}>{f.householdNumber}</span>
+                <div className="benef-grid">
+                  {group.items.map((f) => (
+                    <div
+                      key={f.docId}
+                      className="benef-card"
+                      onClick={() => setSelectedFamily(f)}
+                      title="Click card to view full family details"
+                    >
+                      <div className="benef-card-header">
+                        <div className="benef-card-title">
+                          <h3>{f.familyName}</h3>
+                          <span className={`benef-class-badge ${f.classification}`}>
+                            {getClassLabel(f.classification)}
+                          </span>
+                          {getEconLabel(f.economicStatus) && (
+                            <span className={`benef-econ-badge ${f.economicStatus}`}>
+                              {getEconLabel(f.economicStatus)}
+                            </span>
+                          )}
+                          {f.is4PsBeneficiary && (
+                            <span className="benef-4ps-badge">4Ps Beneficiary</span>
+                          )}
+                        </div>
+                        <div className="benef-card-members">{f.members} member{f.members > 1 ? 's' : ''}</div>
+                      </div>
+                      <div className="benef-card-body">
+                        {f.householdNumber && (
+                          <div className="benef-card-row">
+                            <span className="benef-label">Household No.</span>
+                            <span style={{ fontWeight: 600, color: '#1674D1' }}>{f.householdNumber}</span>
+                          </div>
+                        )}
+                        <div className="benef-card-row">
+                          <span className="benef-label">Barangay</span>
+                          <span>{f.barangay}</span>
+                        </div>
+                        <div className="benef-card-row">
+                          <span className="benef-label">Head of Family</span>
+                          <span>{f.headOfFamily || '—'}</span>
+                        </div>
+                        {(f.repAge || f.repSex) && (
+                          <div className="benef-card-row">
+                            <span className="benef-label">Age / Sex</span>
+                            <span>{[f.repAge ? `${f.repAge} yrs old` : '', f.repSex].filter(Boolean).join(' • ')}</span>
+                          </div>
+                        )}
+                        {f.repOccupation && (
+                          <div className="benef-card-row">
+                            <span className="benef-label">Occupation</span>
+                            <span>{f.repOccupation}</span>
+                          </div>
+                        )}
+                        <div className="benef-card-row">
+                          <span className="benef-label">Contact</span>
+                          <span>{f.contactNumber || '—'}</span>
+                        </div>
+                        {f.familyMembersList && f.familyMembersList.length > 0 && (
+                          <div className="benef-card-row">
+                            <span className="benef-label">Members ({f.familyMembersList.length})</span>
+                            <span title={f.familyMembersList.map((m) => `${m.name || 'Member'} (${m.relation || 'Relative'})`).join(', ')}>
+                              {f.familyMembersList
+                                .map((m) => m.name || m.relation)
+                                .filter(Boolean)
+                                .slice(0, 3)
+                                .join(', ')}
+                              {f.familyMembersList.length > 3 && ` +${f.familyMembersList.length - 3} more`}
+                            </span>
+                          </div>
+                        )}
+                        {f.houseOwnership && (
+                          <div className="benef-card-row">
+                            <span className="benef-label">House Ownership</span>
+                            <span style={{ textTransform: 'capitalize' }}>{f.houseOwnership}</span>
+                          </div>
+                        )}
+                        {f.shelterDamage && f.shelterDamage !== 'none' && (
+                          <div className="benef-card-row">
+                            <span className="benef-label">Shelter Damage</span>
+                            <span className={`benef-damage-tag ${f.shelterDamage}`}>
+                              {f.shelterDamage === 'totally-damaged' ? 'Totally Damaged' : 'Partially Damaged'}
+                            </span>
+                          </div>
+                        )}
+                        {f.notes && (
+                          <div className="benef-card-row">
+                            <span className="benef-label">Notes</span>
+                            <span className="benef-notes">{f.notes}</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="benef-card-actions" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          className="benef-view-btn"
+                          onClick={() => setSelectedFamily(f)}
+                          title="View Full Family Details"
+                        >
+                          <Eye size={14} />
+                          <span>View</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="inventory-edit-btn"
+                          disabled={actionId === f.docId}
+                          onClick={() => openEditForm(f)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="requests-delete-btn"
+                          disabled={actionId === f.docId}
+                          onClick={() => handleDelete(f.docId)}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
-                  )}
-                  <div className="benef-card-row">
-                    <span className="benef-label">Barangay</span>
-                    <span>{f.barangay}</span>
-                  </div>
-                  <div className="benef-card-row">
-                    <span className="benef-label">Head of Family</span>
-                    <span>{f.headOfFamily || '—'}</span>
-                  </div>
-                  {(f.repAge || f.repSex) && (
-                    <div className="benef-card-row">
-                      <span className="benef-label">Age / Sex</span>
-                      <span>{[f.repAge ? `${f.repAge} yrs old` : '', f.repSex].filter(Boolean).join(' • ')}</span>
-                    </div>
-                  )}
-                  {f.repOccupation && (
-                    <div className="benef-card-row">
-                      <span className="benef-label">Occupation</span>
-                      <span>{f.repOccupation}</span>
-                    </div>
-                  )}
-                  <div className="benef-card-row">
-                    <span className="benef-label">Contact</span>
-                    <span>{f.contactNumber || '—'}</span>
-                  </div>
-                  {f.familyMembersList && f.familyMembersList.length > 0 && (
-                    <div className="benef-card-row">
-                      <span className="benef-label">Members ({f.familyMembersList.length})</span>
-                      <span title={f.familyMembersList.map((m) => `${m.name || 'Member'} (${m.relation || 'Relative'})`).join(', ')}>
-                        {f.familyMembersList
-                          .map((m) => m.name || m.relation)
-                          .filter(Boolean)
-                          .slice(0, 3)
-                          .join(', ')}
-                        {f.familyMembersList.length > 3 && ` +${f.familyMembersList.length - 3} more`}
-                      </span>
-                    </div>
-                  )}
-                  {f.houseOwnership && (
-                    <div className="benef-card-row">
-                      <span className="benef-label">House Ownership</span>
-                      <span style={{ textTransform: 'capitalize' }}>{f.houseOwnership}</span>
-                    </div>
-                  )}
-                  {f.shelterDamage && f.shelterDamage !== 'none' && (
-                    <div className="benef-card-row">
-                      <span className="benef-label">Shelter Damage</span>
-                      <span className={`benef-damage-tag ${f.shelterDamage}`}>
-                        {f.shelterDamage === 'totally-damaged' ? 'Totally Damaged' : 'Partially Damaged'}
-                      </span>
-                    </div>
-                  )}
-                  {f.notes && (
-                    <div className="benef-card-row">
-                      <span className="benef-label">Notes</span>
-                      <span className="benef-notes">{f.notes}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="benef-card-actions" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    type="button"
-                    className="benef-view-btn"
-                    onClick={() => setSelectedFamily(f)}
-                    title="View Full Family Details"
-                  >
-                    <Eye size={14} />
-                    <span>View</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="inventory-edit-btn"
-                    disabled={actionId === f.docId}
-                    onClick={() => openEditForm(f)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    className="requests-delete-btn"
-                    disabled={actionId === f.docId}
-                    onClick={() => handleDelete(f.docId)}
-                  >
-                    Delete
-                  </button>
+                  ))}
                 </div>
               </div>
             ))}
