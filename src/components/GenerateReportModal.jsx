@@ -6,7 +6,26 @@ import { subscribeDonations } from '../firebase/donations'
 import { formatRequestDate, getStatusLabel, getStatusClass } from '../utils/requestHelpers'
 import { formatInventoryDate, getCategoryLabel, isLowStock, countLowStock } from '../utils/inventoryHelpers'
 import nagaSeal from '../assets/naga-seal.png'
-import { Camera, RotateCcw } from 'lucide-react'
+import {
+  Camera,
+  RotateCcw,
+  FileText,
+  BarChart3,
+  ClipboardList,
+  Package,
+  Gift,
+  FileSpreadsheet,
+  Printer,
+  Users,
+  Clock,
+  Truck,
+  CheckCircle2,
+  AlertTriangle,
+  ShieldCheck,
+  Building2,
+  Calendar,
+  X,
+} from 'lucide-react'
 import '../styles/GenerateReportModal.css'
 
 export default function GenerateReportModal({
@@ -357,7 +376,10 @@ export default function GenerateReportModal({
         {/* Modal Topbar */}
         <div className="grm-header">
           <div className="grm-title-group">
-            <h3>📄 Generate Operations Report</h3>
+            <h3>
+              <FileText size={20} color="#1674D1" />
+              <span>Generate Operations Report</span>
+            </h3>
             <p>Export official relief analytics, supply manifests, and request logs.</p>
           </div>
           <button
@@ -366,7 +388,7 @@ export default function GenerateReportModal({
             onClick={onClose}
             aria-label="Close report modal"
           >
-            ✕
+            <X size={18} />
           </button>
         </div>
 
@@ -378,28 +400,32 @@ export default function GenerateReportModal({
               className={`grm-tab ${reportType === 'summary' ? 'active' : ''}`}
               onClick={() => setReportType('summary')}
             >
-              📊 Executive Summary
+              <BarChart3 size={15} />
+              <span>Executive Summary</span>
             </button>
             <button
               type="button"
               className={`grm-tab ${reportType === 'requests' ? 'active' : ''}`}
               onClick={() => setReportType('requests')}
             >
-              📋 Relief Requests ({reqTotal})
+              <ClipboardList size={15} />
+              <span>Relief Requests ({reqTotal})</span>
             </button>
             <button
               type="button"
               className={`grm-tab ${reportType === 'inventory' ? 'active' : ''}`}
               onClick={() => setReportType('inventory')}
             >
-              📦 Inventory ({invTotalItems})
+              <Package size={15} />
+              <span>Inventory ({invTotalItems})</span>
             </button>
             <button
               type="button"
               className={`grm-tab ${reportType === 'donations' ? 'active' : ''}`}
               onClick={() => setReportType('donations')}
             >
-              🎁 Donations ({donTotal})
+              <Gift size={15} />
+              <span>Donations ({donTotal})</span>
             </button>
           </div>
 
@@ -438,7 +464,8 @@ export default function GenerateReportModal({
               onClick={downloadExcel}
               title="Download Microsoft Excel workbook (.xlsx)"
             >
-              📊 Export Excel
+              <FileSpreadsheet size={15} />
+              <span>Export Excel</span>
             </button>
             <button
               type="button"
@@ -446,7 +473,8 @@ export default function GenerateReportModal({
               onClick={handlePrint}
               title="Print document or save as PDF"
             >
-              🖨️ Print / Save as PDF
+              <Printer size={15} />
+              <span>Print / Save as PDF</span>
             </button>
           </div>
         </div>
@@ -520,22 +548,22 @@ export default function GenerateReportModal({
               {reportType === 'summary' && (
                 <>
                   <div className="grm-kpi-card">
-                    <div className="grm-kpi-icon">📋</div>
+                    <div className="grm-kpi-icon"><ClipboardList size={18} /></div>
                     <div className="grm-kpi-value">{reqTotal}</div>
                     <div className="grm-kpi-label">Total Requests ({reqCompleted} Done)</div>
                   </div>
                   <div className="grm-kpi-card">
-                    <div className="grm-kpi-icon">👥</div>
+                    <div className="grm-kpi-icon"><Users size={18} /></div>
                     <div className="grm-kpi-value">{totalBeneficiaries}</div>
                     <div className="grm-kpi-label">Affected Beneficiaries</div>
                   </div>
                   <div className={`grm-kpi-card ${invLowStock > 0 ? 'warn' : ''}`}>
-                    <div className="grm-kpi-icon">📦</div>
+                    <div className="grm-kpi-icon"><Package size={18} /></div>
                     <div className="grm-kpi-value">{invTotalQty}</div>
                     <div className="grm-kpi-label">Supplies Stock ({invLowStock} Low)</div>
                   </div>
                   <div className="grm-kpi-card success">
-                    <div className="grm-kpi-icon">🎁</div>
+                    <div className="grm-kpi-icon"><Gift size={18} /></div>
                     <div className="grm-kpi-value">{donTotal}</div>
                     <div className="grm-kpi-label">Donations ({donAgencies} Donors)</div>
                   </div>
@@ -545,22 +573,22 @@ export default function GenerateReportModal({
               {reportType === 'requests' && (
                 <>
                   <div className="grm-kpi-card">
-                    <div className="grm-kpi-icon">📋</div>
+                    <div className="grm-kpi-icon"><ClipboardList size={18} /></div>
                     <div className="grm-kpi-value">{reqTotal}</div>
                     <div className="grm-kpi-label">Total Requests</div>
                   </div>
                   <div className="grm-kpi-card warn">
-                    <div className="grm-kpi-icon">⏳</div>
+                    <div className="grm-kpi-icon"><Clock size={18} /></div>
                     <div className="grm-kpi-value">{reqPending}</div>
                     <div className="grm-kpi-label">Pending Review</div>
                   </div>
                   <div className="grm-kpi-card">
-                    <div className="grm-kpi-icon">🚚</div>
+                    <div className="grm-kpi-icon"><Truck size={18} /></div>
                     <div className="grm-kpi-value">{reqInProgress}</div>
                     <div className="grm-kpi-label">In Progress</div>
                   </div>
                   <div className="grm-kpi-card success">
-                    <div className="grm-kpi-icon">✅</div>
+                    <div className="grm-kpi-icon"><CheckCircle2 size={18} /></div>
                     <div className="grm-kpi-value">{reqCompleted}</div>
                     <div className="grm-kpi-label">Completed</div>
                   </div>
@@ -570,22 +598,22 @@ export default function GenerateReportModal({
               {reportType === 'inventory' && (
                 <>
                   <div className="grm-kpi-card">
-                    <div className="grm-kpi-icon">📦</div>
+                    <div className="grm-kpi-icon"><Package size={18} /></div>
                     <div className="grm-kpi-value">{invTotalItems}</div>
                     <div className="grm-kpi-label">Item Types</div>
                   </div>
                   <div className="grm-kpi-card">
-                    <div className="grm-kpi-icon">📊</div>
+                    <div className="grm-kpi-icon"><BarChart3 size={18} /></div>
                     <div className="grm-kpi-value">{invTotalQty}</div>
                     <div className="grm-kpi-label">Total Units in Stock</div>
                   </div>
                   <div className={`grm-kpi-card ${invLowStock > 0 ? 'warn' : ''}`}>
-                    <div className="grm-kpi-icon">⚠️</div>
+                    <div className="grm-kpi-icon"><AlertTriangle size={18} /></div>
                     <div className="grm-kpi-value">{invLowStock}</div>
                     <div className="grm-kpi-label">Items Low Stock (&le;10)</div>
                   </div>
                   <div className="grm-kpi-card success">
-                    <div className="grm-kpi-icon">🛡️</div>
+                    <div className="grm-kpi-icon"><ShieldCheck size={18} /></div>
                     <div className="grm-kpi-value">
                       {Math.max(0, invTotalItems - invLowStock)}
                     </div>
@@ -597,22 +625,22 @@ export default function GenerateReportModal({
               {reportType === 'donations' && (
                 <>
                   <div className="grm-kpi-card">
-                    <div className="grm-kpi-icon">🎁</div>
+                    <div className="grm-kpi-icon"><Gift size={18} /></div>
                     <div className="grm-kpi-value">{donTotal}</div>
                     <div className="grm-kpi-label">Total Donations</div>
                   </div>
                   <div className="grm-kpi-card success">
-                    <div className="grm-kpi-icon">📦</div>
+                    <div className="grm-kpi-icon"><Package size={18} /></div>
                     <div className="grm-kpi-value">{donTotalQty}</div>
                     <div className="grm-kpi-label">Total Units Donated</div>
                   </div>
                   <div className="grm-kpi-card">
-                    <div className="grm-kpi-icon">🏢</div>
+                    <div className="grm-kpi-icon"><Building2 size={18} /></div>
                     <div className="grm-kpi-value">{donAgencies}</div>
                     <div className="grm-kpi-label">Contributing Agencies</div>
                   </div>
                   <div className="grm-kpi-card">
-                    <div className="grm-kpi-icon">📅</div>
+                    <div className="grm-kpi-icon"><Calendar size={18} /></div>
                     <div className="grm-kpi-value">{donTotal > 0 ? 'Active' : '—'}</div>
                     <div className="grm-kpi-label">Donation Pipeline</div>
                   </div>

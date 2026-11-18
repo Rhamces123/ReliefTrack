@@ -1,10 +1,10 @@
-/* Generate Report Modal Styles */
+/* Generate Report Modal Styles - Crisp Light Palette (Image 2 Theme) */
 
 .grm-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(4, 3, 15, 0.78);
-  backdrop-filter: blur(8px);
+  background: rgba(15, 23, 42, 0.62);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,16 +14,16 @@
 }
 
 .grm-modal {
-  background: #110d28;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #ffffff;
+  border: 1.5px solid #c8ddf0;
   border-radius: 20px;
   width: 100%;
   max-width: 1060px;
   max-height: 92vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
-  color: #fff;
+  box-shadow: 0 20px 50px rgba(15, 45, 80, 0.2);
+  color: #0f172a;
   overflow: hidden;
   animation: grmFadeIn 0.25s ease-out;
 }
@@ -45,30 +45,32 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px;
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .grm-title-group h3 {
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
+  color: #0f172a;
   margin: 0 0 4px;
   display: flex;
   align-items: center;
   gap: 10px;
+  letter-spacing: -0.3px;
 }
 
 .grm-title-group p {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 13.5px;
+  color: #64748b;
   margin: 0;
 }
 
 .grm-close-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #fff;
-  font-size: 18px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  font-size: 16px;
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -80,9 +82,9 @@
 }
 
 .grm-close-btn:hover {
-  background: rgba(255, 80, 80, 0.2);
-  border-color: rgba(255, 100, 100, 0.4);
-  color: #ff8080;
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
 }
 
 /* Control Toolbar */
@@ -93,26 +95,26 @@
   justify-content: space-between;
   gap: 12px;
   padding: 14px 24px;
-  background: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .grm-tabs {
   display: flex;
   gap: 6px;
-  background: rgba(0, 0, 0, 0.35);
+  background: #e2e8f0;
   padding: 4px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid #cbd5e1;
 }
 
 .grm-tab {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.7);
+  color: #475569;
   padding: 8px 14px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -122,14 +124,14 @@
 }
 
 .grm-tab:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.06);
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .grm-tab.active {
-  background: #7850ff;
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(120, 80, 255, 0.35);
+  background: #1674D1;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(22, 116, 209, 0.3);
 }
 
 .grm-filters {
@@ -139,19 +141,25 @@
 }
 
 .grm-select {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #fff;
-  padding: 8px 12px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #0f172a;
+  padding: 8px 14px;
   border-radius: 10px;
   font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.grm-select:focus {
+  border-color: #1674D1;
 }
 
 .grm-select option {
-  background: #191439;
-  color: #fff;
+  background: #ffffff;
+  color: #0f172a;
 }
 
 .grm-actions {
@@ -166,7 +174,7 @@
   gap: 6px;
   padding: 8px 16px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -174,36 +182,38 @@
 }
 
 .grm-btn-secondary {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #fff;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
 }
 
 .grm-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: #f1f5f9;
+  border-color: #94a3b8;
 }
 
 .grm-btn-excel {
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  color: #6ee7b7;
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  color: #15803d;
 }
 
 .grm-btn-excel:hover {
-  background: rgba(16, 185, 129, 0.22);
-  border-color: rgba(16, 185, 129, 0.55);
-  color: #a7f3d0;
+  background: #dcfce7;
+  border-color: #4ade80;
+  color: #166534;
 }
 
 .grm-btn-primary {
-  background: linear-gradient(135deg, #7850ff, #5b35db);
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(120, 80, 255, 0.3);
+  background: #1674D1;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(22, 116, 209, 0.25);
 }
 
 .grm-btn-primary:hover {
+  background: #125ca7;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(120, 80, 255, 0.45);
+  box-shadow: 0 6px 16px rgba(22, 116, 209, 0.35);
 }
 
 /* Document Scroll Body */
@@ -211,17 +221,18 @@
   flex: 1;
   overflow-y: auto;
   padding: 24px;
-  background: #0d0a1f;
+  background: #f1f6fb;
 }
 
 /* Printable Sheet Container */
 .grm-sheet {
-  background: #171236;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #ffffff;
+  border: 1.5px solid #c8ddf0;
   border-radius: 16px;
   padding: 32px 36px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 16px rgba(15, 45, 80, 0.05);
   position: relative;
+  color: #0f172a;
 }
 
 /* Naga City CDRRMO Header */
@@ -229,7 +240,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 2px solid #e2e8f0;
   padding-bottom: 20px;
   margin-bottom: 24px;
 }
@@ -253,10 +264,10 @@
   height: 64px;
   border-radius: 50%;
   object-fit: contain;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid #e2e8f0;
   background: #ffffff;
   padding: 2px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 8px rgba(15, 45, 80, 0.08);
 }
 
 .grm-logo-action-wrap {
@@ -269,9 +280,9 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #ffffff;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
   font-size: 10px;
   font-weight: 600;
   padding: 2px 7px;
@@ -288,13 +299,14 @@
 }
 
 .grm-logo-action-btn.reset {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.4);
-  color: #fca5a5;
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
 }
 
 .grm-logo-action-btn.reset:hover {
   background: #ef4444;
+  border-color: #ef4444;
   color: #ffffff;
 }
 
@@ -302,34 +314,35 @@
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 1.2px;
-  color: rgba(255, 255, 255, 0.5);
+  color: #64748b;
   margin: 0 0 2px;
+  font-weight: 600;
 }
 
 .grm-sheet-title-text h2 {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  color: #fff;
+  color: #0f172a;
   margin: 0 0 4px;
-  letter-spacing: 0.3px;
+  letter-spacing: -0.3px;
 }
 
 .grm-sheet-title-text h5 {
   font-size: 12px;
-  font-weight: 500;
-  color: #a78bfa;
+  font-weight: 600;
+  color: #1674D1;
   margin: 0;
 }
 
 .grm-sheet-meta {
   text-align: right;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  color: #64748b;
   line-height: 1.6;
 }
 
 .grm-sheet-meta strong {
-  color: #fff;
+  color: #0f172a;
 }
 
 /* KPI Summary Cards */
@@ -341,45 +354,72 @@
 }
 
 .grm-kpi-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 16px;
+  background: #ffffff;
+  border: 1.5px solid #c8ddf0;
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 2px 8px rgba(15, 45, 80, 0.04);
+  transition: transform 0.15s ease, border-color 0.2s ease;
+}
+
+.grm-kpi-card:hover {
+  border-color: #93c5fd;
+  transform: translateY(-1px);
 }
 
 .grm-kpi-card.warn {
-  border-color: rgba(239, 68, 68, 0.35);
-  background: rgba(239, 68, 68, 0.06);
+  border-color: #fca5a5;
+  background: #fffafa;
 }
 
 .grm-kpi-card.success {
-  border-color: rgba(16, 185, 129, 0.35);
-  background: rgba(16, 185, 129, 0.06);
+  border-color: #86efac;
+  background: #f0fdf4;
 }
 
 .grm-kpi-icon {
-  font-size: 20px;
-  margin-bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1674D1;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.grm-kpi-card.warn .grm-kpi-icon {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.grm-kpi-card.success .grm-kpi-icon {
+  background: #f0fdf4;
+  color: #16a34a;
 }
 
 .grm-kpi-value {
-  font-size: 24px;
-  font-weight: 700;
-  color: #fff;
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
   margin-bottom: 4px;
+  line-height: 1.1;
 }
 
 .grm-kpi-card.warn .grm-kpi-value {
-  color: #fca5a5;
+  color: #dc2626;
 }
 
 .grm-kpi-card.success .grm-kpi-value {
-  color: #6ee7b7;
+  color: #16a34a;
 }
 
 .grm-kpi-label {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
+  color: #475569;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -391,25 +431,29 @@
 
 .grm-section-title {
   font-size: 15px;
-  font-weight: 600;
-  color: #fff;
+  font-weight: 700;
+  color: #0f172a;
   margin: 0 0 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
 }
 
 .grm-section-count {
   font-size: 12px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  color: #64748b;
 }
 
 .grm-table-wrap {
   width: 100%;
   overflow-x: auto;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  border: 1.5px solid #c8ddf0;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 45, 80, 0.03);
 }
 
 .grm-table {
@@ -420,26 +464,26 @@
 }
 
 .grm-table th {
-  background: rgba(255, 255, 255, 0.07);
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 600;
+  background: #f8fafc;
+  color: #334155;
+  font-weight: 700;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 12px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1.5px solid #cbd5e1;
   white-space: nowrap;
 }
 
 .grm-table td {
   padding: 12px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
   vertical-align: middle;
 }
 
 .grm-table tr:hover td {
-  background: rgba(255, 255, 255, 0.03);
+  background: #f8fafc;
 }
 
 .grm-badge {
@@ -452,41 +496,42 @@
 }
 
 .grm-badge.pending {
-  background: rgba(252, 211, 77, 0.15);
-  color: #fcd34d;
-  border: 1px solid rgba(252, 211, 77, 0.3);
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
 }
 
 .grm-badge.in-progress {
-  background: rgba(196, 181, 253, 0.15);
-  color: #c4b5fd;
-  border: 1px solid rgba(196, 181, 253, 0.3);
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
 }
 
 .grm-badge.completed {
-  background: rgba(110, 231, 183, 0.15);
-  color: #6ee7b7;
-  border: 1px solid rgba(110, 231, 183, 0.3);
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
 }
 
 .grm-badge.low-stock {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
 }
 
 .grm-badge.good-stock {
-  background: rgba(16, 185, 129, 0.15);
-  color: #6ee7b7;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
 }
 
 /* Empty State */
 .grm-empty-state {
   text-align: center;
   padding: 36px 16px;
-  color: rgba(255, 255, 255, 0.4);
+  color: #64748b;
   font-size: 14px;
+  font-weight: 500;
 }
 
 /* Signatures / Certification Footer */
@@ -496,7 +541,7 @@
   gap: 24px;
   margin-top: 40px;
   padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: 1.5px solid #e2e8f0;
 }
 
 .grm-sign-box {
@@ -507,24 +552,25 @@
 .grm-sign-label {
   font-size: 11px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+  color: #64748b;
   margin-bottom: 32px;
 }
 
 .grm-sign-line {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 1.5px solid #94a3b8;
   margin-bottom: 6px;
 }
 
 .grm-sign-name {
   font-size: 13px;
-  font-weight: 600;
-  color: #fff;
+  font-weight: 700;
+  color: #0f172a;
 }
 
 .grm-sign-title {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
+  color: #475569;
 }
 
 /* Responsive adjustments for screen */
