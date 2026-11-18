@@ -724,7 +724,12 @@ export default function AdminDashboard() {
         </div>
 
         {/* Active Incidents / Operations */}
-        <div className="admin-stat-card card-operations">
+        <div
+          className="admin-stat-card card-operations"
+          onClick={() => navigate('/incidents')}
+          style={{ cursor: 'pointer' }}
+          title="Click to view and record Disaster Incidents"
+        >
           <div className="stat-card-top">
             <div className="stat-icon-wrap icon-blue">
               <Siren size={20} />
@@ -732,7 +737,7 @@ export default function AdminDashboard() {
             <span className="stat-badge-blue">Active</span>
           </div>
           <div className="stat-value text-bright-blue">{loading ? '—' : activeOpsCount.toLocaleString()}</div>
-          <div className="stat-label">Active Operations</div>
+          <div className="stat-label">Active Operations & Incidents</div>
         </div>
 
         {/* Completed Operations */}

@@ -20,6 +20,7 @@ import AdminSetup from './pages/AdminSetup'
 import AdminAutoSuggest from './pages/AdminAutoSuggest'
 import ForgotPassword from './pages/ForgotPassword'
 import Donations from './pages/Donations'
+import Incidents from './pages/Incidents'
 
 function App() {
   return (
@@ -64,6 +65,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Requests />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/incidents"
+        element={
+          <ProtectedRoute>
+            <Incidents />
           </ProtectedRoute>
         }
       />

@@ -28,6 +28,7 @@ import {
 
 const USER_NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/home' },
+  { id: 'incidents', label: 'Disaster Incidents', icon: Siren, path: '/incidents' },
   { id: 'requests', label: 'My Relief Requests', icon: ClipboardList, path: '/requests' },
   { id: 'reports', label: 'Reports', icon: ChartNoAxesColumn, path: '/reports' },
   { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
@@ -35,6 +36,7 @@ const USER_NAV_ITEMS = [
 
 const ADMIN_NAV_ITEMS = [
   { id: 'admin-dashboard', label: 'Admin Dashboard', icon: LayoutDashboard, path: '/admin' },
+  { id: 'incidents', label: 'Disaster Incidents', icon: Siren, path: '/incidents' },
   { id: 'requests', label: 'Relief Requests', icon: ClipboardList, path: '/requests' },
   { id: 'priority', label: 'Priority Assessment', icon: TriangleAlert, path: '/priority' },
   { id: 'inventory', label: 'Inventory Management', icon: Package, path: '/inventory' },
