@@ -41,7 +41,6 @@ export default function Beneficiaries() {
   const [saving, setSaving] = useState(false)
   const [actionId, setActionId] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [econFilter, setEconFilter] = useState('all')
 
   const isAdmin = profile?.role === 'Admin'
   const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
@@ -65,9 +64,6 @@ export default function Beneficiaries() {
 
   const filtered = useMemo(() => {
     let list = families
-    if (econFilter !== 'all') {
-      list = list.filter((f) => f.economicStatus === econFilter)
-    }
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase()
       list = list.filter(
@@ -79,7 +75,7 @@ export default function Beneficiaries() {
       )
     }
     return list
-  }, [families, econFilter, searchQuery])
+  }, [families, searchQuery])
 
   const stats = useMemo(() => {
     const total = families.length
@@ -170,16 +166,6 @@ export default function Beneficiaries() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-        <select
-          className="benef-filter"
-          value={econFilter}
-          onChange={(e) => setEconFilter(e.target.value)}
-        >
-          <option value="all">All Economic Status</option>
-          {ECONOMIC_STATUSES.map((e) => (
-            <option key={e.id} value={e.id}>{e.label}</option>
-          ))}
-        </select>
       </div>
 
       <div className="dashboard-activity">
