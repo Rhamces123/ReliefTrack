@@ -9,6 +9,7 @@ import {
   deleteReliefRequest,
   REQUEST_STATUSES,
 } from '../firebase/requests'
+import { DISASTER_TYPES } from '../firebase/incidents'
 import DashboardLayout from '../components/DashboardLayout'
 import LocationAutocomplete from '../components/LocationAutocomplete'
 import RequestMiniMap from '../components/RequestMiniMap'
@@ -147,6 +148,7 @@ function detectBarangayFromText(text) {
 }
 
 const EMPTY_FORM = {
+  disasterType: 'Typhoon',
   requesterName: '',
   contactNumber: '',
   barangay: '',
@@ -527,6 +529,7 @@ export default function Requests() {
     try {
       await createReliefRequest(
         {
+          disasterType: form.disasterType || 'Typhoon',
           location: form.location,
           barangay: detectBarangayFromText(form.location),
           contactNumber: form.contactNumber,
@@ -747,6 +750,20 @@ export default function Requests() {
                     >
                       <td className="requests-id-cell">
                         <div>{row.requestId}</div>
+                        {row.disasterType && (
+                          <span
+                            className="requests-table-hh"
+                            style={{
+                              background: '#eff6ff',
+                              color: '#1d4ed8',
+                              borderColor: '#bfdbfe',
+                              fontWeight: 600,
+                            }}
+                            title="Disaster Incident"
+                          >
+                            {row.disasterType}
+                          </span>
+                        )}
                         {row.householdNumber && (
                           <span className="requests-table-hh" title="Household Number">
                             HH: {row.householdNumber}
@@ -883,6 +900,14 @@ export default function Requests() {
                   <span className="requests-detail-label">Request ID</span>
                   <span className="requests-detail-value">{detailRequest.requestId}</span>
                 </div>
+                {detailRequest.disasterType && (
+                  <div className="requests-detail-row">
+                    <span className="requests-detail-label">Disaster Incident</span>
+                    <span className="requests-detail-value" style={{ fontWeight: 600, color: '#1674D1' }}>
+                      {detailRequest.disasterType}
+                    </span>
+                  </div>
+                )}
                 {detailRequest.householdNumber && (
                   <div className="requests-detail-row">
                     <span className="requests-detail-label">Household No.</span>
@@ -1133,6 +1158,24 @@ export default function Requests() {
             </div>
             <form onSubmit={handleCreate}>
               {error && <div className="requests-error" style={{ marginBottom: '16px' }}>{error}</div>}
+              {/* Disaster Incident Type */}
+              <div className="requests-form-field" style={{ marginBottom: '16px' }}>
+                <label htmlFor="rr-disaster-type">Disaster Incident (Type of Calamity)</label>
+                <select
+                  id="rr-disaster-type"
+                  className="requests-form-select"
+                  value={form.disasterType || 'Typhoon'}
+                  onChange={(e) => setForm((f) => ({ ...f, disasterType: e.target.value }))}
+                  disabled={saving}
+                >
+                  {DISASTER_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {/* Head of Family & Family Members */}
               <div className="requests-form-grid">
                 <div className="requests-form-field">

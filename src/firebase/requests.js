@@ -48,6 +48,7 @@ export const CATEGORY_LABELS = {
 
 export async function createReliefRequest(
   {
+    disasterType,
     location,
     barangay,
     contactNumber,
@@ -78,6 +79,7 @@ export async function createReliefRequest(
   const requestId = generateRequestId()
   const data = {
     requestId,
+    disasterType: (disasterType || 'Typhoon').trim(),
     location: (location || '').trim(),
     barangay: (barangay || '').trim(),
     contactNumber: (contactNumber || '').trim(),
