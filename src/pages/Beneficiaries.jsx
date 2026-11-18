@@ -88,12 +88,6 @@ export default function Beneficiaries() {
     return { total, totalMembers, barangays }
   }, [families])
 
-  const openAddForm = () => {
-    setEditingDocId(null)
-    setForm(EMPTY_FORM)
-    setShowForm(true)
-  }
-
   const openEditForm = (f) => {
     setEditingDocId(f.docId)
     setForm({
@@ -155,11 +149,6 @@ export default function Beneficiaries() {
         <div className="benef-header-text">
           <h2>Family Registry</h2>
           <p>Monitor families per barangay and identify their classification.</p>
-        </div>
-        <div className="benef-header-actions">
-          <button type="button" className="requests-btn-primary" onClick={openAddForm}>
-            + Add Family
-          </button>
         </div>
       </div>
 
