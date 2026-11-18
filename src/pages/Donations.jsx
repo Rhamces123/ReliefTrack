@@ -63,27 +63,6 @@ function formatDate(d) {
   try { return d.toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' }) } catch { return '—' }
 }
 
-function tintColor(gradient) {
-  const m = gradient.match(/#[a-f0-9]{6}/gi)
-  return m ? m[0] : '#7850ff'
-}
-
-function CircularProgress({ value, max, gradient, label }) {
-  const r = 28; const circ = 2 * Math.PI * r
-  const pct = Math.min(value / max, 1)
-  const offset = circ - pct * circ
-  return (
-    <svg width="76" height="76" viewBox="0 0 72 72" className="don-ring">
-      <circle cx="36" cy="36" r={r} fill="none" className="don-ring-bg" strokeWidth="5" />
-      <circle cx="36" cy="36" r={r} fill="none" stroke="currentColor" strokeWidth="5"
-        strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={offset}
-        style={{ color: tintColor(gradient), transition: 'stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)' }} />
-      <text x="36" y="34" textAnchor="middle" className="don-ring-val">{value}</text>
-      <text x="36" y="48" textAnchor="middle" className="don-ring-lbl">{label}</text>
-    </svg>
-  )
-}
-
 function CountUp({ to, suffix = '' }) {
   const [v, setV] = useState(0)
   const ref = useRef(null)
@@ -244,25 +223,6 @@ export default function Donations() {
               <Building2 size={22} />
             </span>
             <div><strong><CountUp to={stats.agencies} /></strong><span>Agencies</span></div>
-          </div>
-          <div className="don-stat-card don-stat-types">
-            {DONATION_TYPES.map((t) => (
-              <span key={t} className="don-stat-type" style={{ background: TYPE_META[t].gradient }}>
-                <TypeIcon type={t} size={12} />
-                <span>{stats.typeCount[t]}</span>
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Impact Gauge */}
-      {!loading && donations.length > 0 && (
-        <div className="don-impact">
-          <div className="don-impact-inner">
-            <CircularProgress value={stats.total} max={Math.max(stats.total, 20)} gradient="linear-gradient(135deg, #7850ff, #00c8c8)" label="donations" />
-            <CircularProgress value={stats.agencies} max={Math.max(stats.agencies, 5)} gradient="linear-gradient(135deg, #10b981, #059669)" label="agencies" />
-            <CircularProgress value={stats.totalQty} max={Math.max(stats.totalQty, 100)} gradient="linear-gradient(135deg, #f59e0b, #d97706)" label="quantity" />
           </div>
         </div>
       )}
