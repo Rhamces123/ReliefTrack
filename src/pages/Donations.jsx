@@ -1,5 +1,19 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
+import {
+  HandHeart,
+  Package,
+  BarChart3,
+  Building2,
+  Utensils,
+  Droplets,
+  Pill,
+  Shirt,
+  Coins,
+  Inbox,
+  Pencil,
+  Plus,
+} from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { getUserProfile } from '../firebase/users'
 import {
@@ -14,12 +28,30 @@ import '../styles/Donations.css'
 const DONATION_TYPES = ['Food', 'Water', 'Medical', 'Clothing', 'Other']
 
 const TYPE_META = {
-  Food:    { emoji: '🍱', gradient: 'linear-gradient(135deg, #f59e0b, #d97706)' },
-  Water:   { emoji: '💧', gradient: 'linear-gradient(135deg, #0ea5e9, #0284c7)' },
-  Medical: { emoji: '💊', gradient: 'linear-gradient(135deg, #ef4444, #b91c1c)' },
-  Clothing:{ emoji: '👕', gradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)' },
-  Cash:    { emoji: '💰', gradient: 'linear-gradient(135deg, #10b981, #059669)' },
-  Other:   { emoji: '📦', gradient: 'linear-gradient(135deg, #6b7280, #4b5563)' },
+  Food:    { gradient: 'linear-gradient(135deg, #f59e0b, #d97706)' },
+  Water:   { gradient: 'linear-gradient(135deg, #0ea5e9, #0284c7)' },
+  Medical: { gradient: 'linear-gradient(135deg, #ef4444, #b91c1c)' },
+  Clothing:{ gradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)' },
+  Cash:    { gradient: 'linear-gradient(135deg, #10b981, #059669)' },
+  Other:   { gradient: 'linear-gradient(135deg, #6b7280, #4b5563)' },
+}
+
+function TypeIcon({ type, size = 14, className = '', style = {} }) {
+  switch (type) {
+    case 'Food':
+      return <Utensils size={size} className={className} style={style} />
+    case 'Water':
+      return <Droplets size={size} className={className} style={style} />
+    case 'Medical':
+      return <Pill size={size} className={className} style={style} />
+    case 'Clothing':
+      return <Shirt size={size} className={className} style={style} />
+    case 'Cash':
+      return <Coins size={size} className={className} style={style} />
+    case 'Other':
+    default:
+      return <Package size={size} className={className} style={style} />
+  }
 }
 
 const EMPTY_FORM = {
@@ -176,13 +208,16 @@ export default function Donations() {
 
       <div className="don-header">
         <div className="don-header-text">
-          <h2>🤝 Donation Input from Private Agencies</h2>
+          <h2>
+            <HandHeart size={26} style={{ color: '#f59e0b', flexShrink: 0 }} />
+            <span>Donation Input from Private Agencies</span>
+          </h2>
           <p>Track and manage relief donations with transparency and impact.</p>
         </div>
         {isAdmin && (
           <button type="button" className="don-add-btn" onClick={openAddForm}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-            New donation
+            <Plus size={16} />
+            <span>New donation</span>
           </button>
         )}
       </div>
@@ -193,21 +228,28 @@ export default function Donations() {
       {!loading && donations.length > 0 && (
         <div className="don-stats">
           <div className="don-stat-card">
-            <span className="don-stat-icon">📦</span>
+            <span className="don-stat-icon">
+              <Package size={22} style={{ color: '#2563eb' }} />
+            </span>
             <div><strong><CountUp to={stats.total} /></strong><span>Total Donations</span></div>
           </div>
           <div className="don-stat-card">
-            <span className="don-stat-icon">📊</span>
+            <span className="don-stat-icon">
+              <BarChart3 size={22} style={{ color: '#10b981' }} />
+            </span>
             <div><strong><CountUp to={stats.totalQty} /></strong><span>Total Quantity</span></div>
           </div>
           <div className="don-stat-card">
-            <span className="don-stat-icon">🏢</span>
+            <span className="don-stat-icon">
+              <Building2 size={22} style={{ color: '#8b5cf6' }} />
+            </span>
             <div><strong><CountUp to={stats.agencies} /></strong><span>Agencies</span></div>
           </div>
           <div className="don-stat-card don-stat-types">
             {DONATION_TYPES.map((t) => (
               <span key={t} className="don-stat-type" style={{ background: TYPE_META[t].gradient }}>
-                {TYPE_META[t].emoji} {stats.typeCount[t]}
+                <TypeIcon type={t} size={12} />
+                <span>{stats.typeCount[t]}</span>
               </span>
             ))}
           </div>
@@ -236,7 +278,14 @@ export default function Donations() {
               style={t !== 'all' && filter === t ? { '--tab-glow': TYPE_META[t].gradient } : {}}
               onClick={() => setFilter(t)}
             >
-              {t === 'all' ? 'All' : `${TYPE_META[t].emoji} ${t}`}
+              {t === 'all' ? (
+                'All'
+              ) : (
+                <>
+                  <TypeIcon type={t} size={14} />
+                  <span>{t}</span>
+                </>
+              )}
             </button>
           ))}
         </div>
@@ -259,13 +308,19 @@ export default function Donations() {
           <p className="dashboard-empty">Unable to load donations. Check Firestore rules and try again.</p>
         ) : filtered.length === 0 ? (
           <div className="don-empty">
-            <span className="don-empty-icon">{filter === 'all' ? '📭' : TYPE_META[filter]?.emoji}</span>
+            <span className="don-empty-icon">
+              {filter === 'all' ? (
+                <Inbox size={44} style={{ color: '#94a3b8' }} />
+              ) : (
+                <TypeIcon type={filter} size={44} style={{ color: '#94a3b8' }} />
+              )}
+            </span>
             <h3>No donations yet</h3>
             <p>{filter === 'all' ? 'Be the first to record a donation from a private agency.' : `No ${filter.toLowerCase()} donations recorded.`}</p>
             {isAdmin && (
               <button type="button" className="don-add-btn" onClick={openAddForm}>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-                Add donation
+                <Plus size={16} />
+                <span>Add donation</span>
               </button>
             )}
           </div>
@@ -278,7 +333,8 @@ export default function Donations() {
                 <div key={d.docId} className="don-card" style={{ '--card-glow': meta.gradient, '--idx': idx }}>
                   <div className="don-card-top">
                     <span className="don-badge" style={{ background: meta.gradient }}>
-                      {meta.emoji} {d.type}
+                      <TypeIcon type={d.type} size={13} />
+                      <span>{d.type}</span>
                     </span>
                     {isAdmin && (
                       <div className="don-card-actions">
@@ -318,7 +374,19 @@ export default function Donations() {
         <div className="requests-modal-overlay don-modal-overlay" onClick={closeForm}>
           <div className="requests-modal don-modal" onClick={(e) => e.stopPropagation()}>
             <button type="button" className="don-modal-close" onClick={closeForm}>&times;</button>
-            <h3 className="don-modal-title">{editingDocId ? '✏️ Edit donation' : '➕ New donation'}</h3>
+            <h3 className="don-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {editingDocId ? (
+                <>
+                  <Pencil size={18} style={{ color: '#2563eb' }} />
+                  <span>Edit donation</span>
+                </>
+              ) : (
+                <>
+                  <Plus size={18} style={{ color: '#2563eb' }} />
+                  <span>New donation</span>
+                </>
+              )}
+            </h3>
             <form onSubmit={handleSubmit}>
               <div className="requests-form-field">
                 <label htmlFor="don-agency">Name</label>
@@ -328,7 +396,7 @@ export default function Donations() {
                 <label htmlFor="don-type">Donation type</label>
                 <select id="don-type" className="requests-status-select" style={{ width: '100%' }} value={form.type} onChange={(e) => setForm((f) => ({ ...f, type: e.target.value }))} disabled={saving}>
                   {DONATION_TYPES.map((t) => (
-                    <option key={t} value={t}>{TYPE_META[t].emoji} {t}</option>
+                    <option key={t} value={t}>{t}</option>
                   ))}
                 </select>
               </div>

@@ -52,6 +52,9 @@
   color: #0f172a;
   margin: 0 0 6px;
   letter-spacing: -0.4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .don-header-text p {
@@ -115,8 +118,14 @@
 }
 
 .don-stat-icon {
-  font-size: 24px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  flex-shrink: 0;
 }
 
 .don-stat-card div {
@@ -148,12 +157,15 @@
 }
 
 .don-stat-type {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   color: #ffffff;
-  padding: 2px 8px;
+  padding: 3px 8px;
   border-radius: 6px;
   line-height: 1.4;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* ───────── Impact Gauge ───────── */
@@ -228,6 +240,9 @@
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .don-filter-tab:hover {
@@ -529,6 +544,10 @@
 
 .dashboard.theme-dark .don-stat-card span {
   color: rgba(255, 255, 255, 0.65);
+}
+
+.dashboard.theme-dark .don-stat-icon {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* Dark Mode Impact Gauge */
