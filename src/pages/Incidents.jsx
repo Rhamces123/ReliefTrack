@@ -203,21 +203,26 @@ export default function Incidents() {
   // Submit Create or Edit
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.title.trim()) {
-      alert('Please enter an incident title or calamity name.')
-      return
-    }
     if (form.affectedBarangays.length === 0) {
       alert('Please select at least one affected barangay in City of Naga.')
       return
     }
 
+    const resolvedTitle =
+      form.title?.trim() ||
+      `${form.disasterType} Incident`
+
+    const payload = {
+      ...form,
+      title: resolvedTitle,
+    }
+
     setSaving(true)
     try {
       if (editingIncident) {
-        await updateDisasterIncident(editingIncident.docId, form)
+        await updateDisasterIncident(editingIncident.docId, payload)
       } else {
-        await createDisasterIncident(form, user)
+        await createDisasterIncident(payload, user)
       }
       setShowModal(false)
       setEditingIncident(null)
@@ -578,19 +583,8 @@ export default function Incidents() {
 
               <form onSubmit={handleSubmit} className="incident-form">
                 <div className="form-row">
-                  <div className="form-group flex-2">
-                    <label>Incident Name / Calamity Title *</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Typhoon Kristine Flooding & Coastal Surge"
-                      value={form.title}
-                      onChange={(e) => setForm({ ...form, title: e.target.value })}
-                      required
-                    />
-                  </div>
-
                   <div className="form-group flex-1">
-                    <label>Disaster Type</label>
+                    <label>Disaster Type *</label>
                     <select
                       value={form.disasterType}
                       onChange={(e) => setForm({ ...form, disasterType: e.target.value })}
@@ -599,27 +593,6 @@ export default function Incidents() {
                         <option key={t} value={t}>{t}</option>
                       ))}
                     </select>
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group flex-1">
-                    <label>Date of Incident *</label>
-                    <input
-                      type="date"
-                      value={form.incidentDate}
-                      onChange={(e) => setForm({ ...form, incidentDate: e.target.value })}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group flex-1">
-                    <label>Time of Incident</label>
-                    <input
-                      type="time"
-                      value={form.incidentTime}
-                      onChange={(e) => setForm({ ...form, incidentTime: e.target.value })}
-                    />
                   </div>
 
                   <div className="form-group flex-1">
@@ -644,6 +617,27 @@ export default function Incidents() {
                         <option key={st} value={st}>{st}</option>
                       ))}
                     </select>
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group flex-1">
+                    <label>Date of Incident *</label>
+                    <input
+                      type="date"
+                      value={form.incidentDate}
+                      onChange={(e) => setForm({ ...form, incidentDate: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group flex-1">
+                    <label>Time of Incident</label>
+                    <input
+                      type="time"
+                      value={form.incidentTime}
+                      onChange={(e) => setForm({ ...form, incidentTime: e.target.value })}
+                    />
                   </div>
                 </div>
 
