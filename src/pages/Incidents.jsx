@@ -485,13 +485,6 @@ export default function Incidents() {
                     </div>
                   </div>
 
-                  {/* Short Description */}
-                  {incident.description && (
-                    <p className="incident-snippet">
-                      {incident.description}
-                    </p>
-                  )}
-
                   {/* Card Actions Footer */}
                   <div className="incident-card-footer">
                     <div className="quick-status-actions">
@@ -723,36 +716,6 @@ export default function Incidents() {
                       onChange={(e) => setForm({ ...form, injured: e.target.value })}
                     />
                   </div>
-
-                  <div className="form-group flex-1">
-                    <label>Active Evac Centers</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={form.evacuationCentersActive}
-                      onChange={(e) => setForm({ ...form, evacuationCentersActive: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>Operational Situation Description</label>
-                  <textarea
-                    rows="3"
-                    placeholder="Provide overview of damage, water levels, road blockages, landslide risks, or infrastructure disruption..."
-                    value={form.description}
-                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Immediate Relief Supplies & Operations Needed</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 500 Food packs, 200 water gallons, hygiene kits, rescue boats, emergency power generator"
-                    value={form.immediateNeeds}
-                    onChange={(e) => setForm({ ...form, immediateNeeds: e.target.value })}
-                  />
                 </div>
 
                 <div className="incident-form-footer">
@@ -833,10 +796,6 @@ export default function Incidents() {
                     <span className="impact-number">{selectedIncident.injured ?? 0}</span>
                     <span className="impact-label">Injured</span>
                   </div>
-                  <div className="impact-box">
-                    <span className="impact-number">{selectedIncident.evacuationCentersActive ?? 0}</span>
-                    <span className="impact-label">Active Evac Centers</span>
-                  </div>
                 </div>
 
                 <div className="details-section">
@@ -847,20 +806,6 @@ export default function Incidents() {
                     ))}
                   </div>
                 </div>
-
-                {selectedIncident.description && (
-                  <div className="details-section">
-                    <h4>📋 Operational Situation & Damage Overview</h4>
-                    <p className="details-text">{selectedIncident.description}</p>
-                  </div>
-                )}
-
-                {selectedIncident.immediateNeeds && (
-                  <div className="details-section">
-                    <h4>📦 Immediate Relief Aid Needed</h4>
-                    <div className="needs-box">{selectedIncident.immediateNeeds}</div>
-                  </div>
-                )}
 
                 <div className="details-footer-actions">
                   <button
