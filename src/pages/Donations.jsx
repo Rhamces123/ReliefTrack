@@ -209,7 +209,7 @@ export default function Donations() {
       <div className="don-header">
         <div className="don-header-text">
           <h2>
-            <HandHeart size={26} style={{ color: '#f59e0b', flexShrink: 0 }} />
+            <HandHeart size={26} style={{ flexShrink: 0 }} />
             <span>Donation Input from Private Agencies</span>
           </h2>
           <p>Track and manage relief donations with transparency and impact.</p>
@@ -229,19 +229,19 @@ export default function Donations() {
         <div className="don-stats">
           <div className="don-stat-card">
             <span className="don-stat-icon">
-              <Package size={22} style={{ color: '#2563eb' }} />
+              <Package size={22} />
             </span>
             <div><strong><CountUp to={stats.total} /></strong><span>Total Donations</span></div>
           </div>
           <div className="don-stat-card">
             <span className="don-stat-icon">
-              <BarChart3 size={22} style={{ color: '#10b981' }} />
+              <BarChart3 size={22} />
             </span>
             <div><strong><CountUp to={stats.totalQty} /></strong><span>Total Quantity</span></div>
           </div>
           <div className="don-stat-card">
             <span className="don-stat-icon">
-              <Building2 size={22} style={{ color: '#8b5cf6' }} />
+              <Building2 size={22} />
             </span>
             <div><strong><CountUp to={stats.agencies} /></strong><span>Agencies</span></div>
           </div>
@@ -377,12 +377,12 @@ export default function Donations() {
             <h3 className="don-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               {editingDocId ? (
                 <>
-                  <Pencil size={18} style={{ color: '#2563eb' }} />
+                  <Pencil size={18} />
                   <span>Edit donation</span>
                 </>
               ) : (
                 <>
-                  <Plus size={18} style={{ color: '#2563eb' }} />
+                  <Plus size={18} />
                   <span>New donation</span>
                 </>
               )}
