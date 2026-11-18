@@ -25,7 +25,6 @@ export default function PriorityIndividuals() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [barangayFilter, setBarangayFilter] = useState('all')
-  const [econFilter, setEconFilter] = useState('all')
 
   const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
   const email = profile?.email || user?.email || ''
@@ -87,13 +86,8 @@ export default function PriorityIndividuals() {
     if (barangayFilter !== 'all') {
       list = list.filter((g) => g.barangay === barangayFilter)
     }
-    if (econFilter !== 'all') {
-      list = list
-        .map((g) => ({ ...g, items: g.items.filter((f) => (f.economicStatus || 'not-set') === econFilter) }))
-        .filter((g) => g.items.length > 0)
-    }
     return list
-  }, [groups, barangayFilter, econFilter])
+  }, [groups, barangayFilter])
 
   const totalFamilies = useMemo(() => families.length, [families])
 
@@ -156,12 +150,6 @@ export default function PriorityIndividuals() {
           <select className="pri-filter" value={barangayFilter} onChange={(e) => setBarangayFilter(e.target.value)}>
             {barangayList.map((b) => (
               <option key={b} value={b}>{b === 'all' ? 'All Barangays' : b}</option>
-            ))}
-          </select>
-          <select className="pri-filter" value={econFilter} onChange={(e) => setEconFilter(e.target.value)}>
-            <option value="all">All Economic Status</option>
-            {ECONOMIC_STATUSES.map((e) => (
-              <option key={e.id} value={e.id}>{e.label}</option>
             ))}
           </select>
         </div>
