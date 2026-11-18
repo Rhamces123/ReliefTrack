@@ -81,7 +81,7 @@ function CountUp({ to, suffix = '' }) {
 }
 
 export default function Donations() {
-  const { user } = useAuth()
+  const { user, userProfile } = useAuth()
   const location = useLocation()
   const [profile, setProfile] = useState(null)
   const [donations, setDonations] = useState([])
@@ -95,9 +95,13 @@ export default function Donations() {
   const [actionId, setActionId] = useState(null)
   const [celebrate, setCelebrate] = useState(false)
 
-  const isAdmin = profile?.role === 'Admin'
-  const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
-  const email = profile?.email || user?.email || ''
+  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
+  const isAdmin =
+    (adminEmail && user?.email?.toLowerCase() === adminEmail.toLowerCase()) ||
+    userProfile?.role === 'Admin' ||
+    profile?.role === 'Admin'
+  const displayName = profile?.displayName || userProfile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
+  const email = profile?.email || userProfile?.email || user?.email || ''
 
   useEffect(() => {
     if (location.state?.openForm) {
@@ -143,6 +147,7 @@ export default function Donations() {
   }
 
   const openEditForm = (d) => {
+    if (!isAdmin) return
     setEditingDocId(d.docId)
     setForm({
       agency: d.agency || '', type: d.type || 'Food', items: d.items || '',
@@ -158,6 +163,10 @@ export default function Donations() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.agency.trim()) return
+    if (editingDocId && !isAdmin) {
+      setError('Only administrators can edit donation records.')
+      return
+    }
     setSaving(true); setError('')
     try {
       const payload = { agency: form.agency, type: form.type, items: form.items, quantity: form.quantity, unit: form.unit, notes: form.notes }
@@ -174,6 +183,7 @@ export default function Donations() {
   }
 
   const handleDelete = async (docId) => {
+    if (!isAdmin) return
     if (!window.confirm('Delete this donation record?')) return
     setActionId(docId); setError('')
     try { await deleteDonation(docId) } catch (err) { setError(err.message || 'Failed to delete donation.') }
@@ -193,12 +203,10 @@ export default function Donations() {
           </h2>
           <p>Track and manage relief donations with transparency and impact.</p>
         </div>
-        {isAdmin && (
-          <button type="button" className="don-add-btn" onClick={openAddForm}>
-            <Plus size={16} />
-            <span>New donation</span>
-          </button>
-        )}
+        <button type="button" className="don-add-btn" onClick={openAddForm}>
+          <Plus size={16} />
+          <span>New donation</span>
+        </button>
       </div>
 
       {error && <div className="requests-error">{error}</div>}
@@ -277,12 +285,10 @@ export default function Donations() {
             </span>
             <h3>No donations yet</h3>
             <p>{filter === 'all' ? 'Be the first to record a donation from a private agency.' : `No ${filter.toLowerCase()} donations recorded.`}</p>
-            {isAdmin && (
-              <button type="button" className="don-add-btn" onClick={openAddForm}>
-                <Plus size={16} />
-                <span>Add donation</span>
-              </button>
-            )}
+            <button type="button" className="don-add-btn" onClick={openAddForm}>
+              <Plus size={16} />
+              <span>Add donation</span>
+            </button>
           </div>
         ) : (
           <div className="don-grid">

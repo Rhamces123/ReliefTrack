@@ -29,6 +29,7 @@ import {
 const USER_NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/home' },
   { id: 'requests', label: 'My Relief Requests', icon: ClipboardList, path: '/requests' },
+  { id: 'donations', label: 'Donations', icon: Gift, path: '/donations' },
   { id: 'reports', label: 'Reports', icon: ChartNoAxesColumn, path: '/reports' },
   { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
 ]
