@@ -65,14 +65,6 @@ const DEFAULT_INCIDENT_FORM = {
   severity: 'Critical',
   status: 'Active',
   affectedBarangays: [],
-  casualties: 0,
-  injured: 0,
-  missing: 0,
-  displacedFamilies: 0,
-  displacedIndividuals: 0,
-  evacuationCentersActive: 0,
-  description: '',
-  immediateNeeds: '',
 }
 
 export default function Incidents() {
@@ -142,18 +134,16 @@ export default function Incidents() {
   const metrics = useMemo(() => {
     const total = incidents.length
     const active = incidents.filter((i) => i.status === 'Active').length
-    const displacedFamilies = incidents.reduce((s, i) => s + (Number(i.displacedFamilies) || 0), 0)
-    const totalCasualties = incidents.reduce((s, i) => s + (Number(i.casualties) || 0), 0)
-    const totalInjured = incidents.reduce((s, i) => s + (Number(i.injured) || 0), 0)
+    const contained = incidents.filter((i) => i.status === 'Contained').length
+    const resolved = incidents.filter((i) => i.status === 'Resolved').length
     const affectedBrgysSet = new Set()
     incidents.forEach((i) => (i.affectedBarangays || []).forEach((b) => affectedBrgysSet.add(b)))
 
     return {
       total,
       active,
-      displacedFamilies,
-      totalCasualties,
-      totalInjured,
+      contained,
+      resolved,
       affectedBrgysCount: affectedBrgysSet.size,
     }
   }, [incidents])
@@ -176,14 +166,6 @@ export default function Incidents() {
       severity: incident.severity || 'Critical',
       status: incident.status || 'Active',
       affectedBarangays: incident.affectedBarangays || [],
-      casualties: incident.casualties ?? 0,
-      injured: incident.injured ?? 0,
-      missing: incident.missing ?? 0,
-      displacedFamilies: incident.displacedFamilies ?? 0,
-      displacedIndividuals: incident.displacedIndividuals ?? 0,
-      evacuationCentersActive: incident.evacuationCentersActive ?? 0,
-      description: incident.description || '',
-      immediateNeeds: incident.immediateNeeds || '',
     })
     setShowModal(true)
   }
@@ -319,15 +301,11 @@ export default function Incidents() {
 
           <div className="incident-stat-card">
             <div className="stat-card-top">
-              <span className="stat-card-label">DISPLACED FAMILIES</span>
-              <span className="stat-icon-wrap green"><Users size={18} /></span>
+              <span className="stat-card-label">RESOLVED OPERATIONS</span>
+              <span className="stat-icon-wrap green"><CheckCircle2 size={18} /></span>
             </div>
-            <div className="stat-card-value">{loading ? '—' : metrics.displacedFamilies}</div>
-            <div className="stat-card-sub">
-              {metrics.totalCasualties > 0
-                ? `${metrics.totalCasualties} casualties • ${metrics.totalInjured} injured`
-                : `${metrics.totalInjured} injured reported`}
-            </div>
+            <div className="stat-card-value text-green">{loading ? '—' : metrics.resolved}</div>
+            <div className="stat-card-sub">Completed relief operations</div>
           </div>
         </div>
 
@@ -460,28 +438,6 @@ export default function Incidents() {
                       {(incident.affectedBarangays || []).map((b) => (
                         <span key={b} className="brgy-pill">{b}</span>
                       ))}
-                    </div>
-                  </div>
-
-                  {/* Impact Counters */}
-                  <div className="incident-metrics-grid">
-                    <div className="metric-box">
-                      <span className="metric-box-val">{incident.displacedFamilies ?? 0}</span>
-                      <span className="metric-box-lbl">Displaced Families</span>
-                    </div>
-                    <div className="metric-box">
-                      <span className="metric-box-val">{incident.displacedIndividuals ?? 0}</span>
-                      <span className="metric-box-lbl">Individuals</span>
-                    </div>
-                    <div className="metric-box">
-                      <span className={`metric-box-val ${(incident.casualties || 0) > 0 ? 'text-red' : ''}`}>
-                        {incident.casualties ?? 0}
-                      </span>
-                      <span className="metric-box-lbl">Casualties</span>
-                    </div>
-                    <div className="metric-box">
-                      <span className="metric-box-val">{incident.injured ?? 0}</span>
-                      <span className="metric-box-lbl">Injured</span>
                     </div>
                   </div>
 
@@ -674,50 +630,6 @@ export default function Incidents() {
                   </div>
                 </div>
 
-                {/* Casualties & Displacement Counts */}
-                <div className="form-section-label">Casualty & Displacement Assessment</div>
-                <div className="form-row">
-                  <div className="form-group flex-1">
-                    <label>Displaced Families</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={form.displacedFamilies}
-                      onChange={(e) => setForm({ ...form, displacedFamilies: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="form-group flex-1">
-                    <label>Displaced Individuals</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={form.displacedIndividuals}
-                      onChange={(e) => setForm({ ...form, displacedIndividuals: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="form-group flex-1">
-                    <label>Casualties (Deaths)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={form.casualties}
-                      onChange={(e) => setForm({ ...form, casualties: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="form-group flex-1">
-                    <label>Injured</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={form.injured}
-                      onChange={(e) => setForm({ ...form, injured: e.target.value })}
-                    />
-                  </div>
-                </div>
-
                 <div className="incident-form-footer">
                   <button
                     type="button"
@@ -775,27 +687,6 @@ export default function Incidents() {
                   <span className="type-badge">
                     Type: {selectedIncident.disasterType}
                   </span>
-                </div>
-
-                <div className="details-impact-grid">
-                  <div className="impact-box">
-                    <span className="impact-number">{selectedIncident.displacedFamilies ?? 0}</span>
-                    <span className="impact-label">Displaced Families</span>
-                  </div>
-                  <div className="impact-box">
-                    <span className="impact-number">{selectedIncident.displacedIndividuals ?? 0}</span>
-                    <span className="impact-label">Displaced Individuals</span>
-                  </div>
-                  <div className="impact-box">
-                    <span className={`impact-number ${(selectedIncident.casualties || 0) > 0 ? 'text-red' : ''}`}>
-                      {selectedIncident.casualties ?? 0}
-                    </span>
-                    <span className="impact-label">Casualties</span>
-                  </div>
-                  <div className="impact-box">
-                    <span className="impact-number">{selectedIncident.injured ?? 0}</span>
-                    <span className="impact-label">Injured</span>
-                  </div>
                 </div>
 
                 <div className="details-section">
