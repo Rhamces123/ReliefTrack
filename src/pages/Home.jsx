@@ -409,7 +409,6 @@ export default function Home() {
               <table className="dashboard-table">
                 <thead>
                   <tr>
-                    <th>Request ID</th>
                     <th>Relief Needs & Description</th>
                     <th>Location / Barangay</th>
                     <th>Date Submitted</th>
@@ -420,9 +419,6 @@ export default function Home() {
                 <tbody>
                   {recentRequests.map((row) => (
                     <tr key={row.docId}>
-                      <td className="font-mono font-medium text-navy">
-                        {row.requestId}
-                      </td>
                       <td>
                         <div className="request-needs-cell">
                           <span className="request-desc-text">
@@ -498,7 +494,7 @@ export default function Home() {
             <div className="modal-header">
               <div className="modal-title-group">
                 <ClipboardList size={20} className="text-bright-blue" />
-                <h3>Request Details: {selectedRequest.requestId}</h3>
+                <h3>Request Details</h3>
               </div>
               <button
                 type="button"
