@@ -15,6 +15,8 @@ export default function SignUp() {
   const [email, setEmail] = useState('')
   const [emailTouched, setEmailTouched] = useState(false)
   const [emailCustomError, setEmailCustomError] = useState('')
+  const [checkingEmail, setCheckingEmail] = useState(false)
+  const [emailExistenceVerified, setEmailExistenceVerified] = useState(false)
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -26,9 +28,48 @@ export default function SignUp() {
 
   const pwRules = getPasswordValidationState(password)
   const gmailError = validateGmail(email)
-  const isGmailValid = email.trim().length > 0 && !gmailError && !emailCustomError
   const hasEmailError = emailTouched && (Boolean(emailCustomError) || (email.trim().length > 0 && Boolean(gmailError)))
   const displayEmailError = emailCustomError || (emailTouched && email.trim().length > 0 ? gmailError : '')
+
+  const checkGmailExistenceLive = async (targetEmail) => {
+    const clean = (targetEmail || '').trim().toLowerCase()
+    if (!clean.endsWith('@gmail.com')) return false
+
+    const formatErr = validateGmail(clean)
+    if (formatErr) {
+      setEmailTouched(true)
+      setEmailCustomError(formatErr)
+      setEmailExistenceVerified(false)
+      return false
+    }
+
+    setCheckingEmail(true)
+    try {
+      const res = await fetch('/api/check-gmail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: clean })
+      })
+      if (res.ok) {
+        const data = await res.json()
+        if (data.exists === false) {
+          setEmailTouched(true)
+          setEmailCustomError(data.error || 'This Gmail address does not exist on Google.')
+          setEmailExistenceVerified(false)
+          return false
+        } else if (data.exists === true) {
+          setEmailCustomError('')
+          setEmailExistenceVerified(true)
+          return true
+        }
+      }
+    } catch {
+      // Network/offline fallback
+    } finally {
+      setCheckingEmail(false)
+    }
+    return true
+  }
 
   const handleSignUp = async (e) => {
     e.preventDefault()
@@ -39,6 +80,13 @@ export default function SignUp() {
       setEmailTouched(true)
       setEmailCustomError(gmailErr)
       setError(gmailErr)
+      return
+    }
+
+    // Verify existence on Google
+    const isRealGmail = await checkGmailExistenceLive(email)
+    if (isRealGmail === false) {
+      setError('This Gmail address does not exist on Google. Please enter an active Gmail.')
       return
     }
 
@@ -132,7 +180,7 @@ export default function SignUp() {
           <label>Email (Gmail only)</label>
           <div className="input-wrap">
             <input
-              className={`glass-input ${hasEmailError ? 'input-error' : ''} ${isGmailValid ? 'input-success' : ''}`}
+              className={`glass-input ${hasEmailError ? 'input-error' : ''} ${emailExistenceVerified ? 'input-success' : ''}`}
               type="email"
               placeholder="yourname@gmail.com"
               value={email}
@@ -140,26 +188,35 @@ export default function SignUp() {
                 const val = e.target.value
                 setEmail(val)
                 setEmailCustomError('')
+                setEmailExistenceVerified(false)
                 if (val.includes('@') || emailTouched) {
                   setEmailTouched(true)
                 }
               }}
               onBlur={() => {
-                if (email.trim().length > 0) setEmailTouched(true)
+                if (email.trim().length > 0) {
+                  setEmailTouched(true)
+                  checkGmailExistenceLive(email)
+                }
               }}
               required
-              disabled={loading}
+              disabled={loading || checkingEmail}
               autoComplete="email"
             />
           </div>
-          {hasEmailError && (
+          {checkingEmail && (
+            <div className="field-info-text">
+              <span>⏳</span> Checking if Gmail exists on Google...
+            </div>
+          )}
+          {!checkingEmail && hasEmailError && (
             <div className="field-error-text" role="alert">
               <span>⚠</span> {displayEmailError}
             </div>
           )}
-          {isGmailValid && (
+          {!checkingEmail && emailExistenceVerified && (
             <div className="field-success-text">
-              <span>✓</span> Valid Gmail address
+              <span>✓</span> Real Gmail account verified
             </div>
           )}
         </div>
