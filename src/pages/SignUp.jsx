@@ -85,7 +85,7 @@ export default function SignUp() {
   }
 
   return (
-    <AuthLayout>
+    <AuthLayout allowScroll={true}>
       <h2 className="title">Create account</h2>
       <p className="subtitle">Sign up to get started</p>
 

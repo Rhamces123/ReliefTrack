@@ -3,7 +3,7 @@ import nagaLogo from '../assets/naga-logo.jpg'
 
 const BG_IMAGES = ['/1.jpg', '/2.jpg', '/3.jpg', '/4.jpg']
 
-export default function AuthLayout({ children }) {
+export default function AuthLayout({ children, allowScroll = false }) {
   const [bgIndex, setBgIndex] = useState(0)
   const [fading, setFading] = useState(false)
 
@@ -32,8 +32,8 @@ export default function AuthLayout({ children }) {
 
       <div className="bg-dots" />
 
-      <div className="glass-card">
-        <div className="glass-card-scroll">
+      <div className={`glass-card ${allowScroll ? 'card-scrollable' : ''}`}>
+        <div className={`glass-card-scroll ${allowScroll ? 'allow-scroll' : ''}`}>
           <div className="avatar-ring">
             <img src={nagaLogo} alt="Profile" />
           </div>
