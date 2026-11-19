@@ -27,7 +27,7 @@ export function getAuthErrorMessage(error, fallback = 'Something went wrong. Ple
     case 'auth/email-already-in-use':
       return 'An account with this email already exists.'
     case 'auth/weak-password':
-      return 'Password must be at least 6 characters.'
+      return 'Password must be at least 8 characters, start with a capital letter, and include a number and symbol.'
     case 'auth/too-many-requests':
       return 'Too many attempts. Please try again later.'
     default:

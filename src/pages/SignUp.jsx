@@ -5,6 +5,7 @@ import { signUpWithEmail, signOutUser } from '../firebase/auth'
 import { createUserProfile, updateUserProfile } from '../firebase/users'
 import { getAuthErrorMessage } from '../utils/authErrors'
 import { getBrowserLocation } from '../utils/getBrowserLocation'
+import { validatePassword, getPasswordValidationState } from '../utils/passwordValidator'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -13,17 +14,21 @@ export default function SignUp() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [passwordFocused, setPasswordFocused] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [successModal, setSuccessModal] = useState(false)
   const [registeredEmail, setRegisteredEmail] = useState('')
 
+  const pwRules = getPasswordValidationState(password)
+
   const handleSignUp = async (e) => {
     e.preventDefault()
     setError('')
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.')
+    const pwError = validatePassword(password)
+    if (pwError) {
+      setError(pwError)
       return
     }
 
@@ -124,6 +129,8 @@ export default function SignUp() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onFocus={() => setPasswordFocused(true)}
+              onBlur={() => setPasswordFocused(false)}
               required
               disabled={loading}
             />
@@ -134,6 +141,23 @@ export default function SignUp() {
               {showPassword ? '🙈' : '👁️'}
             </span>
           </div>
+
+          {(passwordFocused || password.length > 0) && (
+            <div className="password-rules" aria-live="polite">
+              <div className={`rule-item ${pwRules.startsWithCapital ? 'valid' : ''}`}>
+                <span className="rule-icon">{pwRules.startsWithCapital ? '✓' : '•'}</span> Starts with a capital letter (A-Z)
+              </div>
+              <div className={`rule-item ${pwRules.hasMinLength ? 'valid' : ''}`}>
+                <span className="rule-icon">{pwRules.hasMinLength ? '✓' : '•'}</span> At least 8 characters
+              </div>
+              <div className={`rule-item ${pwRules.hasNumber ? 'valid' : ''}`}>
+                <span className="rule-icon">{pwRules.hasNumber ? '✓' : '•'}</span> At least one number (0-9)
+              </div>
+              <div className={`rule-item ${pwRules.hasSymbol ? 'valid' : ''}`}>
+                <span className="rule-icon">{pwRules.hasSymbol ? '✓' : '•'}</span> At least one symbol (e.g. !@#$%)
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="field">

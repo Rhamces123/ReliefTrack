@@ -269,7 +269,7 @@ export async function registerAccountFromAdmin({ email, password, displayName, n
 
   let authUid = null
 
-  if (resolvedPassword && resolvedPassword.length >= 6) {
+  if (resolvedPassword && resolvedPassword.length >= 8) {
     try {
       // Use secondary app to prevent signing out the current admin
       const secondaryName = 'ReliefTrackSecondaryAuth'

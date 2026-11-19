@@ -23,6 +23,7 @@ import { subscribeFamilies } from '../firebase/families'
 import { getBrowserLocation } from '../utils/getBrowserLocation'
 import { FALLBACK_SCHOOLS } from '../utils/nearbyEvacCenters'
 import { formatRequestDate, getStatusLabel, getStatusClass, formatShortAddress } from '../utils/requestHelpers'
+import { validatePassword } from '../utils/passwordValidator'
 import DashboardLayout from '../components/DashboardLayout'
 import PieChart from '../components/PieChart'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
@@ -518,6 +519,13 @@ export default function AdminDashboard() {
   const handleAddUserSubmit = async (e) => {
     e.preventDefault()
     if (!newUserData.email) return
+    if (newUserData.password && newUserData.password.trim()) {
+      const pwError = validatePassword(newUserData.password.trim())
+      if (pwError) {
+        showToast(pwError, 'error')
+        return
+      }
+    }
     setIsAddingUser(true)
     try {
       const res = await addUserAccount(newUserData)
@@ -1736,7 +1744,7 @@ export default function AdminDashboard() {
                     type="password"
                     value={newUserData.password}
                     onChange={(e) => setNewUserData({ ...newUserData, password: e.target.value })}
-                    placeholder="Min. 6 characters"
+                    placeholder="Min. 8 chars, 1st letter capital, number, symbol"
                   />
                 </div>
                 <div className="form-group">

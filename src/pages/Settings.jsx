@@ -7,6 +7,7 @@ import { signOutUser } from '../firebase/auth'
 import DashboardLayout from '../components/DashboardLayout'
 import LocationAutocomplete from '../components/LocationAutocomplete'
 import TrustedDevicesSection from '../components/TrustedDevicesSection'
+import { validatePassword } from '../utils/passwordValidator'
 import '../styles/Settings.css'
 import {
   CircleUserRound,
@@ -93,8 +94,9 @@ export default function Settings() {
       setError('Current password is required.')
       return
     }
-    if (newPassword.length < 6) {
-      setError('New password must be at least 6 characters.')
+    const pwError = validatePassword(newPassword)
+    if (pwError) {
+      setError(pwError)
       return
     }
     if (newPassword !== confirmPassword) {
