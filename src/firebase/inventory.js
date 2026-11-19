@@ -17,7 +17,6 @@ export const INVENTORY_CATEGORIES = [
   'food',
   'water',
   'medical',
-  'shelter',
   'other',
 ]
 
@@ -25,7 +24,6 @@ export const CATEGORY_LABELS = {
   food: 'Food',
   water: 'Water',
   medical: 'Medical',
-  shelter: 'Shelter',
   other: 'Other',
 }
 

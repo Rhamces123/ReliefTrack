@@ -244,6 +244,7 @@ export default function Requests() {
   }, [user?.uid])
 
   useEffect(() => {
+    if (!user?.uid) return
     const unsubscribe = subscribeReliefRequests(
       (data) => {
         setRequests(data)

@@ -23,7 +23,6 @@ const FILTERS = [
   { id: 'food', label: 'Food' },
   { id: 'water', label: 'Water' },
   { id: 'medical', label: 'Medical' },
-  { id: 'shelter', label: 'Shelter' },
   { id: 'other', label: 'Other' },
 ]
 
