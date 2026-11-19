@@ -45,6 +45,7 @@ export async function createFamily(fields, user) {
     familyName: fields.familyName.trim(),
     barangay: fields.barangay.trim(),
     headOfFamily: (fields.headOfFamily || '').trim(),
+    disasterType: (fields.disasterType || 'Typhoon').trim(),
     contactNumber: (fields.contactNumber || '').trim(),
     members: Math.max(1, Number(fields.members) || 1),
     classification: fields.classification || 'none',
@@ -81,6 +82,7 @@ export async function updateFamily(docId, fields) {
   if (fields.familyName !== undefined) payload.familyName = fields.familyName.trim()
   if (fields.barangay !== undefined) payload.barangay = fields.barangay.trim()
   if (fields.headOfFamily !== undefined) payload.headOfFamily = (fields.headOfFamily || '').trim()
+  if (fields.disasterType !== undefined) payload.disasterType = (fields.disasterType || '').trim()
   if (fields.contactNumber !== undefined) payload.contactNumber = (fields.contactNumber || '').trim()
   if (fields.members !== undefined) payload.members = Math.max(1, Number(fields.members) || 1)
   if (fields.classification !== undefined) payload.classification = fields.classification
@@ -146,6 +148,7 @@ export async function syncFamilyFromRequest(fields, user) {
   const payload = {
     familyName: normFamily,
     headOfFamily: normHead,
+    disasterType: (fields.disasterType || 'Typhoon').trim(),
     contactNumber: (fields.contactNumber || '').trim(),
     barangay: normBrgy,
     location: (fields.location || '').trim(),

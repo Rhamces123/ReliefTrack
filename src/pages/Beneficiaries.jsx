@@ -18,6 +18,8 @@ import {
   CLASSIFICATIONS,
   ECONOMIC_STATUSES,
 } from '../firebase/families'
+import { DISASTER_TYPES } from '../firebase/incidents'
+import { subscribeReliefRequests } from '../firebase/requests'
 import DashboardLayout from '../components/DashboardLayout'
 import '../styles/Beneficiaries.css'
 
@@ -25,6 +27,7 @@ const EMPTY_FORM = {
   familyName: '',
   barangay: '',
   headOfFamily: '',
+  disasterType: 'Typhoon',
   contactNumber: '',
   members: '1',
   economicStatus: 'not-set',
@@ -69,10 +72,32 @@ export default function Beneficiaries() {
   const [actionId, setActionId] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [barangayFilter, setBarangayFilter] = useState('all')
+  const [requests, setRequests] = useState([])
 
   const isAdmin = profile?.role === 'Admin'
   const displayName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || 'User'
   const email = profile?.email || user?.email || ''
+
+  useEffect(() => {
+    const unsub = subscribeReliefRequests(
+      (data) => setRequests(data),
+      (err) => console.warn('Could not load requests for disaster mapping:', err)
+    )
+    return unsub
+  }, [])
+
+  const getFamilyDisasterType = (f) => {
+    if (!f) return 'Typhoon'
+    if (f.disasterType) return f.disasterType
+    const normHh = (f.householdNumber || '').trim().toLowerCase()
+    const matchingReq = requests.find((r) => {
+      const reqHh = (r.householdNumber || '').trim().toLowerCase()
+      if (normHh && reqHh && normHh === reqHh) return true
+      if (f.latestRequestId && r.requestId === f.latestRequestId) return true
+      return false
+    })
+    return matchingReq?.disasterType || 'Typhoon'
+  }
 
   useEffect(() => {
     if (!user?.uid) return
@@ -145,6 +170,7 @@ export default function Beneficiaries() {
       familyName: f.familyName || '',
       barangay: f.barangay || '',
       headOfFamily: f.headOfFamily || '',
+      disasterType: f.disasterType || getFamilyDisasterType(f) || 'Typhoon',
       contactNumber: f.contactNumber || '',
       members: String(f.members || '1'),
       economicStatus: f.economicStatus || 'not-set',
@@ -273,6 +299,17 @@ export default function Beneficiaries() {
                           {f.is4PsBeneficiary && (
                             <span className="benef-4ps-badge">4Ps Beneficiary</span>
                           )}
+                          <span
+                            className="benef-class-badge"
+                            style={{
+                              background: '#eff6ff',
+                              color: '#1d4ed8',
+                              border: '1px solid #bfdbfe',
+                              fontWeight: 600,
+                            }}
+                          >
+                            🌪️ {getFamilyDisasterType(f)}
+                          </span>
                         </div>
                         <div className="benef-card-members">{f.members} member{f.members > 1 ? 's' : ''}</div>
                       </div>
@@ -283,6 +320,12 @@ export default function Beneficiaries() {
                             <span style={{ fontWeight: 600, color: '#1674D1' }}>{f.householdNumber}</span>
                           </div>
                         )}
+                        <div className="benef-card-row">
+                          <span className="benef-label">Disaster Incident</span>
+                          <span style={{ fontWeight: 600, color: '#0284c7' }}>
+                            {getFamilyDisasterType(f)}
+                          </span>
+                        </div>
                         <div className="benef-card-row">
                           <span className="benef-label">Barangay</span>
                           <span>{f.barangay}</span>
@@ -410,6 +453,21 @@ export default function Beneficiaries() {
               </div>
               <div className="inventory-form-row">
                 <div className="requests-form-field">
+                  <label htmlFor="benef-disaster">Disaster Incident (Type of Calamity)</label>
+                  <select
+                    id="benef-disaster"
+                    className="requests-status-select"
+                    style={{ width: '100%' }}
+                    value={form.disasterType || 'Typhoon'}
+                    onChange={(e) => setForm((f) => ({ ...f, disasterType: e.target.value }))}
+                    disabled={saving}
+                  >
+                    {DISASTER_TYPES.map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="requests-form-field">
                   <label htmlFor="benef-members">Family Members</label>
                   <input
                     id="benef-members"
@@ -496,6 +554,17 @@ export default function Beneficiaries() {
                 <span className="benef-card-members" style={{ fontSize: '13px' }}>
                   {selectedFamily.members} member{selectedFamily.members > 1 ? 's' : ''}
                 </span>
+                <span
+                  className="benef-class-badge"
+                  style={{
+                    background: '#eff6ff',
+                    color: '#1d4ed8',
+                    border: '1px solid #bfdbfe',
+                    fontWeight: 600,
+                  }}
+                >
+                  🌪️ {getFamilyDisasterType(selectedFamily)}
+                </span>
                 {selectedFamily.classification && selectedFamily.classification !== 'none' && (
                   <span className={`benef-class-badge ${selectedFamily.classification}`}>
                     {getClassLabel(selectedFamily.classification)}
@@ -526,6 +595,12 @@ export default function Beneficiaries() {
                     <span className="benef-detail-label">Household Number</span>
                     <span className="benef-detail-val" style={{ color: '#2563eb' }}>
                       {selectedFamily.householdNumber || '—'}
+                    </span>
+                  </div>
+                  <div className="benef-detail-field">
+                    <span className="benef-detail-label">Disaster Incident (Calamity)</span>
+                    <span className="benef-detail-val" style={{ fontWeight: 600, color: '#1674D1' }}>
+                      {getFamilyDisasterType(selectedFamily)}
                     </span>
                   </div>
                   <div className="benef-detail-field">
@@ -564,6 +639,12 @@ export default function Beneficiaries() {
                   <span>Residence &amp; Disaster Profile</span>
                 </h4>
                 <div className="benef-details-grid">
+                  <div className="benef-detail-field">
+                    <span className="benef-detail-label">Disaster Incident (Calamity)</span>
+                    <span className="benef-detail-val" style={{ fontWeight: 600, color: '#1674D1' }}>
+                      {getFamilyDisasterType(selectedFamily)}
+                    </span>
+                  </div>
                   <div className="benef-detail-field">
                     <span className="benef-detail-label">Barangay</span>
                     <span className="benef-detail-val">{selectedFamily.barangay || '—'}</span>

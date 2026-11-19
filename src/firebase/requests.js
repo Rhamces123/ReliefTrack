@@ -133,6 +133,7 @@ export async function createReliefRequest(
     await syncFamilyFromRequest(
       {
         requestId,
+        disasterType: data.disasterType,
         requesterName: data.requesterName,
         contactNumber: data.contactNumber,
         barangay: data.barangay,
