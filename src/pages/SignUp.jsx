@@ -7,11 +7,14 @@ import { createUserProfile, updateUserProfile } from '../firebase/users'
 import { getAuthErrorMessage } from '../utils/authErrors'
 import { getBrowserLocation } from '../utils/getBrowserLocation'
 import { validatePassword, getPasswordValidationState } from '../utils/passwordValidator'
+import { validateGmail } from '../utils/emailValidator'
 
 export default function SignUp() {
   const navigate = useNavigate()
   const [displayName, setDisplayName] = useState('')
   const [email, setEmail] = useState('')
+  const [emailTouched, setEmailTouched] = useState(false)
+  const [emailCustomError, setEmailCustomError] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -22,10 +25,22 @@ export default function SignUp() {
   const [registeredEmail, setRegisteredEmail] = useState('')
 
   const pwRules = getPasswordValidationState(password)
+  const gmailError = validateGmail(email)
+  const isGmailValid = email.trim().length > 0 && !gmailError && !emailCustomError
+  const hasEmailError = emailTouched && (Boolean(emailCustomError) || (email.trim().length > 0 && Boolean(gmailError)))
+  const displayEmailError = emailCustomError || (emailTouched && email.trim().length > 0 ? gmailError : '')
 
   const handleSignUp = async (e) => {
     e.preventDefault()
     setError('')
+
+    const gmailErr = validateGmail(email)
+    if (gmailErr) {
+      setEmailTouched(true)
+      setEmailCustomError(gmailErr)
+      setError(gmailErr)
+      return
+    }
 
     const pwError = validatePassword(password)
     if (pwError) {
@@ -70,6 +85,13 @@ export default function SignUp() {
       try {
         sessionStorage.removeItem('relieftrack_signup_success')
       } catch {}
+      if (err?.code === 'auth/email-already-in-use') {
+        setEmailTouched(true)
+        setEmailCustomError('This Gmail address is already registered.')
+      } else if (err?.code === 'auth/invalid-email') {
+        setEmailTouched(true)
+        setEmailCustomError('This Gmail address does not exist or is invalid.')
+      }
       const message = getAuthErrorMessage(err, 'Sign up failed. Please try again.')
       if (message) setError(message)
     } finally {
@@ -107,18 +129,39 @@ export default function SignUp() {
         </div>
 
         <div className="field">
-          <label>Email</label>
+          <label>Email (Gmail only)</label>
           <div className="input-wrap">
             <input
-              className="glass-input"
+              className={`glass-input ${hasEmailError ? 'input-error' : ''} ${isGmailValid ? 'input-success' : ''}`}
               type="email"
-              placeholder="you@example.com"
+              placeholder="yourname@gmail.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value
+                setEmail(val)
+                setEmailCustomError('')
+                if (val.includes('@') || emailTouched) {
+                  setEmailTouched(true)
+                }
+              }}
+              onBlur={() => {
+                if (email.trim().length > 0) setEmailTouched(true)
+              }}
               required
               disabled={loading}
+              autoComplete="email"
             />
           </div>
+          {hasEmailError && (
+            <div className="field-error-text" role="alert">
+              <span>⚠</span> {displayEmailError}
+            </div>
+          )}
+          {isGmailValid && (
+            <div className="field-success-text">
+              <span>✓</span> Valid Gmail address
+            </div>
+          )}
         </div>
 
         <div className="field">

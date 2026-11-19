@@ -210,6 +210,47 @@ body:has(.login-bg) #root {
   box-shadow: 0 0 0 3px rgba(120,80,255,0.3);
 }
 
+.glass-input.input-error {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important;
+  color: #fff !important;
+}
+.glass-input.input-error::placeholder {
+  color: rgba(254, 202, 202, 0.5) !important;
+}
+
+.glass-input.input-success {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25) !important;
+}
+
+.field-error-text {
+  color: #ff6b6b;
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-align: left;
+  line-height: 1.3;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.field-success-text {
+  color: #4ade80;
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-align: left;
+  line-height: 1.3;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
 .row-options { display: flex; justify-content: space-between; align-items: center; margin: 4px 0 14px; }
 .remember { display: flex; align-items: center; gap: 8px; cursor: pointer; }
 .remember input { accent-color: #7850ff; cursor: pointer; }
