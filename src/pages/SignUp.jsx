@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Eye, EyeOff } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
 import { signUpWithEmail, signOutUser } from '../firebase/auth'
 import { createUserProfile, updateUserProfile } from '../firebase/users'
@@ -14,7 +15,7 @@ export default function SignUp() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [passwordFocused, setPasswordFocused] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [successModal, setSuccessModal] = useState(false)
@@ -126,38 +127,39 @@ export default function SignUp() {
             <input
               className="glass-input"
               type={showPassword ? 'text' : 'password'}
-              placeholder="••••••••"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              onFocus={() => setPasswordFocused(true)}
-              onBlur={() => setPasswordFocused(false)}
               required
               disabled={loading}
+              autoComplete="new-password"
             />
-            <span
+            <button
+              type="button"
               className="eye-toggle"
               onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              tabIndex={-1}
             >
-              {showPassword ? '🙈' : '👁️'}
-            </span>
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
-          {(passwordFocused || password.length > 0) && (
-            <div className="password-rules" aria-live="polite">
-              <div className={`rule-item ${pwRules.startsWithCapital ? 'valid' : ''}`}>
-                <span className="rule-icon">{pwRules.startsWithCapital ? '✓' : '•'}</span> Starts with a capital letter (A-Z)
-              </div>
-              <div className={`rule-item ${pwRules.hasMinLength ? 'valid' : ''}`}>
-                <span className="rule-icon">{pwRules.hasMinLength ? '✓' : '•'}</span> At least 8 characters
-              </div>
-              <div className={`rule-item ${pwRules.hasNumber ? 'valid' : ''}`}>
-                <span className="rule-icon">{pwRules.hasNumber ? '✓' : '•'}</span> At least one number (0-9)
-              </div>
-              <div className={`rule-item ${pwRules.hasSymbol ? 'valid' : ''}`}>
-                <span className="rule-icon">{pwRules.hasSymbol ? '✓' : '•'}</span> At least one symbol (e.g. !@#$%)
-              </div>
+          <div className="password-rules" aria-live="polite">
+            <div className="password-rules-header">Password Requirements</div>
+            <div className={`rule-item ${pwRules.startsWithCapital ? 'valid' : ''}`}>
+              <span className="rule-icon">{pwRules.startsWithCapital ? '✓' : '•'}</span> Starts with a capital letter (A-Z)
             </div>
-          )}
+            <div className={`rule-item ${pwRules.hasMinLength ? 'valid' : ''}`}>
+              <span className="rule-icon">{pwRules.hasMinLength ? '✓' : '•'}</span> At least 8 characters
+            </div>
+            <div className={`rule-item ${pwRules.hasNumber ? 'valid' : ''}`}>
+              <span className="rule-icon">{pwRules.hasNumber ? '✓' : '•'}</span> At least one number (0-9)
+            </div>
+            <div className={`rule-item ${pwRules.hasSymbol ? 'valid' : ''}`}>
+              <span className="rule-icon">{pwRules.hasSymbol ? '✓' : '•'}</span> At least one symbol (e.g. !@#$%^&*)
+            </div>
+          </div>
         </div>
 
         <div className="field">
@@ -165,13 +167,23 @@ export default function SignUp() {
           <div className="input-wrap">
             <input
               className="glass-input"
-              type={showPassword ? 'text' : 'password'}
-              placeholder="••••••••"
+              type={showConfirmPassword ? 'text' : 'password'}
+              placeholder="Re-enter password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               disabled={loading}
+              autoComplete="new-password"
             />
+            <button
+              type="button"
+              className="eye-toggle"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+              tabIndex={-1}
+            >
+              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
         </div>
 

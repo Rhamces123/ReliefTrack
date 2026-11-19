@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Eye, EyeOff } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
 import { signInWithEmail, signUpWithEmail, signOutUser } from '../firebase/auth'
 import { ensureUserProfile, getUserProfile, updateUserProfile } from '../firebase/users'
@@ -89,18 +90,22 @@ export default function Login() {
             <input
               className="glass-input"
               type={showPassword ? 'text' : 'password'}
-              placeholder="••••••••"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               disabled={loading}
+              autoComplete="current-password"
             />
-            <span
+            <button
+              type="button"
               className="eye-toggle"
               onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              tabIndex={-1}
             >
-              {showPassword ? '🙈' : '👁️'}
-            </span>
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
         </div>
 
