@@ -509,9 +509,34 @@ export default function Requests() {
 
     if (hasFamilyLimit) {
       const maxRoster = Math.max(0, familyCount - 1)
-      if ((form.familyMembersList || []).length > maxRoster) {
-        setError(`Household roster has ${form.familyMembersList.length} members, but maximum allowed is ${maxRoster} additional members for a family size of ${familyCount} (including Head of Family).`)
+      const currentRoster = (form.familyMembersList || []).length
+
+      if (familyCount > 1 && currentRoster < maxRoster) {
+        setError(
+          `Household roster incomplete: Please add all ${maxRoster} additional family member${
+            maxRoster > 1 ? 's' : ''
+          } (currently ${currentRoster}/${maxRoster} added for a family size of ${familyCount}).`
+        )
         return
+      }
+
+      if (currentRoster > maxRoster) {
+        setError(
+          `Household roster has ${currentRoster} members, but maximum allowed is ${maxRoster} additional members for a family size of ${familyCount} (including Head of Family).`
+        )
+        return
+      }
+
+      if (familyCount > 1) {
+        const emptyNameIndex = (form.familyMembersList || []).findIndex(
+          (m) => !m.name || !m.name.trim()
+        )
+        if (emptyNameIndex !== -1) {
+          setError(
+            `Please enter the full name for Family Member #${emptyNameIndex + 1} in the household roster.`
+          )
+          return
+        }
       }
     }
 
@@ -599,12 +624,15 @@ export default function Requests() {
   const currentRosterCount = form.familyMembersList?.length || 0
   const isRosterFull = hasFamilyLimit && currentRosterCount >= maxRosterMembers
   const isRosterExceeded = hasFamilyLimit && currentRosterCount > maxRosterMembers
+  const isRosterIncomplete = hasFamilyLimit && modalFamilyCount > 1 && currentRosterCount < maxRosterMembers
+  const hasIncompleteMemberNames = (form.familyMembersList || []).some((m) => !m.name || !m.name.trim())
   const totalVulnCount = totalAffected(form.categories)
   const isTotalExceeded = hasFamilyLimit && totalVulnCount > modalFamilyCount
   const hasAnyIndividualExceeded = hasFamilyLimit && Object.values(form.categories).some(
     (c) => (parseInt(c.count, 10) || 0) > modalFamilyCount
   )
   const isFormExceeded = isTotalExceeded || hasAnyIndividualExceeded || isRosterExceeded
+  const isSubmitDisabled = saving || isFormExceeded || isRosterIncomplete || hasIncompleteMemberNames
 
   return (
     <DashboardLayout title="Requests" userLabel={displayName} userEmail={email}>
@@ -1349,18 +1377,30 @@ export default function Requests() {
                     {hasFamilyLimit ? (
                       <span
                         className={`vuln-counter-badge ${
-                          isRosterExceeded ? 'exceeded' : 'neutral'
+                          isRosterExceeded
+                            ? 'exceeded'
+                            : isRosterIncomplete
+                            ? 'incomplete'
+                            : isRosterFull
+                            ? 'full'
+                            : 'neutral'
                         }`}
                         style={
-                          isRosterFull && !isRosterExceeded
+                          isRosterExceeded
+                            ? { background: '#fef2f2', color: '#b91c1c', borderColor: '#fca5a5' }
+                            : isRosterIncomplete
+                            ? { background: '#fffbeb', color: '#b45309', borderColor: '#fde68a' }
+                            : isRosterFull
                             ? { background: '#ecfdf5', color: '#047857', borderColor: '#a7f3d0' }
                             : {}
                         }
                       >
                         {isRosterExceeded
                           ? `⚠️ Exceeds limit (${currentRosterCount} / ${maxRosterMembers} max)`
+                          : isRosterIncomplete
+                          ? `⚠️ Roster Required (${currentRosterCount} / ${maxRosterMembers} added, Total: ${modalFamilyCount})`
                           : isRosterFull
-                          ? `✓ Full roster (${currentRosterCount} / ${maxRosterMembers} + 1 Head = ${modalFamilyCount})`
+                          ? `✓ Complete roster (${currentRosterCount} / ${maxRosterMembers} + 1 Head = ${modalFamilyCount})`
                           : `${currentRosterCount} / ${maxRosterMembers} added (Total: ${modalFamilyCount})`}
                       </span>
                     ) : (
@@ -1390,17 +1430,53 @@ export default function Requests() {
                 </div>
 
                 {(!form.familyMembersList || form.familyMembersList.length === 0) ? (
-                  <div className="requests-members-empty">
+                  <div
+                    className="requests-members-empty"
+                    style={
+                      hasFamilyLimit && modalFamilyCount > 1
+                        ? { background: '#fffdf5', borderColor: '#fde68a' }
+                        : {}
+                    }
+                  >
                     {!hasFamilyLimit ? (
                       <p>Please enter the <strong>Number of Family Members</strong> above to add household members.</p>
                     ) : modalFamilyCount === 1 ? (
                       <p>Single-member household (Head of family only). No additional household members needed.</p>
                     ) : (
-                      <p>No additional family members listed yet (<strong>{maxRosterMembers}</strong> slots available for this family). Click <strong>+ Add Member</strong> to record names, relationship, age, and sex.</p>
+                      <div>
+                        <p style={{ color: '#b45309', fontWeight: 600, marginBottom: 4 }}>
+                          ⚠️ Roster Required: Please add all <strong>{maxRosterMembers}</strong> additional family member{maxRosterMembers > 1 ? 's' : ''} to this household roster.
+                        </p>
+                        <p style={{ fontSize: '12px', color: '#64748B' }}>
+                          Click <strong>+ Add Member</strong> to record names, relationship, age, and sex. You cannot create the relief request until all household members are added.
+                        </p>
+                      </div>
                     )}
                   </div>
                 ) : (
-                  <div className="requests-members-list">
+                  <>
+                    {isRosterIncomplete && (
+                      <div
+                        style={{
+                          marginBottom: 10,
+                          padding: '8px 12px',
+                          background: '#fffbeb',
+                          border: '1px solid #fde68a',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                          color: '#b45309',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 6,
+                        }}
+                      >
+                        <AlertTriangle size={14} style={{ flexShrink: 0 }} />
+                        <span>
+                          Still need <strong>{maxRosterMembers - currentRosterCount}</strong> more member{maxRosterMembers - currentRosterCount > 1 ? 's' : ''} to complete the household roster ({currentRosterCount} / {maxRosterMembers} added).
+                        </span>
+                      </div>
+                    )}
+                    <div className="requests-members-list">
                     {form.familyMembersList.map((member, idx) => (
                       <div key={member.id || idx} className="requests-member-card">
                         <div className="requests-member-card-header">
@@ -1468,6 +1544,7 @@ export default function Requests() {
                       </div>
                     ))}
                   </div>
+                </>
                 )}
               </div>
 
@@ -1715,6 +1792,53 @@ export default function Requests() {
                 />
               </div>
 
+              {isRosterIncomplete && (
+                <div
+                  style={{
+                    background: '#fffbeb',
+                    border: '1px solid #fde68a',
+                    borderRadius: '8px',
+                    padding: '10px 14px',
+                    marginBottom: '14px',
+                    fontSize: '12.5px',
+                    color: '#b45309',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    lineHeight: '1.4',
+                  }}
+                >
+                  <AlertTriangle size={16} style={{ flexShrink: 0 }} />
+                  <span>
+                    <strong>Cannot create request:</strong> You specified <strong>{modalFamilyCount}</strong> family members, but{' '}
+                    <strong>{maxRosterMembers - currentRosterCount}</strong> additional household member{maxRosterMembers - currentRosterCount > 1 ? 's are' : ' is'} still missing from the roster ({currentRosterCount} / {maxRosterMembers} added). Please click <strong>+ Add Member</strong> above to complete the roster before creating the request.
+                  </span>
+                </div>
+              )}
+
+              {hasIncompleteMemberNames && !isRosterIncomplete && (
+                <div
+                  style={{
+                    background: '#fffbeb',
+                    border: '1px solid #fde68a',
+                    borderRadius: '8px',
+                    padding: '10px 14px',
+                    marginBottom: '14px',
+                    fontSize: '12.5px',
+                    color: '#b45309',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    lineHeight: '1.4',
+                  }}
+                >
+                  <AlertTriangle size={16} style={{ flexShrink: 0 }} />
+                  <span>
+                    <strong>Cannot create request:</strong> Please provide the full name for every member listed in the household roster.
+                  </span>
+                </div>
+              )}
+
               <div className="requests-modal-actions">
                 <button type="button" className="requests-btn-secondary" onClick={() => setShowForm(false)} disabled={saving}>
                   Cancel
@@ -1722,8 +1846,16 @@ export default function Requests() {
                 <button
                   type="submit"
                   className="requests-btn-primary"
-                  disabled={saving || isFormExceeded}
-                  title={isFormExceeded ? `Counts exceed family members limit (${modalFamilyCount})` : ''}
+                  disabled={isSubmitDisabled}
+                  title={
+                    isRosterIncomplete
+                      ? `Household roster incomplete: Please add all ${maxRosterMembers} additional family members (${currentRosterCount}/${maxRosterMembers} added)`
+                      : hasIncompleteMemberNames
+                      ? 'Please enter the full name for all members in the roster'
+                      : isFormExceeded
+                      ? `Counts exceed family members limit (${modalFamilyCount})`
+                      : ''
+                  }
                 >
                   <Plus size={16} />
                   <span>{saving ? 'Creating Request...' : 'Create Relief Request'}</span>
