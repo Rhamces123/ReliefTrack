@@ -182,7 +182,6 @@ export default function Reports() {
           <table className="dashboard-table">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Type</th>
                 <th>Location / Name</th>
                 <th>Status</th>
@@ -191,7 +190,6 @@ export default function Reports() {
             <tbody>
               {recentActivity.map((row) => (
                 <tr key={row.docId}>
-                  <td style={{ fontWeight: 600, color: '#1674D1' }}>{row.requestId}</td>
                   <td>Relief Request</td>
                   <td>{row.location || 'City of Naga'}</td>
                   <td>
